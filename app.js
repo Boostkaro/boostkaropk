@@ -167,7 +167,7 @@
           { p: 5, u: "k", s: "Pakistan targeted comments" }
         ]},
         { id: "normal", label: "Normal Comments", tiers: [
-          { p: 4.50, u: "k", s: "Custom comments" },
+          { p: 5.00, u: "k", s: "Custom comments" },
           { p: 4.50, u: "k", s: "Emoji comments" },
           { p: 6, u: "k", s: "" },
           { p: 9, u: "k", s: "Non drop" },
