@@ -747,9 +747,67 @@
     } catch (e) {}
   }
 
+  // ---- Deep link support (from SEO landing pages) ----
+  // URL format: ?platform=instagram&category=followers&subcat=stable90&tier=1
+  // tier = index in the subcategory's original tiers array
+  function initDeepLink() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var platform = params.get("platform");
+      var category = params.get("category");
+      var subcat = params.get("subcat");
+      var tierIdx = params.get("tier");
+      if (!platform || !category) return;
+
+      // Validate platform exists
+      var p = null;
+      for (var i = 0; i < CATALOG.length; i++) {
+        if (CATALOG[i].id === platform) { p = CATALOG[i]; break; }
+      }
+      if (!p) return;
+
+      // Validate category exists
+      var c = null;
+      for (var j = 0; j < p.categories.length; j++) {
+        if (p.categories[j].id === category) { c = p.categories[j]; break; }
+      }
+      if (!c) return;
+
+      activePlatform = platform;
+      activeCategory = category;
+
+      if (subcat) {
+        var sc = null;
+        for (var k = 0; k < c.subcats.length; k++) {
+          if (c.subcats[k].id === subcat) { sc = c.subcats[k]; break; }
+        }
+        if (sc) {
+          activeSubcat = subcat;
+          drillStep = 3;
+          renderAll();
+          // If tier specified, open order modal for exact tier
+          if (tierIdx !== null) {
+            var idx = parseInt(tierIdx, 10);
+            if (!isNaN(idx) && idx >= 0 && idx < sc.tiers.length) {
+              openOrder({ platform: p, category: c, subcat: sc, tier: sc.tiers[idx] });
+            }
+          }
+          return;
+        }
+      }
+      // Category only: go to subcategory selection
+      drillStep = (c.subcats.length === 1) ? 3 : 2;
+      if (drillStep === 3 && c.subcats.length === 1) {
+        activeSubcat = c.subcats[0].id;
+      }
+      renderAll();
+    } catch (e) {}
+  }
+
   // ---- Init ----
   document.addEventListener("DOMContentLoaded", function () {
     initConverter();
+    initDeepLink();
     $("order-qty").addEventListener("input", updateOrderTotal);
     $("coupon-apply").addEventListener("click", applyCoupon);
     $("order-coupon").addEventListener("input", function() {
