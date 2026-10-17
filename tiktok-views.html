@@ -130,5 +130,29 @@
   </div>
 </footer>
 <a class="wa-float" href="https://wa.me/923340942542?text=Hi%20BoostKaro%2C%20I%20need%20help." target="_blank" rel="noopener">💬 WhatsApp</a>
+<script>
+// GA4: Track Order Now clicks on landing pages
+document.addEventListener("DOMContentLoaded", function() {
+  document.querySelectorAll(".tier-card .btn.block").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      var card = btn.closest(".tier-card");
+      var tier = card.querySelector("h3") ? card.querySelector("h3").textContent : "";
+      var priceEl = card.querySelector(".price");
+      var price = 0;
+      if (priceEl) {
+        var m = priceEl.textContent.match(/\$([0-9.]+)/);
+        if (m) price = parseFloat(m[1]);
+      }
+      if (typeof gtag === "function") {
+        gtag("event", "order_now_click", {
+          service: document.querySelector("h1") ? document.querySelector("h1").textContent : "",
+          tier: tier,
+          price_usd: price
+        });
+      }
+    });
+  });
+});
+</script>
 </body>
 </html>
