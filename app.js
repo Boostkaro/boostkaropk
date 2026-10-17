@@ -274,15 +274,15 @@
     { id: "packages", label: "Packages", categories: [
       { id: "growth", label: "Growth Packages", subcats: [
         { id: "packs", label: "Packages", tiers: [
-          { p: 65, u: "pkg", s: "SK — Real Active 50 Followers + Likes + Comments, 30 days" },
-          { p: 70, u: "pkg", s: "BR — Real Active 50 Followers + Likes + Comments, 30 days" },
-          { p: 75, u: "pkg", s: "Real Active 50 Followers + Likes + Comments, 30 days" },
-          { p: 80, u: "pkg", s: "Arab — Real Active 50 Followers + Likes + Comments, 30 days" },
-          { p: 87, u: "pkg", s: "USA — Real Active 50 Followers + Likes + Comments, 30 days" },
-          { p: 100, u: "pkg", s: "Real Active 100 Followers + Likes + Comments, 30 days" },
-          { p: 109, u: "pkg", s: "Arab — Real Active 100 Followers + Likes + Comments, 30 days" },
-          { p: 120, u: "pkg", s: "USA — Real Active 100 Followers + Likes + Comments, 30 days" },
-          { p: 159, u: "pkg", s: "Real Active 200 Followers + Likes + Comments, 30 days" }
+          { p: 65, u: "pkg", s: "Instagram - SK — Real Active 50 Followers + Likes + Comments, 30 days" },
+          { p: 70, u: "pkg", s: "Instagram - BR — Real Active 50 Followers + Likes + Comments, 30 days" },
+          { p: 75, u: "pkg", s: "Instagram - Real Active 50 Followers + Likes + Comments, 30 days" },
+          { p: 80, u: "pkg", s: "Instagram - Arab — Real Active 50 Followers + Likes + Comments, 30 days" },
+          { p: 87, u: "pkg", s: "Instagram - USA — Real Active 50 Followers + Likes + Comments, 30 days" },
+          { p: 100, u: "pkg", s: "Instagram - Real Active 100 Followers + Likes + Comments, 30 days" },
+          { p: 109, u: "pkg", s: "Instagram - Arab — Real Active 100 Followers + Likes + Comments, 30 days" },
+          { p: 120, u: "pkg", s: "Instagram - USA — Real Active 100 Followers + Likes + Comments, 30 days" },
+          { p: 159, u: "pkg", s: "Instagram - Real Active 200 Followers + Likes + Comments, 30 days" }
         ]}
       ]}
     ]}
