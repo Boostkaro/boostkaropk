@@ -1,0 +1,1 @@
+Trigger Vercel deployment for SEO URL fixes - 2026-10-17
