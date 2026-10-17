@@ -296,6 +296,31 @@ footer { text-align: center; color: var(--muted); font-size: .85rem; padding: 26
   .form-row { grid-template-columns: 1fr; }
   .track-result dl { grid-template-columns: 1fr; }
   .nav-links a.hide-mobile { display: none; }
+
+  /* SEO landing pages: mobile card layout */
+  .tier-grid { display: flex; flex-direction: column; gap: 12px; }
+  .tier-card { padding: 16px; gap: 6px; }
+  .tier-card h3 { font-size: 1rem; margin-right: 0; }
+  .tier-card .desc { font-size: .85rem; line-height: 1.45; }
+  .tier-card .price { font-size: 1.25rem; }
+  .tier-card .price small { font-size: .78rem; display: block; margin-top: 2px; }
+  .tier-card .btn.block { padding: 10px 16px; font-size: .95rem; margin-top: 4px; }
+  .tier-badge { font-size: .65rem; padding: 2px 8px; top: 10px; right: 10px; }
+  .subcat-heading { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; }
+  .service-listings h2 { font-size: 1.25rem; }
+
+  /* Breadcrumbs: smaller on mobile */
+  .breadcrumbs { font-size: .82rem; margin-bottom: 0.5rem; }
+
+  /* Lead text: better readability */
+  .lead { font-size: 1rem; line-height: 1.6; }
+
+  /* FAQ: more breathing room */
+  .faq details { padding: 0.65rem 0.85rem; }
+  .faq summary { font-size: .92rem; }
+
+  /* Container: reduce side padding */
+  .container { padding-left: 14px; padding-right: 14px; }
 }
 
 /* SEO content + FAQ */
