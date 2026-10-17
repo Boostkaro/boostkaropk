@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoostKaro — Buy Instagram Followers, TikTok Likes, YouTube Subscribers in Pakistan</title>
+<meta name="description" content="BoostKaro is Pakistan's cheapest SMM panel. Buy Instagram followers, TikTok followers & likes, YouTube subscribers & watch time, Facebook page likes. Pay in PKR via JazzCash / Easypaisa. Instant delivery, 150+ services.">
+<meta name="keywords" content="buy instagram followers pakistan, cheap smm panel, buy tiktok followers, instagram likes pakistan, youtube subscribers pakistan, facebook page likes, smm panel pakistan, jazzcash smm, buy instagram views, tiktok likes pakistan">
+<meta name="robots" content="index, follow">
+<meta name="author" content="BoostKaro">
+<link rel="canonical" href="https://www.boostkaropk.com/">
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="BoostKaro">
+<meta property="og:title" content="BoostKaro — Buy Instagram Followers, TikTok Likes, YouTube Subscribers">
+<meta property="og:description" content="Pakistan's cheapest SMM panel. 150+ services: Instagram, TikTok, YouTube, Facebook. Pay via JazzCash / Easypaisa.">
+<meta property="og:url" content="https://www.boostkaropk.com/">
+<meta property="og:image" content="https://www.boostkaropk.com/logo.webp">
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BoostKaro — Social Media Growth Services Pakistan">
+<meta name="twitter:description" content="Buy Instagram followers, TikTok likes, YouTube subscribers. Pay in PKR via JazzCash/Easypaisa.">
+<meta name="twitter:image" content="https://www.boostkaropk.com/logo.webp">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/webp" href="logo.webp">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "BoostKaro",
+  "url": "https://www.boostkaropk.com/",
+  "logo": "https://www.boostkaropk.com/logo.webp",
+  "description": "Pakistan's cheapest SMM panel — Instagram followers, TikTok likes, YouTube subscribers, Facebook growth. Pay via JazzCash/Easypaisa.",
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer support",
+    "url": "https://wa.me/923340942542"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I buy Instagram followers in Pakistan?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Choose Instagram → Followers on BoostKaro, pick a quality tier (from $2/1000), enter your profile link, pay via JazzCash or Easypaisa, and submit your transaction ID. Delivery starts within hours." }
+    },
+    {
+      "@type": "Question",
+      "name": "What payment methods does BoostKaro accept?",
+      "acceptedAnswer": { "@type": "Answer", "text": "JazzCash and Easypaisa. Prices are shown in USD with live PKR conversion." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is BoostKaro safe?",
+      "acceptedAnswer": { "@type": "Answer", "text": "We never ask for your social media password — only your public profile link. Choose non-drop tiers with refill guarantees for best results." }
+    },
+    {
+      "@type": "Question",
+      "name": "How fast is delivery?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Most services start within 0–1 hour. Speeds range from 1K/day to 200K/day depending on the tier you choose." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html"><img src="logo.webp" alt="BoostKaro">Boost<span>Karo</span></a>
+    <nav class="nav-links">
+      <a href="#services" class="hide-mobile">Services</a>
+      <a href="#track">Track Order</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="hero">
+    <h1>Grow Your Social Media 🚀</h1>
+    <p>Real-looking followers, likes, views &amp; subscribers for Instagram, TikTok, YouTube and Facebook. Prices in USD — pay easily in PKR via JazzCash / Easypaisa.</p>
+    <div class="converter" id="converter">
+      <strong>$</strong>
+      <input type="number" id="conv-usd" value="10" min="0" step="0.5" aria-label="USD amount">
+      <span>=</span>
+      <strong id="conv-pkr">Rs 2,770</strong>
+      <span class="rate-note">Approximate rate: 1 USD ≈ Rs 282.49. Final PKR shown at checkout.</span>
+    </div>
+  </section>
+
+  <section id="services">
+    <h2 id="services-title">Choose a Platform</h2>
+    <div class="crumbs" id="crumbs" style="display:none"></div>
+    <div class="choice-grid" id="choice-grid"></div>
+    <div class="tier-grid" id="tier-grid" style="display:none"></div>
+    <p class="muted" id="services-note">Tap a platform to see its services.</p>
+  </section>
+
+  <section id="track" class="section">
+    <h2>Track Your Order 🔍</h2>
+    <p class="muted">Enter the order code from your confirmation and the contact number you used.</p>
+    <div class="form-row">
+      <div class="field">
+        <label for="track-code">Order Code <span class="req">*</span></label>
+        <input type="text" id="track-code" placeholder="BK-XXXXXX" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="track-phone">Contact Number <span class="req">*</span></label>
+        <input type="text" id="track-phone" placeholder="03XXXXXXXXX" autocomplete="off">
+      </div>
+    </div>
+    <button class="btn" id="track-btn" type="button">Check Status</button>
+    <div id="track-result"></div>
+  </section>
+
+</main>
+
+<!-- Order modal -->
+<div class="modal-backdrop" id="order-modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" type="button" aria-label="Close">✕</button>
+    <h2 id="order-title">Place Order</h2>
+    <p class="muted" id="order-service-line"></p>
+
+    <div class="field">
+      <label for="order-qty">Quantity <span class="req">*</span></label>
+      <input type="number" id="order-qty" min="100" value="1000">
+      <span class="hint" id="order-qty-hint"></span>
+    </div>
+    <div class="field">
+      <label>Total</label>
+      <div style="font-size:1.4rem;font-weight:800"><span id="order-total-usd">$0.00</span> <small class="muted">≈ <span id="order-total-pkr">Rs 0</span></small></div>
+    </div>
+
+    <div class="field">
+      <label for="order-coupon">Coupon Code (optional)</label>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="order-coupon" placeholder="Enter coupon code" autocomplete="off" style="text-transform:uppercase">
+        <button class="btn" id="coupon-apply" type="button" style="white-space:nowrap">Apply</button>
+      </div>
+      <span class="hint" id="coupon-msg"></span>
+    </div>
+
+    <div class="form-row">
+      <div class="field">
+        <label for="order-name">Your Name</label>
+        <input type="text" id="order-name" placeholder="Your name" autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="order-phone">Contact Number <span class="req">*</span></label>
+        <input type="text" id="order-phone" placeholder="03XXXXXXXXX" autocomplete="tel">
+        <span class="hint">Required — needed in case your profile link is wrong.</span>
+      </div>
+    </div>
+    <div class="field">
+      <label for="order-link">Profile / Post / Video Link <span class="req">*</span></label>
+      <input type="url" id="order-link" placeholder="https://..." autocomplete="off">
+      <span class="hint">Double-check this link — services go to exactly what you paste here.</span>
+    </div>
+
+    <div class="pay-box">
+      <strong>💳 Step 1 — Pay via JazzCash / Easypaisa</strong>
+      <p class="muted" style="margin:8px 0">Send <strong id="pay-pkr">Rs 0</strong> to:</p>
+      <div class="pay-number">0334 8139464</div>
+      <div class="pay-name">Muhammad Siraj</div>
+      <p class="muted" style="margin:8px 0 0">Send from your JazzCash / Easypaisa app and keep the transaction ID (TID).</p>
+    </div>
+
+    <div class="field">
+      <label for="order-tid">Step 2 — Transaction ID (TID) <span class="req">*</span></label>
+      <input type="text" id="order-tid" placeholder="Enter TID from JazzCash/Easypaisa" autocomplete="off">
+    </div>
+
+    <div id="order-error"></div>
+    <button class="btn block" id="order-submit" type="button">Submit Order</button>
+  </div>
+</div>
+
+<!-- Confirmation modal -->
+<div class="modal-backdrop" id="confirm-modal">
+  <div class="modal">
+    <button class="modal-close" id="confirm-close" type="button" aria-label="Close">✕</button>
+    <div class="confirm-box">
+      <h2>✅ Order Received!</h2>
+      <p class="muted">Your order code (save this to track your order):</p>
+      <div class="order-code" id="confirm-code">BK-XXXXXX</div>
+      <p class="muted" id="confirm-detail"></p>
+      <p class="muted">We'll verify your payment and start your order soon. Track it anytime in the <a href="#track">Track Order</a> section.</p>
+      <button class="btn block" id="confirm-ok" type="button">Done</button>
+    </div>
+  </div>
+</div>
+
+<a class="wa-float" href="https://wa.me/923340942542?text=Hi%20BoostKaro%2C%20I%20need%20help." target="_blank" rel="noopener">💬 WhatsApp</a>
+
+<!-- SEO content + FAQ -->
+<section class="section seo-content">
+  <h2>Pakistan's Cheapest SMM Panel 🇵🇰</h2>
+  <p>BoostKaro helps creators, businesses and influencers grow on <strong>Instagram</strong>, <strong>TikTok</strong>, <strong>YouTube</strong> and <strong>Facebook</strong> — with 150+ services starting under $1. Buy <strong>Instagram followers in Pakistan</strong>, <strong>TikTok likes</strong>, <strong>YouTube subscribers &amp; watch time</strong>, <strong>Facebook page likes</strong> and more. No password needed — just your profile link. Pay securely in PKR via <strong>JazzCash</strong> or <strong>Easypaisa</strong>.</p>
+  <h3>Why choose BoostKaro?</h3>
+  <ul>
+    <li>✅ 150+ real services across 4 platforms, sorted cheapest first</li>
+    <li>✅ Non-drop options with 30–365 day refill guarantees</li>
+    <li>✅ Country-targeted followers &amp; likes (USA, Brazil, Turkey, Pakistan &amp; more)</li>
+    <li>✅ Instant start on most services — delivery from 1K to 200K per day</li>
+    <li>✅ WhatsApp support in Urdu &amp; English</li>
+  </ul>
+  <h3>Frequently Asked Questions</h3>
+  <div class="faq">
+    <details><summary>How do I buy Instagram followers in Pakistan?</summary><p>Choose Instagram → Followers, pick a quality tier (from $2/1000), enter your profile link, pay via JazzCash or Easypaisa, and submit your transaction ID. Delivery starts within hours.</p></details>
+    <details><summary>What payment methods do you accept?</summary><p>JazzCash and Easypaisa. Prices are shown in USD with live PKR conversion (Google rate + Rs 5).</p></details>
+    <details><summary>Do you need my password?</summary><p>Never. We only need your public profile or post link.</p></details>
+    <details><summary>What if followers drop?</summary><p>Choose tiers with refill guarantees (30–365 days). If numbers drop within the guarantee period, contact us on WhatsApp for a refill.</p></details>
+    <details><summary>How do I track my order?</summary><p>Use the Track Order section with your order code, or message us on WhatsApp.</p></details>
+  </div>
+</section>
+
+<section id="support" class="section container">
+  <h2>Need Help? 💬</h2>
+  <p class="muted">Wrong link? Payment question? Order not starting? Message us on WhatsApp with your <strong>order code</strong> and we'll sort it out.</p>
+  <a class="btn green" id="wa-support" href="https://wa.me/923340942542?text=Hi%20BoostKaro%2C%20I%20need%20help%20with%20my%20order." target="_blank" rel="noopener">Chat on WhatsApp</a>
+</section>
+
+<footer>
+  <div class="container">
+    <p>© 2026 BoostKaro — Social Media Growth Services. Prices in USD, payable in PKR via JazzCash / Easypaisa. <a href="admin.html" style="color:#888;font-size:12px;">Admin</a></p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+
+<!-- 30% OFF launch popup -->
+<div class="promo-overlay" id="promo-overlay" style="display:none">
+  <div class="promo-popup">
+    <button class="promo-close" id="promo-close" aria-label="Close">×</button>
+    <div class="promo-badge">🎉 LIMITED OFFER</div>
+    <h2>30% OFF!</h2>
+    <p class="promo-text">On selected services for our <strong>first 5 customers</strong> only!</p>
+    <p class="promo-sub">Use code at checkout: <span style="font-size:.8rem;color:#888">(not valid on Packages)</span></p>
+    <div class="promo-code" id="promo-code">FIRST30</div>
+    <button class="btn block" id="promo-cta">Claim My Discount</button>
+    <p class="promo-fine">Hurry — only 5 spots available!</p>
+  </div>
+</div>
+
+</body>
+</html>

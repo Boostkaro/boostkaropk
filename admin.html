@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoostKaro Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/webp" href="logo.webp">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">Boost<span>Karo</span> <small style="font-weight:400;font-size:.85rem;opacity:.8">Admin</small></a>
+    <nav class="nav-links">
+      <a href="index.html">← Storefront</a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- Login gate -->
+  <div id="admin-login" class="section admin-login">
+    <h2>Admin Login 🔐</h2>
+    <p class="muted">Sign in with your admin account to view and manage orders.</p>
+    <div class="field">
+      <label for="admin-email">Email</label>
+      <input type="email" id="admin-email" autocomplete="username" placeholder="you@example.com">
+    </div>
+    <div class="field">
+      <label for="admin-pass">Password</label>
+      <input type="password" id="admin-pass" autocomplete="current-password">
+    </div>
+    <div id="login-error"></div>
+    <button class="btn block" id="login-btn" type="button">Login</button>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="admin-panel" style="display:none">
+    <section class="section">
+      <h2>Orders 📦 <span class="muted" id="orders-count"></span> <button class="btn" id="logout-btn" type="button" style="float:right;font-size:13px;padding:6px 12px;">Logout</button></h2>
+      <div class="admin-filters">
+        <input type="text" id="filter-text" placeholder="Search code, name, phone, TID…">
+        <select id="filter-status">
+          <option value="">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="processing">Processing</option>
+          <option value="completed">Completed</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button class="btn ghost" id="refresh-btn" type="button">↻ Refresh</button>
+      </div>
+      <div id="admin-msg"></div>
+      <div class="orders-table-wrap">
+        <table class="orders">
+          <thead>
+            <tr>
+              <th>Order / Date</th>
+              <th>Customer</th>
+              <th>Service</th>
+              <th>Qty / Price</th>
+              <th>TID</th>
+              <th>Status</th>
+              <th>Note</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="orders-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+</main>
+
+<footer>
+  <div class="container"><p>BoostKaro Admin — private page.</p></div>
+</footer>
+
+<script src="admin.js"></script>
+</body>
+</html>
