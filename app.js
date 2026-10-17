@@ -524,6 +524,14 @@
       btn.className = "btn block";
       btn.textContent = "Order Now";
       btn.addEventListener("click", function () {
+        // GA4: order_now_click
+        if (typeof gtag === "function") {
+          gtag("event", "order_now_click", {
+            service: p.label + " " + c.label,
+            tier: sc.label,
+            price_usd: t.p
+          });
+        }
         openOrder({ platform: p, category: c, subcat: sc, tier: t });
       });
       card.appendChild(btn);
@@ -560,6 +568,14 @@
     $("order-error").innerHTML = "";
     updateOrderTotal();
     $("order-modal").classList.add("open");
+    // GA4: checkout_start (fires once per modal open)
+    if (typeof gtag === "function") {
+      gtag("event", "checkout_start", {
+        service: sel.platform.label + " " + sel.category.label,
+        tier: sel.subcat.label,
+        price_usd: sel.tier.p
+      });
+    }
   }
 
   var couponDiscount = 0; // 0.3 = 30% off
@@ -667,6 +683,15 @@
       btn.disabled = false;
       btn.textContent = "Submit Order";
       if (!ok) { showError(errMsg || "Could not submit order. Please try again."); return; }
+      // GA4: order_submitted (only on successful submission, no PII)
+      if (typeof gtag === "function") {
+        gtag("event", "order_submitted", {
+          service: orderTier.platform.id + " " + orderTier.category.id,
+          tier: orderTier.subcat.label,
+          price_usd: Math.round(t.usd * 100) / 100,
+          quantity: t.qty
+        });
+      }
       $("order-modal").classList.remove("open");
       $("confirm-code").textContent = code;
       $("confirm-detail").textContent = tierName(orderTier.subcat.label, tier) + " × " + t.qty.toLocaleString() +
