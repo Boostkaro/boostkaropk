@@ -23,22 +23,22 @@
     { id: "instagram", label: "Instagram", categories: [
       { id: "followers", label: "Followers", subcats: [
         { id: "drop20", label: "20% Drop", tiers: [
-          { p: 3, u: "k", s: "Max 100M, 100K/day, old accounts only, no refill" },
-          { p: 3, u: "k", s: "Max 50K, 10-20K/day" },
-          { p: 3.20, u: "k", s: "Max 100K, 3-5K/day, good quality, no refill" },
+          { p: 2.8, u: "k", s: "Max 100M, 100K/day, old accounts only, no refill" },
+          { p: 2.6, u: "k", s: "Max 50K, 10-20K/day" },
+          { p: 3.35, u: "k", s: "Max 100K, 3-5K/day, good quality, no refill" },
           { p: 3.20, u: "k", s: "Max 100K, 30-50K/day, less drop possible, no refill" },
           { p: 5, u: "k", s: "Max 5M, 100-200K/day, no refill" },
           { p: 5.50, u: "k", s: "Max 100K, 10K/day, good quality, no refill" }
         ]},
         { id: "stable90", label: "90% Stable", tiers: [
-          { p: 2.50, u: "k", s: "Max 1M, 100K/day" },
+          { p: 3.2, u: "k", s: "Max 1M, 100K/day" },
           { p: 3, u: "k", s: "Max 10M, 150-200K/day" },
-          { p: 5, u: "k", s: "Max 100K, 30-50K/day, 30-day refill" },
+          { p: 4.8, u: "k", s: "Max 100K, 30-50K/day, 30-day refill" },
           { p: 5, u: "k", s: "Max 1M, 50-100K/day, 30-day refill" },
           { p: 5.50, u: "k", s: "Max 50K, 15-25K/day, 30-day refill" },
           { p: 6, u: "k", s: "Max 100K, 30-50K/day, real accounts, less drop" },
           { p: 6.50, u: "k", s: "Max 10M, 5-10K/day, 30-day refill" },
-          { p: 8, u: "k", s: "Max 100K, 1K/day, non-drop" },
+          { p: 7.3, u: "k", s: "Max 100K, 1K/day, non-drop" },
           { p: 8, u: "k", s: "Max 10M, 100K/day, 30-day refill, real premium accounts" }
         ]},
         { id: "nondrop", label: "Non Drop", tiers: [
@@ -48,13 +48,13 @@
           { p: 7, u: "k", s: "Max 10K, non-drop, 30-day refill" }
         ]},
         { id: "realfol", label: "Real Followers", tiers: [
-          { p: 3, u: "k", s: "Worldwide quality, no refill" }
+          { p: 5.0, u: "k", s: "Worldwide quality, no refill" }
         ]},
         { id: "brazilfol", label: "Brazilian Followers", tiers: [
           { p: 2, u: "k", s: "Max 50K, 10K/day, 55% Brazil, high quality, 10% drop, no refill" },
           { p: 2.50, u: "k", s: "Max 50K, 10K/day, 75% Brazil, high quality, 10% drop, no refill" },
           { p: 2.90, u: "k", s: "Max 50K, 10K/day" },
-          { p: 3, u: "k", s: "Max 50K, 10K/day, 100% Brazil, high quality, 10% drop, no refill" },
+          { p: 3.25, u: "k", s: "Max 50K, 10K/day, 100% Brazil, high quality, 10% drop, no refill" },
           { p: 3, u: "k", s: "Max 50K, 10K/day, 100% Brazil, high quality, low drop, no refill" },
           { p: 4, u: "k", s: "Max 10K, 10-20K/day, high Brazil quality, 30-day refill" },
           { p: 8, u: "k", s: "Max 50K, 10K/day, 100% Brazil, high quality, low drop, 30-day auto refill" },
@@ -67,7 +67,7 @@
           { p: 0.55, u: "k", s: "Max 20K, 10K-20K/day, non-drop, 90-day refill" },
           { p: 0.60, u: "k", s: "Max 100K, 3-5K/hour, no drop, 30-day refill" },
           { p: 0.70, u: "k", s: "Max 20K, 10K-20K/day, non-drop, 365-day refill" },
-          { p: 0.77, u: "k", s: "50K-100K/day, likes + reach & impressions, non-drop, 30-day refill" },
+          { p: 0.85, u: "k", s: "50K-100K/day, likes + reach & impressions, non-drop, 30-day refill" },
           { p: 0.77, u: "k", s: "Max 100K, 10-20K/day, non-drop, 30-day refill" },
           { p: 0.80, u: "k", s: "Max 20K, 10K-20K/day, non-drop, 30-day refill" },
           { p: 1, u: "k", s: "Max 20K, 10K-20K/day, non-drop, 60-day refill" },
@@ -151,12 +151,12 @@
       { id: "views", label: "Views", subcats: [
         { id: "normal", label: "Normal Views", tiers: [
           { p: 0.10, u: "k", s: "Max 1M, 100K/day, lifetime guaranteed" },
-          { p: 0.12, u: "k", s: "Real and natural views, 500K/day" },
-          { p: 0.13, u: "k", s: "Max 1M, 1M/day, less/non drop, instant" },
-          { p: 0.13, u: "k", s: "Max 10M, 1M/day, ultra fast" },
+          { p: 0.15, u: "k", s: "Real and natural views, 500K/day" },
+          { p: 0.2, u: "k", s: "Max 1M, 1M/day, less/non drop, instant" },
+          { p: 0.23, u: "k", s: "Max 10M, 1M/day, ultra fast" },
           { p: 0.14, u: "k", s: "Max 1M, 500K/day, ultrafast" },
           { p: 0.20, u: "k", s: "Max 10M, 1M/day, non-drop, cheapest, instant" },
-          { p: 2, u: "k", s: "" }
+          { p: 2, u: "k", s: "Real non drop views" }
         ]},
         { id: "country", label: "Country Targeted", tiers: [
           { p: 1.50, u: "k", s: "All countries available — Turkey, Pakistan, Afghanistan, Albania, Algeria, Argentina, Australia, Austria, Azerbaijan, Bahrain, Bangladesh, Belgium, Brazil, Bulgaria, Canada, Chile, China, Colombia, Croatia, Cyprus, Denmark, and many more" }
