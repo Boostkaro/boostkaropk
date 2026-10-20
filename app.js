@@ -634,6 +634,27 @@
     return "BK-" + c;
   }
 
+  // Sequential public order codes starting at BK-0503: BK-0503, BK-0504, ...
+  // Next number = 503 + (count of existing orders whose code already
+  // matches BK-<digits>). Existing random codes (BK-XXXXXX) are untouched.
+  // Any lookup failure falls back to the random generator so checkout
+  // never breaks.
+  function genSequentialOrderCode() {
+    if (!sb) return Promise.resolve(genOrderCode());
+    return sb.from("orders").select("order_code").like("order_code", "BK-%").limit(10000)
+      .then(function (res) {
+        if (res.error || !res.data) return genOrderCode();
+        var count = 0;
+        for (var i = 0; i < res.data.length; i++) {
+          if (/^BK-\d+$/.test(res.data[i].order_code || "")) count++;
+        }
+        var s = String(503 + count);
+        while (s.length < 4) s = "0" + s;
+        return "BK-" + s;
+      })
+      .catch(function () { return genOrderCode(); });
+  }
+
   function showError(msg) {
     $("order-error").innerHTML = '<div class="alert error">' + esc(msg) + "</div>";
   }
@@ -669,7 +690,7 @@
     btn.disabled = true;
     btn.textContent = "Submitting…";
 
-    var code = genOrderCode();
+    var code = null; // resolved by genSequentialOrderCode() just before insert
     // The orders table has no username column — appending an unknown column
     // would break the insert. The optional username rides along in
     // customer_name (displayed in the admin panel) so checkout never breaks.
@@ -711,7 +732,14 @@
       $("confirm-modal").classList.add("open");
     }
 
-    sb.from("orders").insert(payload).then(function (res) {
+    // Resolve the next sequential code (BK-0503, BK-0504, ...) first,
+    // then insert. genSequentialOrderCode() itself falls back to the
+    // random generator if the lookup fails, so this chain always runs.
+    genSequentialOrderCode().then(function (seqCode) {
+      code = seqCode;
+      payload.order_code = code;
+      return sb.from("orders").insert(payload);
+    }).then(function (res) {
       if (res.error) {
         if (res.error.code === "23505") {
           payload.order_code = genOrderCode();
