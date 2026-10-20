@@ -566,6 +566,7 @@
     $("order-name").value = "";
     $("order-phone").value = "";
     $("order-link").value = "";
+    $("order-username").value = "";
     $("order-tid").value = "";
     $("order-coupon").value = "";
     $("coupon-msg").textContent = "";
@@ -652,6 +653,7 @@
     var name = $("order-name").value.trim();
     var phone = $("order-phone").value.trim();
     var link = $("order-link").value.trim();
+    var username = $("order-username").value.trim().replace(/^@+/, "");
     var tid = $("order-tid").value.trim();
     var minQ = qtyMinFor(tier.u);
 
@@ -668,6 +670,11 @@
     btn.textContent = "Submitting…";
 
     var code = genOrderCode();
+    // The orders table has no username column — appending an unknown column
+    // would break the insert. The optional username rides along in
+    // customer_name (displayed in the admin panel) so checkout never breaks.
+    var custName = name;
+    if (username) custName = (custName ? custName + " " : "") + "(Username: @" + username + ")";
     var payload = {
       order_code: code,
       service_id: null,
@@ -677,7 +684,7 @@
       quantity: t.qty,
       price_usd: Math.round(t.usd * 100) / 100,
       price_pkr: Math.round(t.pkr),
-      customer_name: name || null,
+      customer_name: custName || null,
       contact_number: phone,
       profile_link: link,
       transaction_id: tid,
