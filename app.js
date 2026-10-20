@@ -120,6 +120,11 @@
           { p: 6, u: "k", s: "Max 10K, random, super fast, instant" },
           { p: 7, u: "k", s: "Max 10K, 3K/day, high quality, non-drop, lifetime refill" }
         ]}
+      ]},
+      { id: "pollvotes", label: "Poll Votes", subcats: [
+        { id: "standard", label: "Story Poll Votes", tiers: [
+          { p: 50, u: "k", s: "Instagram story poll votes, fast start" }
+        ]}
       ]}
     ]},
     { id: "tiktok", label: "TikTok", categories: [
