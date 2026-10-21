@@ -8,19 +8,35 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" type="image/webp" href="logo.webp">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+/* Admin-only components (new-design palette) — shared styles.css has no table styles */
+.admin-login{max-width:460px;margin:30px auto}
+.admin-filters{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.admin-filters input,.admin-filters select{padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:.95rem;background:#fff;color:var(--ink)}
+.admin-filters input{flex:1;min-width:200px}
+.admin-filters input:focus,.admin-filters select:focus{outline:2px solid var(--brand);border-color:var(--brand)}
+.orders-table-wrap{overflow-x:auto}
+table.orders{width:100%;border-collapse:collapse;font-size:.9rem}
+table.orders th{text-align:left;padding:10px;border-bottom:2px solid var(--line);color:var(--blue-dark);white-space:nowrap;font-size:.8rem;letter-spacing:.6px;text-transform:uppercase}
+table.orders td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
+table.orders tr:hover td{background:#f8faff}
+table.orders select,table.orders input{padding:7px 9px;border:1.5px solid var(--line);border-radius:8px;font-size:.88rem;background:#fff;color:var(--ink)}
+.admin-foot{margin-top:44px;background:linear-gradient(160deg,#103a75,var(--blue-dark) 45%,#081c38);color:#b9cdf3}
+.admin-foot .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 18px;font-size:.86rem}
+</style>
 </head>
 <body>
 
-<header class="site-header">
-  <div class="container">
-    <a class="logo" href="index.html">Boost<span>Karo</span> <small style="font-weight:400;font-size:.85rem;opacity:.8">Admin</small></a>
-    <nav class="nav-links">
+<header>
+  <div class="wrap">
+    <a class="logo" href="index.html">Boost<span>Karo</span><b>.</b> <small style="font-weight:600;font-size:.95rem;color:var(--muted)">Admin</small></a>
+    <nav class="main">
       <a href="index.html">← Storefront</a>
     </nav>
   </div>
 </header>
 
-<main class="container">
+<main class="wrap">
 
   <!-- Login gate -->
   <div id="admin-login" class="section admin-login">
@@ -40,7 +56,7 @@
 
   <!-- Dashboard -->
   <div id="admin-panel" style="display:none">
-    <section class="section">
+    <section class="section" style="margin-top:26px">
       <h2>Orders 📦 <span class="muted" id="orders-count"></span> <button class="btn" id="logout-btn" type="button" style="float:right;font-size:13px;padding:6px 12px;">Logout</button></h2>
       <div class="admin-filters">
         <input type="text" id="filter-text" placeholder="Search code, name, phone, TID…">
@@ -76,8 +92,8 @@
 
 </main>
 
-<footer>
-  <div class="container"><p>BoostKaro Admin — private page.</p></div>
+<footer class="admin-foot">
+  <div class="wrap"><span>BoostKaro Admin — private page.</span><span>© 2026 BoostKaro · boostkaropk.com</span></div>
 </footer>
 
 <script src="admin.js"></script>

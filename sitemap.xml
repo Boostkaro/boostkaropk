@@ -76,17 +76,7 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.boostkaropk.com/youtube-watch-time</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://www.boostkaropk.com/youtube-likes</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.boostkaropk.com/packages</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
