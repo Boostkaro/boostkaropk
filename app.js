@@ -605,11 +605,11 @@
   function applyCoupon() {
     var code = $("order-coupon").value.trim().toUpperCase();
     var msg = $("coupon-msg");
-    if (code === "FIRST10") {
+    if (code === "DISC10") {
       // Not valid on Packages
       if (activePlatform === "packages") {
         couponDiscount = 0;
-        msg.textContent = "❌ FIRST10 is not valid on Packages.";
+        msg.textContent = "❌ DISC10 is not valid on Packages.";
         msg.style.color = "var(--danger)";
       } else {
         couponDiscount = 0.1;
@@ -921,7 +921,7 @@
       try { document.execCommand("copy"); } catch (e) {}
       document.body.removeChild(t);
       codeEl.textContent = "Copied!";
-      setTimeout(function () { codeEl.textContent = "FIRST10"; }, 1500);
+      setTimeout(function () { codeEl.textContent = "DISC10"; }, 1500);
     });
   }
 })();
