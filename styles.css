@@ -400,8 +400,8 @@ html, body { overflow-x: hidden; }
   .lang { display: none; }
   header .wrap { gap: 14px; padding-left: 14px; padding-right: 14px; }
   .logo { font-size: 1.3rem; }
-  header .btn-sm { padding: 8px 14px; font-size: .85rem; white-space: nowrap; }
-  .burger { margin-left: auto; padding: 6px 11px; }
+  header .btn-sm { margin-left: auto; padding: 8px 14px; font-size: .85rem; white-space: nowrap; }
+  .burger { margin-left: 0; padding: 6px 11px; }
   .wrap, .container { padding: 0 14px; }
   .field input, .field select, .field textarea,
   .order-card input, .order-card select { font-size: 16px; }
