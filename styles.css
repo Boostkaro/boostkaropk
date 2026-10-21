@@ -47,6 +47,9 @@ nav.main a:hover{background:#eaf1fe}
 .pills button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;font-weight:600;cursor:pointer;font-size:.9rem}
 .pills button.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .order-card input,.order-card select{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:.98rem;background:#fff}
+.order-card .hero-desc{margin:12px 0 0;background:#f6f9ff;border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.order-card .hero-desc-lab{font-size:.7rem;font-weight:800;letter-spacing:.4px;text-transform:uppercase;color:var(--blue)}
+.order-card .hero-desc p{margin:4px 0 0;font-size:.86rem;color:var(--muted);line-height:1.45}
 .price-row{display:flex;justify-content:space-between;align-items:center;background:#f4f7ff;border:1px dashed var(--line);border-radius:10px;padding:10px 14px;margin:16px 0;font-weight:700}
 .price-row .pkr{color:var(--muted);font-weight:600;font-size:.9rem}
 .order-card .btn{width:100%;text-align:center}
@@ -373,4 +376,66 @@ footer p{font-size:.92rem;color:#b9cdf3}
   .tier-card .price small { font-size: .78rem; display: block; margin-top: 2px; }
   .tier-card .btn.block { padding: 10px 16px; font-size: .95rem; margin-top: 4px; }
   .tier-badge { font-size: .65rem; padding: 2px 8px; top: 10px; right: 10px; }
+}
+
+/* ============ Mobile responsiveness fixes (2026-10-21) ============
+   Culprits found at 360-414px and fixed below:
+   - Header flex row (logo + decorative .lang pill + Order Now pill + burger)
+     totalled ~512px and pushed the burger off the right edge of a ~390px
+     screen -> hide .lang and compact the rest at <=640px.
+   - No overflow-x guard: any wide child forced page-wide sideways scroll
+     -> safety net on html,body (clip variant keeps the sticky header working).
+   - Reviews .bars had min-width:240px inside a padded card -> allow shrink.
+   - .mini-grid pills were cramped 2-up at 360px -> single column <=480px.
+   - Modal/popup padding and the DISC10 code size could clip on small phones.
+   - Footer link columns were cramped 2-up at phone widths -> stack <=640px.
+   - WhatsApp float (56px, 18px offsets) covered card edges -> smaller,
+     tighter offsets plus safe-area inset on phones.
+   - Sub-16px form controls trigger iOS focus zoom -> 16px on touch widths. */
+img { max-width: 100%; }
+html, body { overflow-x: hidden; }
+@supports (overflow-x: clip) { html, body { overflow-x: clip; } }
+
+@media (max-width: 640px) {
+  .lang { display: none; }
+  header .wrap { gap: 8px; padding-left: 14px; padding-right: 14px; }
+  .logo { font-size: 1.3rem; }
+  header .btn-sm { padding: 8px 14px; font-size: .85rem; white-space: nowrap; }
+  .burger { margin-left: 0; padding: 6px 10px; }
+  .wrap, .container { padding: 0 14px; }
+  .field input, .field select, .field textarea,
+  .order-card input, .order-card select { font-size: 16px; }
+  footer .cols { grid-template-columns: 1fr; gap: 20px; }
+  .wa-float {
+    width: 50px; height: 50px; left: 14px;
+    bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    font-size: 1.35rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero { padding: 28px 0 6px; }
+  .hero-copy h1 { font-size: 1.85rem; }
+  .order-card { padding: 18px 16px; }
+  .mini-grid { grid-template-columns: 1fr; max-width: none; }
+  .big-card { padding: 20px 16px; }
+  .section { padding: 18px 16px; }
+  .cta-banner { padding: 26px 16px; }
+  .rating-card { gap: 16px; }
+  .bars { min-width: 0; width: 100%; }
+  .big-score { font-size: 2.6rem; }
+  .modal-backdrop { padding: 16px 10px; }
+  .modal { padding: 20px 16px; }
+  .confirm-box .order-code { font-size: 1.45rem; letter-spacing: 1px; }
+  .promo-overlay { padding: 12px; }
+  .promo-popup { padding: 28px 18px 22px; }
+  .promo-popup h2 { font-size: 2rem; }
+  .promo-code { font-size: 1.4rem; letter-spacing: 2px; }
+  .update-popup { padding: 28px 18px 18px; }
+  .update-popup-title { font-size: 1.3rem; }
+  .converter { padding: 8px 14px; gap: 8px; }
+  .checks { padding: 18px; }
+  .stat { padding: 16px; }
+  .stat .num { font-size: 1.6rem; }
+  .price-row { padding: 10px 12px; }
 }
