@@ -45,7 +45,7 @@
           { p: 9, u: "k", s: "Max 100K, 1K/day, non-drop, 30-day refill" }
         ]},
         { id: "specialusa", label: "Special USA", tiers: [
-          { p: 7, u: "k", s: "Max 10K, non-drop, 30-day refill" }
+          { p: 8, u: "k", s: "Max 10K, non-drop, 30-day refill" }
         ]},
         { id: "realfol", label: "Real Followers", tiers: [
           { p: 5.0, u: "k", s: "Worldwide quality, no refill" }
@@ -584,7 +584,7 @@
     }
   }
 
-  var couponDiscount = 0; // 0.3 = 30% off
+  var couponDiscount = 0; // 0.1 = 10% off
 
   function calcTotal() {
     if (!orderTier) return { usd: 0, pkr: 0, qty: 0 };
@@ -605,15 +605,15 @@
   function applyCoupon() {
     var code = $("order-coupon").value.trim().toUpperCase();
     var msg = $("coupon-msg");
-    if (code === "FIRST30") {
+    if (code === "FIRST10") {
       // Not valid on Packages
       if (activePlatform === "packages") {
         couponDiscount = 0;
-        msg.textContent = "❌ FIRST30 is not valid on Packages.";
+        msg.textContent = "❌ FIRST10 is not valid on Packages.";
         msg.style.color = "var(--danger)";
       } else {
-        couponDiscount = 0.3;
-        msg.textContent = "✅ 30% OFF applied!";
+        couponDiscount = 0.1;
+        msg.textContent = "✅ 10% OFF applied!";
         msg.style.color = "var(--accent-dark)";
       }
     } else if (code === "") {
@@ -894,7 +894,7 @@
     initPromoPopup();
   });
 
-  // ---- 30% OFF launch promo popup ----
+  // ---- 10% OFF launch promo popup ----
   function initPromoPopup() {
     try {
       if (localStorage.getItem("bk_promo_seen")) return;
@@ -921,7 +921,7 @@
       try { document.execCommand("copy"); } catch (e) {}
       document.body.removeChild(t);
       codeEl.textContent = "Copied!";
-      setTimeout(function () { codeEl.textContent = "FIRST30"; }, 1500);
+      setTimeout(function () { codeEl.textContent = "FIRST10"; }, 1500);
     });
   }
 })();
