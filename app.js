@@ -45,7 +45,7 @@
           { p: 9, u: "k", s: "Max 100K, 1K/day, non-drop, 30-day refill" }
         ]},
         { id: "specialusa", label: "Special USA", tiers: [
-          { p: 8, u: "k", s: "Max 10K, non-drop, 30-day refill" }
+          { p: 7, u: "k", s: "Max 10K, non-drop, 30-day refill" }
         ]},
         { id: "realfol", label: "Real Followers", tiers: [
           { p: 5.0, u: "k", s: "Worldwide quality, no refill" }
