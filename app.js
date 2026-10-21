@@ -5,7 +5,7 @@
   // ---- Config (anon key is public by design; RLS policies guard the tables) ----
   var SUPABASE_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
   var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppeGR2a3NzZ3FpdHFqdWNqaW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5Njk5NjYsImV4cCI6MjEwNzU0NTk2Nn0._UkyTqLweinByQpoyqXxhv-BIgciRhw59PY6sS8fb2E";
-  var PKR_RATE = 282.49; // approximate
+  var PKR_RATE = 292; // approximate
 
   var sb = null;
   try {
@@ -510,7 +510,7 @@
     var tiers = sc.tiers.slice().sort(function (a, b) { return a.p - b.p; });
     var note = $("services-note");
     if (note && tiers.length) {
-      note.textContent = "Prices " + UNIT_LABEL[tiers[0].u] + " · ≈ Rs 282.49 per USD. Cheapest first — pick a tier to order.";
+      note.textContent = "Prices " + UNIT_LABEL[tiers[0].u] + " · ≈ Rs 292 per USD. Cheapest first — pick a tier to order.";
     }
     if (!tiers.length) {
       grid.innerHTML = '<p class="muted">No services found for this selection.</p>';
