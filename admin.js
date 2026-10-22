@@ -152,30 +152,53 @@
     card.className = "order-card";
     var d = new Date(o.created_at);
 
+    // Blue-bar accordion: the order code + status live on a #0d47a1 bar
+    // (same blue as the admin brand bar). Details stay hidden until the
+    // bar is tapped; tapping again collapses them. Each card toggles
+    // independently and every re-render starts collapsed.
     var head = document.createElement("div");
-    head.className = "oc-head";
+    head.className = "oc-bar";
+    head.setAttribute("role", "button");
+    head.setAttribute("aria-expanded", "false");
     var code = document.createElement("strong");
     code.className = "code";
     code.textContent = o.order_code;
+    var right = document.createElement("span");
+    right.className = "oc-bar-right";
     var badge = document.createElement("span");
     badge.className = "badge " + (STATUS_BADGES[o.status] || "b-pending");
     badge.textContent = STATUS_LABELS[o.status] || o.status;
+    var chev = document.createElement("span");
+    chev.className = "oc-chev";
+    chev.textContent = "▾";
+    right.appendChild(badge);
+    right.appendChild(chev);
     head.appendChild(code);
-    head.appendChild(badge);
+    head.appendChild(right);
     card.appendChild(head);
 
-    card.appendChild(kv("Placed", esc(d.toLocaleString())));
-    card.appendChild(kv("Service", esc(o.platform) + " · " + esc(o.service_type) + " — " + esc(o.quality)));
-    card.appendChild(kv("Link", "<a href='" + esc(o.profile_link) + "' target='_blank' rel='noopener'>" + esc(o.profile_link) + " ↗</a>"));
-    card.appendChild(kv("Quantity", Number(o.quantity).toLocaleString()));
-    card.appendChild(kv("Price", fmtUSD(o.price_usd) + " · " + fmtPKR(o.price_pkr)));
-    card.appendChild(kv("Customer", esc(o.customer_name || "—") + " · " + esc(o.contact_number)));
-    card.appendChild(kv("TID", esc(o.transaction_id || "—")));
+    var details = document.createElement("div");
+    details.className = "oc-details";
+    card.appendChild(details);
+
+    head.addEventListener("click", function () {
+      var open = details.classList.toggle("open");
+      chev.textContent = open ? "▴" : "▾";
+      head.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    details.appendChild(kv("Placed", esc(d.toLocaleString())));
+    details.appendChild(kv("Service", esc(o.platform) + " · " + esc(o.service_type) + " — " + esc(o.quality)));
+    details.appendChild(kv("Link", "<a href='" + esc(o.profile_link) + "' target='_blank' rel='noopener'>" + esc(o.profile_link) + " ↗</a>"));
+    details.appendChild(kv("Quantity", Number(o.quantity).toLocaleString()));
+    details.appendChild(kv("Price", fmtUSD(o.price_usd) + " · " + fmtPKR(o.price_pkr)));
+    details.appendChild(kv("Customer", esc(o.customer_name || "—") + " · " + esc(o.contact_number)));
+    details.appendChild(kv("TID", esc(o.transaction_id || "—")));
 
     // Provider bridge info (columns exist after the one-time bridge SQL;
     // absent on older rows, so this simply renders nothing until then).
     if (o.provider_order_id) {
-      card.appendChild(kv("Provider", "#" + esc(o.provider_order_id) +
+      details.appendChild(kv("Provider", "#" + esc(o.provider_order_id) +
         (o.provider_status ? " · " + esc(o.provider_status) : "")));
     }
 
@@ -229,7 +252,7 @@
       actions.appendChild(rejBtn);
     }
 
-    card.appendChild(actions);
+    details.appendChild(actions);
     return card;
   }
 

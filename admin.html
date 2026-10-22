@@ -31,10 +31,14 @@
 .admin-tab:hover{border-color:var(--brand)}
 .admin-tab.on{background:#0d47a1;border-color:#0d47a1;color:#fff}
 .admin-tab .cnt{font-weight:600;opacity:.75;font-size:.82rem}
-.orders-list{display:flex;flex-direction:column;gap:14px}
-.order-card{border:1px solid #e3e9f7;border-radius:12px;padding:14px 16px;background:#fff;box-shadow:0 2px 10px rgba(20,38,74,.05)}
-.oc-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:4px}
-.oc-head .code{font-size:1.02rem}
+.orders-list{display:flex;flex-direction:column;gap:10px}
+.order-card{border:1px solid #e3e9f7;border-radius:12px;padding:0;background:#fff;box-shadow:0 2px 10px rgba(20,38,74,.05);overflow:hidden}
+.oc-bar{background:#0d47a1;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.oc-bar .code{font-size:1.02rem;color:#fff}
+.oc-bar-right{display:flex;align-items:center;gap:8px}
+.oc-chev{font-size:.85rem;line-height:1;color:#fff}
+.oc-details{display:none;padding:6px 16px 14px;background:#fff}
+.oc-details.open{display:block}
 .badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
 .b-pending{background:#fff3cd;color:#8a6d00}
 .b-paid{background:#e0e7ff;color:#3730a3}
@@ -59,7 +63,8 @@
   .admin-body{padding:14px}
   .admin-login{margin:18px auto}
   .oc-kv{font-size:.88rem}
-  .order-card{padding:12px}
+  .oc-bar{padding:10px 12px}
+  .oc-details{padding:6px 12px 12px}
 }
 </style>
 </head>
