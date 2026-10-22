@@ -23,7 +23,7 @@
   var STATUS_LABELS = {
     pending: "Pending",
     paid: "Paid — Queued",
-    processing: "Processing",
+    processing: "In Progress",
     completed: "Completed",
     cancelled: "Cancelled"
   };
