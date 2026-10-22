@@ -26,10 +26,10 @@
           { p: 2.6002, u: "k", cpn: true, s: "Max 1K, High Drop, No Refill, 0-2 Hour Start, avg 6 Hours 19 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 4.225, u: "k", cpn: true, s: "Max 10K, Real Accounts Verified By Phone Number (High Overflow), Non-Drop Stable, Instant Start, Speed 5K/Day, No Refill, avg 20 Hours 29 Minutes" }
+          { p: 4.225, u: "k", cpn: true, s: "Max 10K, Real Accounts Verified By Phone Number (High Overflow), Non-Drop Stable, Instant Start, Speed 5K/Day, No Refill, avg 20 Hours" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 4.992, u: "k", cpn: false, s: "Max 50K, Old Accounts With Posts, All Flag Types Working, Speed 100K/Day, Lifetime Refill, Start Time 0-5 Minutes, avg 2 Hours 35 Minutes" }
+          { p: 4.992, u: "k", cpn: false, s: "Max 50K, Old Accounts With Posts, All Flag Types Working, Speed 100K/Day, Lifetime Refill, Start Time 0-5 Minutes, avg 21 Hours" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
