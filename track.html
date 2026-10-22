@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Your Order — BoostKaro</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Check the live status of your BoostKaro order with your order code.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/webp" href="logo.webp">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+/* Tracking page components — same design as the approved demo / admin panel */
+.track-brand{background:#0d47a1;color:#fff;padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.track-brand a{color:#fff;text-decoration:none;font-size:.9rem;font-weight:600}
+.track-card{max-width:560px;margin:26px auto;background:#fff;border-radius:14px;box-shadow:0 6px 24px rgba(20,38,74,.10);overflow:hidden}
+.track-body{padding:18px}
+.track-body h2{margin:0 0 6px;color:var(--blue-dark)}
+.badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.b-pending{background:#fff3cd;color:#8a6d00}
+.b-inprog{background:#dbeafe;color:#1d4ed8}
+.b-done{background:#d1fae5;color:#047857}
+.b-cancel{background:#fee2e2;color:#b91c1c}
+.tl{margin-top:14px}
+.tl-item{display:flex;gap:12px;padding:9px 0}
+.dot{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#c7d2e8}
+.ok .dot{background:#16a34a}
+.now .dot{background:#1a73e8}
+.tl-item .t{font-weight:600;font-size:14px}
+.tl-item .s{font-size:12px;color:#66779e}
+.delivered{background:#d1fae5;color:#065f46;border-radius:9px;padding:10px 12px;font-size:13.5px;margin-top:10px;font-weight:600}
+.cancelled-note{background:#fee2e2;color:#7f1d1d;border-radius:9px;padding:10px 12px;font-size:13.5px;margin-top:10px;font-weight:600}
+.svc-line{font-size:14px;margin-top:4px}
+.svc-line .muted{font-size:13px}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="track-card">
+    <div class="track-brand"><span>🚀 BoostKaroPK</span><a href="index.html">← Back to Store</a></div>
+    <div class="track-body">
+      <h2>Track Your Order 🔍</h2>
+      <p class="muted">Enter the order code from your confirmation and the contact number you ordered with.</p>
+      <div class="field">
+        <label for="track-code">Order Code <span class="req">*</span></label>
+        <input type="text" id="track-code" placeholder="BK-XXXX" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="track-phone">Contact Number <span class="req">*</span></label>
+        <input type="text" id="track-phone" placeholder="03XXXXXXXXX" autocomplete="off">
+      </div>
+      <button class="btn block" id="track-btn" type="button">Check Status</button>
+      <div id="track-result" style="margin-top:16px"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="admin-foot" style="margin-top:44px;background:linear-gradient(160deg,#103a75,var(--blue-dark) 45%,#081c38);color:#b9cdf3">
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 18px;font-size:.86rem"><span>BoostKaro — Pakistan's affordable SMM panel.</span><span>© 2026 BoostKaro · boostkaropk.com</span></div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var SUPABASE_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
+  var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppeGR2a3NzZ3FpdHFqdWNqaW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5Njk5NjYsImV4cCI6MjEwNzU0NTk2Nn0._UkyTqLweinByQpoyqXxhv-BIgciRhw59PY6sS8fb2E";
+  var sb = null;
+  try { sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch (e) {}
+
+  var PLATFORM = { instagram: "Instagram", tiktok: "TikTok", facebook: "Facebook", youtube: "YouTube" };
+  var SERVICE = { followers: "Followers", likes: "Likes", views: "Views", comments: "Comments",
+    subscribers: "Subscribers", pagelikesfol: "Page Likes + Followers",
+    profilefol: "Profile / Page Followers", pagelikes: "Page Likes", videoviews: "Video Views" };
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function fmtDate(iso) {
+    var d = new Date(iso);
+    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) +
+      " — " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+  }
+  function item(cls, dot, title, sub) {
+    return '<div class="tl-item ' + cls + '"><div class="dot">' + dot + '</div><div>' +
+      '<div class="t">' + title + '</div><div class="s">' + sub + "</div></div></div>";
+  }
+
+  function render(o) {
+    var svc = (PLATFORM[o.platform] || o.platform) + " " + (SERVICE[o.service_type] || o.service_type);
+    var head = '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">' +
+      "<b>Order #" + esc(o.order_code) + "</b>";
+    var body = '<div class="svc-line"><b>' + esc(svc) + "</b> · " + esc(o.quality || "") + "<br>" +
+      '<span class="muted">' + Number(o.quantity).toLocaleString() + " · Placed " + esc(fmtDate(o.created_at)) + "</span></div>";
+    var tl = '<div class="tl">';
+    var tail = "";
+    if (o.status === "pending") {
+      head += '<span class="badge b-pending">Pending Payment</span></div>';
+      tl += item("now", "●", "Payment Confirmation", "We're verifying your payment — this usually takes a short while.");
+      tl += item("", "", "Processing", "Starts after your payment is confirmed.");
+      tl += item("", "", "Completed", "Waiting for delivery…");
+    } else if (o.status === "processing") {
+      head += '<span class="badge b-inprog">In Progress</span></div>';
+      tl += item("ok", "✓", "Payment Confirmed", esc(fmtDate(o.created_at)));
+      tl += item("now", "●", "Processing", "Your order is now being processed by our team.");
+      tl += item("", "", "Completed", "Waiting for delivery…");
+    } else if (o.status === "completed") {
+      head += '<span class="badge b-done">Completed</span></div>';
+      tl += item("ok", "✓", "Payment Confirmed", esc(fmtDate(o.created_at)));
+      tl += item("ok", "✓", "Processing", "Your order was processed by our team.");
+      tl += item("ok", "✓", "Completed", esc(fmtDate(o.updated_at || o.created_at)));
+      tail = '<div class="delivered">✓ Your order has been delivered successfully!</div>';
+    } else { // cancelled
+      head += '<span class="badge b-cancel">Cancelled</span></div>';
+      tl += item("", "✕", "Order Cancelled", "This order is no longer active.");
+      tail = '<div class="cancelled-note">If you believe this is a mistake, message us on WhatsApp and we\'ll help right away.</div>';
+    }
+    tl += "</div>";
+    return head + body + tl + tail;
+  }
+
+  function lookup() {
+    var out = $("track-result");
+    var code = $("track-code").value.trim().toUpperCase();
+    var phone = $("track-phone").value.trim();
+    if (!code || !phone) {
+      out.innerHTML = '<div class="alert error">Enter both your order code and contact number.</div>';
+      return;
+    }
+    if (!sb) {
+      out.innerHTML = '<div class="alert error">Database not connected. Please try again later.</div>';
+      return;
+    }
+    out.innerHTML = '<p class="muted">Looking up your order…</p>';
+    sb.from("orders")
+      .select("order_code,platform,service_type,quality,quantity,status,created_at,updated_at")
+      .eq("order_code", code).eq("contact_number", phone).limit(1)
+      .then(function (res) {
+        if (res.error) {
+          out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
+          return;
+        }
+        if (!res.data || !res.data.length) {
+          out.innerHTML = '<div class="alert error">No order found. Check your code and contact number.</div>';
+          return;
+        }
+        out.innerHTML = render(res.data[0]);
+      })
+      .catch(function () {
+        out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
+      });
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    $("track-btn").addEventListener("click", lookup);
+    $("track-phone").addEventListener("keydown", function (e) { if (e.key === "Enter") lookup(); });
+    var pre = new URLSearchParams(window.location.search).get("code");
+    if (pre) $("track-code").value = pre.toUpperCase();
+  });
+})();
+</script>
+</body>
+</html>

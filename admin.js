@@ -131,6 +131,17 @@
       sel.setAttribute("data-id", o.id);
       tdStatus.appendChild(sel);
 
+      // Provider bridge info (columns exist after the one-time bridge SQL;
+      // absent on older rows, so this simply renders nothing until then).
+      if (o.provider_order_id) {
+        var pv = document.createElement("div");
+        pv.className = "muted";
+        pv.style.fontSize = ".78rem";
+        pv.style.marginTop = "4px";
+        pv.textContent = "Provider #" + o.provider_order_id + (o.provider_status ? " · " + o.provider_status : "");
+        tdStatus.appendChild(pv);
+      }
+
       var tdNote = document.createElement("td");
       var note = document.createElement("input");
       note.type = "text";
@@ -151,6 +162,26 @@
         saveOrder(o.id, sel.value, note.value);
       });
       tdSave.appendChild(saveBtn);
+
+      // Approved flow (2026-10-22): for unpaid orders, Mark as Paid confirms
+      // the payment (status -> processing) — the provider bridge watches for
+      // that transition and places the provider order automatically.
+      // Reject cancels the order; nothing is ever sent to the provider.
+      if (o.status === "pending") {
+        var paidBtn = document.createElement("button");
+        paidBtn.type = "button";
+        paidBtn.className = "btn btn-paid";
+        paidBtn.textContent = "✓ Mark as Paid";
+        paidBtn.addEventListener("click", function () { saveOrder(o.id, "processing", note.value); });
+        var rejBtn = document.createElement("button");
+        rejBtn.type = "button";
+        rejBtn.className = "btn btn-reject";
+        rejBtn.textContent = "✗ Reject";
+        rejBtn.addEventListener("click", function () { saveOrder(o.id, "cancelled", note.value); });
+        tdSave.appendChild(document.createElement("br"));
+        tdSave.appendChild(paidBtn);
+        tdSave.appendChild(rejBtn);
+      }
 
       tr.appendChild(tdOrder); tr.appendChild(tdCust); tr.appendChild(tdSvc);
       tr.appendChild(tdPrice); tr.appendChild(tdTid); tr.appendChild(tdStatus);
