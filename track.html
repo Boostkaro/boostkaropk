@@ -36,7 +36,9 @@
 .tl-item.done:not(:last-child)::before{background:#16a34a}
 .dot{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#c7d2e8;position:relative;z-index:1}
 .tl-item.done .dot{background:#16a34a}
-.tl-item.now .dot{background:#1a73e8}
+.tl-item.now .dot{background:#16a34a}
+.tl-item.next .dot{background:#1a73e8}
+.tl-item.now:not(:last-child)::before{background:#16a34a}
 .tl-item .t{font-weight:600;font-size:14px;color:#14264a}
 .tl-item.todo .t{color:#8fa1c2}
 .tl-item .s{font-size:12px;color:#66779e;margin-top:1px}
@@ -102,7 +104,7 @@
       " - " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   }
   function step(state, title, sub) {
-    var dot = state === "done" ? "✓" : (state === "now" ? "●" : "");
+    var dot = state === "done" ? "✓" : ((state === "now" || state === "next") ? "●" : "");
     return '<div class="tl-item ' + state + '"><div class="dot">' + dot + '</div><div>' +
       '<div class="t">' + title + '</div><div class="s">' + sub + "</div></div></div>";
   }
@@ -127,6 +129,7 @@
     var badge;
     if (eff === "cancelled") badge = '<span class="badge b-cancel">Cancelled</span>';
     else if (eff === "completed") badge = '<span class="badge b-done">Completed</span>';
+    else if (eff === "providerPending") badge = '<span class="badge b-pending">Pending</span>';
     else if (o.status === "pending") badge = '<span class="badge b-pending">Pending Payment</span>';
     else if (o.status === "paid") badge = '<span class="badge b-paid">Payment Confirmed</span>';
     else badge = '<span class="badge b-inprog">In Progress</span>';
@@ -148,32 +151,36 @@
     } else {
       // Step 1 — Payment Confirmed: done once Raji has confirmed payment.
       if (o.status === "pending" && !ps) {
-        tl += step("now", "Payment Confirmed", "We're verifying your payment — this usually takes a short while.");
+        tl += step("next", "Payment Confirmed", "We're verifying your payment — this usually takes a short while.");
       } else {
         tl += step("done", "Payment Confirmed", "Payment received and confirmed.");
       }
       // Step 2 — Pending: the order has been sent and is pending at the provider.
       if (ps === "providerPending") {
-        tl += step("now", "Order Sent", "Your order has been sent and is waiting to start.");
+        tl += step("now", "Pending", "Your order has been sent and is waiting to start.");
       } else if (ps === "processing" || ps === "completed" || o.status === "processing" || o.status === "completed") {
-        tl += step("done", "Order Sent", "Your order was sent for delivery.");
+        tl += step("done", "Pending", "Your order was sent for delivery.");
       } else if (o.status === "paid") {
-        tl += step("todo", "Order Sent", "Queued — your order will be sent for delivery shortly.");
+        tl += step("next", "Pending", "Queued — your order will be sent for delivery shortly.");
       } else {
-        tl += step("todo", "Order Sent", "Starts after your payment is confirmed.");
+        tl += step("todo", "Pending", "Starts after your payment is confirmed.");
       }
       // Step 3 — Processing: the provider is delivering.
       if (eff === "completed") {
         tl += step("done", "In Progress", "Your order was processed by our team.");
       } else if (ps === "processing" || (!ps && o.status === "processing")) {
         tl += step("now", "In Progress", "Your order is being delivered.");
+      } else if (ps === "providerPending") {
+        tl += step("next", "In Progress", "Starts once your order begins processing.");
       } else {
-        tl += step("todo", "In Progress", "Starts after your order is sent.");
+        tl += step("todo", "In Progress", "Starts after the pending stage.");
       }
       // Step 4 — Completed.
       if (eff === "completed") {
         tl += step("done", "Completed", esc(fmtDT(o.updated_at || o.created_at)));
         tail = '<div class="delivered"><span class="ck">✓</span>Your order has been delivered successfully!</div>';
+      } else if (ps === "processing" || (!ps && o.status === "processing")) {
+        tl += step("next", "Completed", "Waiting for delivery…");
       } else {
         tl += step("todo", "Completed", "Waiting for delivery…");
       }
