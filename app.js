@@ -26,15 +26,15 @@
           { p: 2.6002, u: "k", cpn: true, s: "Max 1K, High Drop, No Refill, 02 Hour Start, avg 6 Hours 19 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 4.225, u: "k", cpn: false, s: "Max 10K, Real Accounts Verified By Phone Number High Overflow, NonDrop Stable, Instant Start, avg 14 Hours..." }
+          { p: 4.225, u: "k", cpn: false, s: "Max 10K, Real Accounts Verified By Phone Number (High Overflow), Non-Drop Stable, Instant Start, Speed 5K/Day, Refill 30 Days, avg 14 Hours 59 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 4.992, u: "k", cpn: true, s: "Max 10K, Real Accounts Verified By Phone Number High Overflow, NonDrop Stable, Instant Start, avg 20 Hours..." }
+          { p: 4.992, u: "k", cpn: true, s: "Max 10K, Real Accounts Verified By Phone Number (High Overflow), Non-Drop Stable, Instant Start, Speed 5K/Day, No Refill, avg 20 Hours 29 Minutes" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.2998, u: "k", cpn: true, s: "Max 10K, Instagram likes Real Accounts Non -Drop 50K/Day, Lifetime Refill World Cheapest, avg 5 Hours 2..." }
+          { p: 0.2998, u: "k", cpn: true, s: "Max 10K, Instagram Likes Real Accounts, Non-Drop, 50K/Day, Lifetime Refill (World Cheapest), avg 5 Hours 2 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 0.4004, u: "k", cpn: true, s: "Max 500K, Old Real, Non-Drop, 200K/Day, avg 14 Minutes" }
@@ -102,7 +102,7 @@
           { p: 6, u: "k", cpn: true, s: "Max 1K, Non Drop, High Quality, Slow Speed 100+/Day, avg 2 Hours 42 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 8, u: "k", cpn: false, s: "Max 10K, Tiktok Video Comments 100% Real Users Speed 1k/D Lifetime Guranteed Start 0 - 1 min, avg 57 Hours..." }
+          { p: 8, u: "k", cpn: false, s: "Max 10K, TikTok Video Comments, 100% Real Users, Speed 1K/Day, Lifetime Guaranteed, Start 0-1 Minute, avg 57 Hours 42 Minutes" }
         ]}
       ]}
     ]},
@@ -168,13 +168,13 @@
       ]},
       { id: "views", label: "Views", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 2.5, u: "k", cpn: true, s: "Max 10K, YouTube Views Exclusive Speed 500+Day Non Drop Lifetime Guranted Start Time 0-1hrs Own Server,..." }
+          { p: 2.5, u: "k", cpn: true, s: "Max 10K, YouTube Views Exclusive, Speed 500+/Day, Non Drop, Lifetime Guaranteed, Start Time 0-1 Hours, Own Server, avg 5 Hours 47 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 3.5, u: "k", cpn: true, s: "Max 100M, Lifetime 1K -5k/ day NON DROP, Start Time 0-60 Minutes, avg 34 Hours 57 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 5.5, u: "k", cpn: true, s: "Max 9M, YouTube Views ORGANIC - Speed 1k-2K/Day Monetizable, 100% Active Human Lifetime READ DESCRIPTION,..." }
+          { p: 5.5, u: "k", cpn: true, s: "Max 9M, YouTube Views Organic, Speed 1K-2K/Day, Monetizable, 100% Active Human, Lifetime, avg 44 Hours 7 Minutes" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
@@ -182,10 +182,10 @@
           { p: 1.5, u: "k", cpn: true, s: "Max 100K, YouTube Likes- Speed -100K/D Start Time Instant, avg 3 Hours 35 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 3, u: "k", cpn: true, s: "Max 10K, YouTube Likes Stable Speed 1000Day Non Drop Lifetime Guranted Start Time 0-1hrs Own Server, avg..." }
+          { p: 3, u: "k", cpn: true, s: "Max 10K, YouTube Likes Stable, Speed 1000/Day, Non Drop, Lifetime Guaranteed, Start Time 0-1 Hours, Own Server, avg 35 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 6, u: "k", cpn: true, s: "Max 50K, YouTube Likes Stable Speed 30000Day Non Drop Lifetime Guranted Start Time 0-1hrs Own Server, avg..." }
+          { p: 6, u: "k", cpn: true, s: "Max 50K, YouTube Likes Stable, Speed 30000/Day, Non Drop, Lifetime Guaranteed, Start Time 0-1 Hours, Own Server, avg 28 Hours 55 Minutes" }
         ]}
       ]}
     ]}
