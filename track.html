@@ -159,11 +159,11 @@
       }
       // Step 3 — Processing: the provider is delivering.
       if (eff === "completed") {
-        tl += step("done", "Processing", "Your order was processed by our team.");
+        tl += step("done", "In Progress", "Your order was processed by our team.");
       } else if (ps === "processing" || (!ps && o.status === "processing")) {
-        tl += step("now", "Processing", "Your order is being delivered.");
+        tl += step("now", "In Progress", "Your order is being delivered.");
       } else {
-        tl += step("todo", "Processing", "Starts after the pending stage.");
+        tl += step("todo", "In Progress", "Starts after the pending stage.");
       }
       // Step 4 — Completed.
       if (eff === "completed") {
