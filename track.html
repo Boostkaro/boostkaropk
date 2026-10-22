@@ -18,6 +18,7 @@
 .track-body h2{margin:0 0 6px;color:var(--blue-dark)}
 .badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
 .b-pending{background:#fff3cd;color:#8a6d00}
+.b-paid{background:#e0e7ff;color:#3730a3}
 .b-inprog{background:#dbeafe;color:#1d4ed8}
 .b-done{background:#d1fae5;color:#047857}
 .b-cancel{background:#fee2e2;color:#b91c1c}
@@ -101,6 +102,11 @@
       head += '<span class="badge b-pending">Pending Payment</span></div>';
       tl += item("now", "●", "Payment Confirmation", "We're verifying your payment — this usually takes a short while.");
       tl += item("", "", "Processing", "Starts after your payment is confirmed.");
+      tl += item("", "", "Completed", "Waiting for delivery…");
+    } else if (o.status === "paid") {
+      head += '<span class="badge b-paid">Payment Confirmed</span></div>';
+      tl += item("ok", "✓", "Payment Confirmed", esc(fmtDate(o.created_at)));
+      tl += item("", "", "Processing", "Your payment is confirmed — your order is queued and will start shortly.");
       tl += item("", "", "Completed", "Waiting for delivery…");
     } else if (o.status === "processing") {
       head += '<span class="badge b-inprog">In Progress</span></div>';

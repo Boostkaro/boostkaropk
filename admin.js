@@ -15,6 +15,31 @@
   }
 
   var allOrders = [];
+  var activeTab = "review";
+
+  // Status model (2026-10-22): statuses mirror the provider. "paid" means
+  // Raji approved the payment and the order is queued — it only becomes
+  // "processing" once the provider bridge has actually placed it.
+  var STATUS_LABELS = {
+    pending: "Pending",
+    paid: "Paid — Queued",
+    processing: "Processing",
+    completed: "Completed",
+    cancelled: "Cancelled"
+  };
+  var STATUS_BADGES = {
+    pending: "b-pending", paid: "b-paid", processing: "b-inprog",
+    completed: "b-done", cancelled: "b-cancel"
+  };
+  var STATUS_OPTIONS = ["pending", "paid", "processing", "completed", "cancelled"];
+
+  function tabOf(status) {
+    if (status === "pending") return "review";
+    if (status === "paid" || status === "processing") return "approved";
+    if (status === "completed") return "completed";
+    if (status === "cancelled") return "rejected";
+    return "review";
+  }
 
   function $(id) { return document.getElementById(id); }
   function esc(s) {
@@ -90,104 +115,122 @@
     });
   }
 
+  function kv(label, valueHTML) {
+    var row = document.createElement("div");
+    row.className = "oc-kv";
+    var s = document.createElement("span");
+    s.textContent = label;
+    var b = document.createElement("b");
+    b.innerHTML = valueHTML;
+    row.appendChild(s);
+    row.appendChild(b);
+    return row;
+  }
+
   function renderOrders() {
     var rows = filteredOrders();
-    $("orders-count").textContent = "(" + rows.length + " of " + allOrders.length + ")";
-    var body = $("orders-body");
-    body.innerHTML = "";
-    if (!rows.length) {
-      body.innerHTML = '<tr><td colspan="8" class="muted">No orders found.</td></tr>';
+    var counts = { review: 0, approved: 0, completed: 0, rejected: 0 };
+    rows.forEach(function (o) { counts[tabOf(o.status)]++; });
+    ["review", "approved", "completed", "rejected"].forEach(function (t) {
+      $("cnt-" + t).textContent = "(" + counts[t] + ")";
+      var btn = document.querySelector('.admin-tab[data-tab="' + t + '"]');
+      if (btn) btn.classList.toggle("on", t === activeTab);
+    });
+    var shown = rows.filter(function (o) { return tabOf(o.status) === activeTab; });
+    $("orders-count").textContent = "(" + shown.length + " of " + allOrders.length + ")";
+    var list = $("orders-list");
+    list.innerHTML = "";
+    if (!shown.length) {
+      list.innerHTML = '<div class="orders-empty muted">No orders in this group.</div>';
       return;
     }
-    rows.forEach(function (o) {
-      var tr = document.createElement("tr");
-      var d = new Date(o.created_at);
+    shown.forEach(function (o) { list.appendChild(orderCard(o)); });
+  }
 
-      var tdOrder = document.createElement("td");
-      tdOrder.innerHTML = "<strong>" + esc(o.order_code) + "</strong><br><span class='muted'>" + esc(d.toLocaleString()) + "</span>";
+  function orderCard(o) {
+    var card = document.createElement("div");
+    card.className = "order-card";
+    var d = new Date(o.created_at);
 
-      var tdCust = document.createElement("td");
-      tdCust.innerHTML = esc(o.customer_name || "—") + "<br><strong>" + esc(o.contact_number) + "</strong>";
+    var head = document.createElement("div");
+    head.className = "oc-head";
+    var code = document.createElement("strong");
+    code.className = "code";
+    code.textContent = o.order_code;
+    var badge = document.createElement("span");
+    badge.className = "badge " + (STATUS_BADGES[o.status] || "b-pending");
+    badge.textContent = STATUS_LABELS[o.status] || o.status;
+    head.appendChild(code);
+    head.appendChild(badge);
+    card.appendChild(head);
 
-      var tdSvc = document.createElement("td");
-      tdSvc.innerHTML = esc(o.platform) + " · " + esc(o.service_type) + "<br>" + esc(o.quality) +
-        "<br><a href='" + esc(o.profile_link) + "' target='_blank' rel='noopener'>link ↗</a>";
+    card.appendChild(kv("Placed", esc(d.toLocaleString())));
+    card.appendChild(kv("Service", esc(o.platform) + " · " + esc(o.service_type) + " — " + esc(o.quality)));
+    card.appendChild(kv("Link", "<a href='" + esc(o.profile_link) + "' target='_blank' rel='noopener'>" + esc(o.profile_link) + " ↗</a>"));
+    card.appendChild(kv("Quantity", Number(o.quantity).toLocaleString()));
+    card.appendChild(kv("Price", fmtUSD(o.price_usd) + " · " + fmtPKR(o.price_pkr)));
+    card.appendChild(kv("Customer", esc(o.customer_name || "—") + " · " + esc(o.contact_number)));
+    card.appendChild(kv("TID", esc(o.transaction_id || "—")));
 
-      var tdPrice = document.createElement("td");
-      tdPrice.innerHTML = Number(o.quantity).toLocaleString() + "<br>" + fmtUSD(o.price_usd) + "<br>" + fmtPKR(o.price_pkr);
+    // Provider bridge info (columns exist after the one-time bridge SQL;
+    // absent on older rows, so this simply renders nothing until then).
+    if (o.provider_order_id) {
+      card.appendChild(kv("Provider", "#" + esc(o.provider_order_id) +
+        (o.provider_status ? " · " + esc(o.provider_status) : "")));
+    }
 
-      var tdTid = document.createElement("td");
-      tdTid.textContent = o.transaction_id;
+    var actions = document.createElement("div");
+    actions.className = "oc-actions";
 
-      var tdStatus = document.createElement("td");
-      var sel = document.createElement("select");
-      ["pending", "processing", "completed", "cancelled"].forEach(function (s) {
-        var opt = document.createElement("option");
-        opt.value = s;
-        opt.textContent = s.charAt(0).toUpperCase() + s.slice(1);
-        if (o.status === s) opt.selected = true;
-        sel.appendChild(opt);
-      });
-      sel.setAttribute("data-id", o.id);
-      tdStatus.appendChild(sel);
-
-      // Provider bridge info (columns exist after the one-time bridge SQL;
-      // absent on older rows, so this simply renders nothing until then).
-      if (o.provider_order_id) {
-        var pv = document.createElement("div");
-        pv.className = "muted";
-        pv.style.fontSize = ".78rem";
-        pv.style.marginTop = "4px";
-        pv.textContent = "Provider #" + o.provider_order_id + (o.provider_status ? " · " + o.provider_status : "");
-        tdStatus.appendChild(pv);
-      }
-
-      var tdNote = document.createElement("td");
-      var note = document.createElement("input");
-      note.type = "text";
-      note.value = o.admin_note || "";
-      note.placeholder = "note…";
-      note.setAttribute("data-id", o.id);
-      note.style.width = "120px";
-      tdNote.appendChild(note);
-
-      var tdSave = document.createElement("td");
-      var saveBtn = document.createElement("button");
-      saveBtn.type = "button";
-      saveBtn.className = "btn";
-      saveBtn.style.padding = "6px 12px";
-      saveBtn.style.fontSize = ".85rem";
-      saveBtn.textContent = "Save";
-      saveBtn.addEventListener("click", function () {
-        saveOrder(o.id, sel.value, note.value);
-      });
-      tdSave.appendChild(saveBtn);
-
-      // Approved flow (2026-10-22): for unpaid orders, Mark as Paid confirms
-      // the payment (status -> processing) — the provider bridge watches for
-      // that transition and places the provider order automatically.
-      // Reject cancels the order; nothing is ever sent to the provider.
-      if (o.status === "pending") {
-        var paidBtn = document.createElement("button");
-        paidBtn.type = "button";
-        paidBtn.className = "btn btn-paid";
-        paidBtn.textContent = "✓ Mark as Paid";
-        paidBtn.addEventListener("click", function () { saveOrder(o.id, "processing", note.value); });
-        var rejBtn = document.createElement("button");
-        rejBtn.type = "button";
-        rejBtn.className = "btn btn-reject";
-        rejBtn.textContent = "✗ Reject";
-        rejBtn.addEventListener("click", function () { saveOrder(o.id, "cancelled", note.value); });
-        tdSave.appendChild(document.createElement("br"));
-        tdSave.appendChild(paidBtn);
-        tdSave.appendChild(rejBtn);
-      }
-
-      tr.appendChild(tdOrder); tr.appendChild(tdCust); tr.appendChild(tdSvc);
-      tr.appendChild(tdPrice); tr.appendChild(tdTid); tr.appendChild(tdStatus);
-      tr.appendChild(tdNote); tr.appendChild(tdSave);
-      body.appendChild(tr);
+    var sel = document.createElement("select");
+    STATUS_OPTIONS.forEach(function (s) {
+      var opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = STATUS_LABELS[s];
+      if (o.status === s) opt.selected = true;
+      sel.appendChild(opt);
     });
+    sel.setAttribute("data-id", o.id);
+    actions.appendChild(sel);
+
+    var note = document.createElement("input");
+    note.type = "text";
+    note.value = o.admin_note || "";
+    note.placeholder = "note…";
+    note.setAttribute("data-id", o.id);
+    actions.appendChild(note);
+
+    var saveBtn = document.createElement("button");
+    saveBtn.type = "button";
+    saveBtn.className = "btn";
+    saveBtn.textContent = "Save";
+    saveBtn.addEventListener("click", function () {
+      saveOrder(o.id, sel.value, note.value);
+    });
+    actions.appendChild(saveBtn);
+
+    // Approved flow (2026-10-22): for unpaid orders, Mark as Paid confirms
+    // the payment (status -> paid: approved + queued, NOT yet with the
+    // provider). The bridge places the provider order and only then flips
+    // the status to processing, so the admin always mirrors the provider.
+    // Reject cancels the order; nothing is ever sent to the provider.
+    if (o.status === "pending") {
+      var paidBtn = document.createElement("button");
+      paidBtn.type = "button";
+      paidBtn.className = "btn btn-paid";
+      paidBtn.textContent = "✓ Mark as Paid";
+      paidBtn.addEventListener("click", function () { saveOrder(o.id, "paid", note.value); });
+      var rejBtn = document.createElement("button");
+      rejBtn.type = "button";
+      rejBtn.className = "btn btn-reject";
+      rejBtn.textContent = "✗ Reject";
+      rejBtn.addEventListener("click", function () { saveOrder(o.id, "cancelled", note.value); });
+      actions.appendChild(paidBtn);
+      actions.appendChild(rejBtn);
+    }
+
+    card.appendChild(actions);
+    return card;
   }
 
   function saveOrder(id, status, note) {
@@ -224,6 +267,12 @@
     $("refresh-btn").addEventListener("click", loadOrders);
     $("filter-text").addEventListener("input", renderOrders);
     $("filter-status").addEventListener("change", renderOrders);
+    document.querySelectorAll(".admin-tab").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        activeTab = btn.getAttribute("data-tab");
+        renderOrders();
+      });
+    });
     // Restore session if already logged in
     if (sb) {
       sb.auth.getSession().then(function (res) {
