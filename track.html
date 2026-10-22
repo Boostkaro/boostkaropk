@@ -10,7 +10,7 @@
 <link rel="icon" type="image/webp" href="logo.webp">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
-/* Tracking page components — same design as the approved demo / admin panel */
+/* Tracking page components — BoostKaro palette, layout per Raji's reference design */
 .track-brand{background:#0d47a1;color:#fff;padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
 .track-brand a{color:#fff;text-decoration:none;font-size:.9rem;font-weight:600}
 .track-card{max-width:560px;margin:26px auto;background:#fff;border-radius:14px;box-shadow:0 6px 24px rgba(20,38,74,.10);overflow:hidden}
@@ -22,17 +22,27 @@
 .b-inprog{background:#dbeafe;color:#1d4ed8}
 .b-done{background:#d1fae5;color:#047857}
 .b-cancel{background:#fee2e2;color:#b91c1c}
-.tl{margin-top:14px}
-.tl-item{display:flex;gap:12px;padding:9px 0}
-.dot{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#c7d2e8}
-.ok .dot{background:#16a34a}
-.now .dot{background:#1a73e8}
-.tl-item .t{font-weight:600;font-size:14px}
-.tl-item .s{font-size:12px;color:#66779e}
-.delivered{background:#d1fae5;color:#065f46;border-radius:9px;padding:10px 12px;font-size:13.5px;margin-top:10px;font-weight:600}
+#track-result .ord{border-top:1px solid #e3e9f7;margin-top:18px;padding-top:16px}
+.ord-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ord-head b{font-size:17px;color:#14264a}
+.svc-row{display:flex;gap:12px;align-items:center;margin-top:14px}
+.svc-ic{width:44px;height:44px;border-radius:12px;background:#eef2fb;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.svc-name{font-weight:700;font-size:15px;color:#14264a}
+.svc-sub{font-size:13px;color:#66779e;margin-top:2px}
+.ord-date{margin-top:12px;font-size:12.5px;color:#66779e}
+.tl{margin-top:6px}
+.tl-item{display:flex;gap:12px;padding:10px 0;position:relative}
+.tl-item:not(:last-child)::before{content:"";position:absolute;left:11px;top:38px;bottom:-4px;width:2px;background:#e3e9f7}
+.tl-item.done:not(:last-child)::before{background:#16a34a}
+.dot{width:24px;height:24px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#c7d2e8;position:relative;z-index:1}
+.tl-item.done .dot{background:#16a34a}
+.tl-item.now .dot{background:#1a73e8}
+.tl-item .t{font-weight:600;font-size:14px;color:#14264a}
+.tl-item.todo .t{color:#8fa1c2}
+.tl-item .s{font-size:12px;color:#66779e;margin-top:1px}
+.delivered{background:#d1fae5;color:#065f46;border-radius:9px;padding:10px 12px;font-size:13.5px;margin-top:12px;font-weight:600}
+.delivered .ck{display:inline-flex;width:20px;height:20px;border-radius:50%;background:#16a34a;color:#fff;align-items:center;justify-content:center;font-size:12px;margin-right:6px;vertical-align:-4px}
 .cancelled-note{background:#fee2e2;color:#7f1d1d;border-radius:9px;padding:10px 12px;font-size:13.5px;margin-top:10px;font-weight:600}
-.svc-line{font-size:14px;margin-top:4px}
-.svc-line .muted{font-size:13px}
 </style>
 </head>
 <body>
@@ -73,6 +83,7 @@
   var SERVICE = { followers: "Followers", likes: "Likes", views: "Views", comments: "Comments",
     subscribers: "Subscribers", pagelikesfol: "Page Likes + Followers",
     profilefol: "Profile / Page Followers", pagelikes: "Page Likes", videoviews: "Video Views" };
+  var ICON = { instagram: "📸", tiktok: "🎵", facebook: "👥", youtube: "▶️" };
 
   function $(id) { return document.getElementById(id); }
   function esc(s) {
@@ -80,52 +91,90 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  function fmtDate(iso) {
+  function fmtDT(iso) {
     var d = new Date(iso);
-    return d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" }) +
-      " — " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+    return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) +
+      " - " + d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
   }
-  function item(cls, dot, title, sub) {
-    return '<div class="tl-item ' + cls + '"><div class="dot">' + dot + '</div><div>' +
+  function step(state, title, sub) {
+    var dot = state === "done" ? "✓" : (state === "now" ? "●" : "");
+    return '<div class="tl-item ' + state + '"><div class="dot">' + dot + '</div><div>' +
       '<div class="t">' + title + '</div><div class="s">' + sub + "</div></div></div>";
+  }
+  // Map the provider's own status text (once the bridge writes it) to a stage.
+  function providerState(ps) {
+    if (!ps) return "";
+    var s = String(ps).toLowerCase();
+    if (s.indexOf("cancel") >= 0) return "cancelled";
+    if (s.indexOf("complet") >= 0 || s.indexOf("partial") >= 0) return "completed";
+    if (s.indexOf("progress") >= 0 || s.indexOf("processing") >= 0) return "processing";
+    if (s.indexOf("pending") >= 0) return "providerPending";
+    return "";
   }
 
   function render(o) {
-    var svc = (PLATFORM[o.platform] || o.platform) + " " + (SERVICE[o.service_type] || o.service_type);
-    var head = '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">' +
-      "<b>Order #" + esc(o.order_code) + "</b>";
-    var body = '<div class="svc-line"><b>' + esc(svc) + "</b> · " + esc(o.quality || "") + "<br>" +
-      '<span class="muted">' + Number(o.quantity).toLocaleString() + " · Placed " + esc(fmtDate(o.created_at)) + "</span></div>";
+    var svcName = (PLATFORM[o.platform] || o.platform) + " " + (SERVICE[o.service_type] || o.service_type);
+    var typeLabel = SERVICE[o.service_type] || o.service_type;
+    var icon = ICON[o.platform] || "📦";
+    var ps = providerState(o.provider_status);
+    var eff = ps || o.status;
+
+    var badge;
+    if (eff === "cancelled") badge = '<span class="badge b-cancel">Cancelled</span>';
+    else if (eff === "completed") badge = '<span class="badge b-done">Completed</span>';
+    else if (o.status === "pending") badge = '<span class="badge b-pending">Pending Payment</span>';
+    else if (o.status === "paid") badge = '<span class="badge b-paid">Payment Confirmed</span>';
+    else badge = '<span class="badge b-inprog">In Progress</span>';
+
+    var html = '<div class="ord">';
+    html += '<div class="ord-head"><b>Order #' + esc(o.order_code) + "</b>" + badge + "</div>";
+    html += '<div class="svc-row"><div class="svc-ic">' + icon + '</div><div>' +
+      '<div class="svc-name">' + esc(svcName) + "</div>" +
+      '<div class="svc-sub">' + Number(o.quantity).toLocaleString() + " " + esc(typeLabel) +
+      (o.quality ? " · " + esc(o.quality) : "") + "</div></div></div>";
+    html += '<div class="ord-date">Order Date: ' + esc(fmtDT(o.created_at)) + "</div>";
+
     var tl = '<div class="tl">';
     var tail = "";
-    if (o.status === "pending") {
-      head += '<span class="badge b-pending">Pending Payment</span></div>';
-      tl += item("now", "●", "Payment Confirmation", "We're verifying your payment — this usually takes a short while.");
-      tl += item("", "", "Processing", "Starts after your payment is confirmed.");
-      tl += item("", "", "Completed", "Waiting for delivery…");
-    } else if (o.status === "paid") {
-      head += '<span class="badge b-paid">Payment Confirmed</span></div>';
-      tl += item("ok", "✓", "Payment Confirmed", esc(fmtDate(o.created_at)));
-      tl += item("", "", "Processing", "Your payment is confirmed — your order is queued and will start shortly.");
-      tl += item("", "", "Completed", "Waiting for delivery…");
-    } else if (o.status === "processing") {
-      head += '<span class="badge b-inprog">In Progress</span></div>';
-      tl += item("ok", "✓", "Payment Confirmed", esc(fmtDate(o.created_at)));
-      tl += item("now", "●", "Processing", "Your order is now being processed by our team.");
-      tl += item("", "", "Completed", "Waiting for delivery…");
-    } else if (o.status === "completed") {
-      head += '<span class="badge b-done">Completed</span></div>';
-      tl += item("ok", "✓", "Payment Confirmed", esc(fmtDate(o.created_at)));
-      tl += item("ok", "✓", "Processing", "Your order was processed by our team.");
-      tl += item("ok", "✓", "Completed", esc(fmtDate(o.updated_at || o.created_at)));
-      tail = '<div class="delivered">✓ Your order has been delivered successfully!</div>';
-    } else { // cancelled
-      head += '<span class="badge b-cancel">Cancelled</span></div>';
-      tl += item("", "✕", "Order Cancelled", "This order is no longer active.");
+    if (eff === "cancelled") {
+      tl += '<div class="tl-item"><div class="dot">✕</div><div>' +
+        '<div class="t">Order Cancelled</div><div class="s">This order is no longer active.</div></div></div>';
       tail = '<div class="cancelled-note">If you believe this is a mistake, message us on WhatsApp and we\'ll help right away.</div>';
+    } else {
+      // Step 1 — Payment Confirmed: done once Raji has confirmed payment.
+      if (o.status === "pending" && !ps) {
+        tl += step("now", "Payment Confirmed", "We're verifying your payment — this usually takes a short while.");
+      } else {
+        tl += step("done", "Payment Confirmed", "Payment received and confirmed.");
+      }
+      // Step 2 — Pending: the order has been sent and is pending at the provider.
+      if (ps === "providerPending") {
+        tl += step("now", "Pending", "Your order has been sent and is waiting to start.");
+      } else if (ps === "processing" || ps === "completed" || o.status === "processing" || o.status === "completed") {
+        tl += step("done", "Pending", "Your order was sent for delivery.");
+      } else if (o.status === "paid") {
+        tl += step("todo", "Pending", "Queued — your order will be sent for delivery shortly.");
+      } else {
+        tl += step("todo", "Pending", "Starts after your payment is confirmed.");
+      }
+      // Step 3 — Processing: the provider is delivering.
+      if (eff === "completed") {
+        tl += step("done", "Processing", "Your order was processed by our team.");
+      } else if (ps === "processing" || (!ps && o.status === "processing")) {
+        tl += step("now", "Processing", "Your order is being delivered.");
+      } else {
+        tl += step("todo", "Processing", "Starts after the pending stage.");
+      }
+      // Step 4 — Completed.
+      if (eff === "completed") {
+        tl += step("done", "Completed", esc(fmtDT(o.updated_at || o.created_at)));
+        tail = '<div class="delivered"><span class="ck">✓</span>Your order has been delivered successfully!</div>';
+      } else {
+        tl += step("todo", "Completed", "Waiting for delivery…");
+      }
     }
     tl += "</div>";
-    return head + body + tl + tail;
+    return html + tl + tail + "</div>";
   }
 
   function lookup() {
@@ -141,19 +190,29 @@
       return;
     }
     out.innerHTML = '<p class="muted">Looking up your order…</p>';
-    sb.from("orders")
-      .select("order_code,platform,service_type,quality,quantity,status,created_at,updated_at")
+    var BASE = "order_code,platform,service_type,quality,quantity,status,created_at,updated_at";
+    function handle(res) {
+      if (res.error) {
+        out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
+        return;
+      }
+      if (!res.data || !res.data.length) {
+        out.innerHTML = '<div class="alert error">No order found. Check your code and contact number.</div>';
+        return;
+      }
+      out.innerHTML = render(res.data[0]);
+    }
+    // Try the provider-status-aware select first; if that column does not
+    // exist yet, fall back to the base columns only.
+    sb.from("orders").select(BASE + ",provider_status")
       .eq("order_code", code).eq("contact_number", phone).limit(1)
       .then(function (res) {
         if (res.error) {
-          out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
-          return;
+          return sb.from("orders").select(BASE)
+            .eq("order_code", code).eq("contact_number", phone).limit(1)
+            .then(handle);
         }
-        if (!res.data || !res.data.length) {
-          out.innerHTML = '<div class="alert error">No order found. Check your code and contact number.</div>';
-          return;
-        }
-        out.innerHTML = render(res.data[0]);
+        handle(res);
       })
       .catch(function () {
         out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
