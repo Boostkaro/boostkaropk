@@ -198,7 +198,7 @@
     // Provider bridge info (columns exist after the one-time bridge SQL;
     // absent on older rows, so this simply renders nothing until then).
     if (o.provider_order_id) {
-      details.appendChild(kv("Provider", "#" + esc(o.provider_order_id) +
+      details.appendChild(kv("Panel Order ID", "#" + esc(o.provider_order_id) +
         (o.provider_status ? " · " + esc(o.provider_status) : "")));
     }
 
