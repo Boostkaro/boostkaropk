@@ -45,7 +45,7 @@
       ]},
       { id: "views", label: "Views", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.1, u: "k", cpn: true, s: "Max Unlimited, Non Drop, One Click Start, avg 9 Minutes" }
+          { p: 0.1, u: "k", cpn: true, s: "Max 1M, Instagram Reels Views, All Link, 100K/Day, Instant Start, Drop Possible, No Refill, avg 24 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 0.2, u: "k", cpn: true, s: "Max 7M, Instagram Reels Views Non-Drop 300k/500k Per Hour, Lifetime Refill, avg 2 Hours 55 Minutes" }
