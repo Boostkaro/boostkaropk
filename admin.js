@@ -153,6 +153,7 @@
         allOrders = res.data || [];
         $("admin-msg").innerHTML = "";
         renderOrders();
+        renderReviews();
       })
       .catch(function () {
         $("admin-msg").innerHTML = '<div class="alert error">Could not load orders. Check connection.</div>';
@@ -186,7 +187,8 @@
   var reviewsCache = null;
 
   function renderReviews() {
-    var list = $("orders-list");
+    var list = $("reviews-list");
+    if (!list) return;
     if (!sb) { list.innerHTML = '<div class="orders-empty muted">Not connected.</div>'; return; }
     if (reviewsCache) { paintReviews(reviewsCache); return; }
     list.innerHTML = '<div class="orders-empty muted">Loading reviews…</div>';
@@ -205,9 +207,10 @@
   }
 
   function paintReviews(rows) {
-    var list = $("orders-list");
+    var list = $("reviews-list");
+    if (!list) return;
     list.innerHTML = "";
-    $("orders-count").textContent = "(" + rows.length + " reviews)";
+    $("reviews-count").textContent = "(" + rows.length + ")";
     if (!rows.length) {
       list.innerHTML = '<div class="orders-empty muted">No reviews yet.</div>';
       return;
@@ -293,9 +296,7 @@
       var btn = document.querySelector('.admin-tab[data-tab="' + t + '"]');
       if (btn) btn.classList.toggle("on", t === activeTab);
     });
-    var rbtn = document.querySelector('.admin-tab[data-tab="reviews"]');
-    if (rbtn) rbtn.classList.toggle("on", activeTab === "reviews");
-    if (activeTab === "reviews") { renderReviews(); return; }
+
     var shown = rows.filter(function (o) { return tabOf(o.status) === activeTab; });
     $("orders-count").textContent = "(" + shown.length + " of " + allOrders.length + ")";
     var list = $("orders-list");
