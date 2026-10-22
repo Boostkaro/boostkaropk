@@ -138,6 +138,7 @@
 
   // ---- Load orders ----
   function loadOrders() {
+    reviewsCache = null;
     if (!sb) {
       $("admin-msg").innerHTML = '<div class="alert error">Database not connected.</div>';
       return;
@@ -182,6 +183,54 @@
     return row;
   }
 
+  var reviewsCache = null;
+
+  function renderReviews() {
+    var list = $("orders-list");
+    if (!sb) { list.innerHTML = '<div class="orders-empty muted">Not connected.</div>'; return; }
+    if (reviewsCache) { paintReviews(reviewsCache); return; }
+    list.innerHTML = '<div class="orders-empty muted">Loading reviews…</div>';
+    sb.from("reviews").select("*").order("created_at", { ascending: false }).limit(200)
+      .then(function (res) {
+        if (res.error) {
+          list.innerHTML = '<div class="orders-empty muted">Reviews are not set up yet — the one-time reviews SQL has not been run in Supabase.</div>';
+          return;
+        }
+        reviewsCache = res.data || [];
+        paintReviews(reviewsCache);
+      })
+      .catch(function () {
+        list.innerHTML = '<div class="orders-empty muted">Could not load reviews.</div>';
+      });
+  }
+
+  function paintReviews(rows) {
+    var list = $("orders-list");
+    list.innerHTML = "";
+    $("orders-count").textContent = "(" + rows.length + " reviews)";
+    if (!rows.length) {
+      list.innerHTML = '<div class="orders-empty muted">No reviews yet.</div>';
+      return;
+    }
+    rows.forEach(function (r) {
+      var card = document.createElement("div");
+      card.className = "order-card";
+      var stars = "★★★★★".slice(0, r.rating) + "☆☆☆☆☆".slice(0, 5 - r.rating);
+      var head = document.createElement("div");
+      head.className = "oc-bar";
+      head.innerHTML = "<span>" + esc(r.order_code || "Review") + "</span><span style='color:#ffc107'>" + stars + "</span>";
+      var body = document.createElement("div");
+      body.className = "oc-details open";
+      body.appendChild(kv("Customer", esc(r.customer_name || "—")));
+      body.appendChild(kv("Rating", r.rating + " / 5"));
+      body.appendChild(kv("Review", esc(r.review_text || "")));
+      body.appendChild(kv("Date", esc(new Date(r.created_at).toLocaleString())));
+      card.appendChild(head);
+      card.appendChild(body);
+      list.appendChild(card);
+    });
+  }
+
   function renderOrders() {
     var rows = filteredOrders();
     var counts = { review: 0, approved: 0, completed: 0, rejected: 0 };
@@ -191,6 +240,9 @@
       var btn = document.querySelector('.admin-tab[data-tab="' + t + '"]');
       if (btn) btn.classList.toggle("on", t === activeTab);
     });
+    var rbtn = document.querySelector('.admin-tab[data-tab="reviews"]');
+    if (rbtn) rbtn.classList.toggle("on", activeTab === "reviews");
+    if (activeTab === "reviews") { renderReviews(); return; }
     var shown = rows.filter(function (o) { return tabOf(o.status) === activeTab; });
     $("orders-count").textContent = "(" + shown.length + " of " + allOrders.length + ")";
     var list = $("orders-list");
