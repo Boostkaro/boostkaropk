@@ -33,6 +33,61 @@
   };
   var STATUS_OPTIONS = ["pending", "paid", "processing", "completed", "cancelled"];
 
+  // Panel (PakistanPanels) service ID for each catalog service, keyed by
+  // platform/service_type/quality-label — mirrors provider-map.json (the
+  // bridge's map). Orders don't store a usable service id (the column is a
+  // legacy UUID), so the admin derives it from the order's own fields.
+  var SERVICE_IDS = {
+    "facebook/comments/No Drop": 356,
+    "facebook/pagelikes/Droppable": 555,
+    "facebook/pagelikes/High Quality": 560,
+    "facebook/pagelikes/No Drop": 342,
+    "facebook/pagelikesfol/Droppable": 295,
+    "facebook/pagelikesfol/High Quality": 297,
+    "facebook/pagelikesfol/No Drop": 296,
+    "facebook/profilefol/Droppable": 1508,
+    "facebook/profilefol/High Quality": 1511,
+    "facebook/profilefol/No Drop": 1512,
+    "facebook/videoviews/Droppable": 1499,
+    "facebook/videoviews/High Quality": 459,
+    "facebook/videoviews/No Drop": 332,
+    "instagram/comments/No Drop": 966,
+    "instagram/followers/Droppable": 1485,
+    "instagram/followers/High Quality": 1495,
+    "instagram/followers/No Drop": 1492,
+    "instagram/likes/Droppable": 1263,
+    "instagram/likes/High Quality": 1227,
+    "instagram/likes/No Drop": 1129,
+    "instagram/views/Droppable": 142,
+    "instagram/views/High Quality": 133,
+    "instagram/views/No Drop": 134,
+    "tiktok/comments/Droppable": 1293,
+    "tiktok/comments/High Quality": 1296,
+    "tiktok/comments/No Drop": 1310,
+    "tiktok/followers/Droppable": 807,
+    "tiktok/followers/High Quality": 1020,
+    "tiktok/followers/No Drop": 1480,
+    "tiktok/likes/Droppable": 15,
+    "tiktok/likes/High Quality": 1189,
+    "tiktok/likes/No Drop": 1517,
+    "tiktok/views/Droppable": 1398,
+    "tiktok/views/High Quality": 1124,
+    "tiktok/views/No Drop": 1201,
+    "youtube/likes/Droppable": 262,
+    "youtube/likes/High Quality": 269,
+    "youtube/likes/No Drop": 267,
+    "youtube/subscribers/Droppable": 1395,
+    "youtube/subscribers/No Drop": 1367,
+    "youtube/views/Droppable": 228,
+    "youtube/views/High Quality": 229,
+    "youtube/views/No Drop": 448
+  };
+
+  function serviceIdOf(o) {
+    var label = String(o.quality || "").split(" $")[0];
+    return SERVICE_IDS[o.platform + "/" + o.service_type + "/" + label] || null;
+  }
+
   function tabOf(status) {
     if (status === "pending") return "review";
     if (status === "paid" || status === "processing") return "approved";
@@ -189,6 +244,8 @@
 
     details.appendChild(kv("Placed", esc(d.toLocaleString())));
     details.appendChild(kv("Service", esc(o.platform) + " · " + esc(o.service_type) + " — " + esc(o.quality)));
+    var sid = serviceIdOf(o);
+    if (sid) details.appendChild(kv("Service ID", sid));
     details.appendChild(kv("Link", "<a href='" + esc(o.profile_link) + "' target='_blank' rel='noopener'>" + esc(o.profile_link) + " ↗</a>"));
     details.appendChild(kv("Quantity", Number(o.quantity).toLocaleString()));
     details.appendChild(kv("Price", fmtUSD(o.price_usd) + " · " + fmtPKR(o.price_pkr)));
