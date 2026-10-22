@@ -286,6 +286,7 @@
     $("order-coupon").value = "";
     $("coupon-msg").textContent = "";
     couponDiscount = 0;
+    couponCodeApplied = "";
     $("order-error").innerHTML = "";
     updateOrderTotal();
     $("order-modal").classList.add("open");
@@ -304,6 +305,17 @@
   }
 
   var couponDiscount = 0; // 0.1 = 10% off
+  var couponCodeApplied = ""; // code that produced couponDiscount ("" = none)
+
+  // FIRST30 is a private ONE-TIME code: 30% off Instagram Followers only.
+  // Single use is enforced against past orders: a redeemed order carries
+  // "FIRST30" in its admin_note, so any later apply/submit is refused.
+  function checkFirst30Used() {
+    if (!sb) return Promise.resolve(true); // cannot verify -> treat as unusable
+    return sb.from("orders").select("id").ilike("admin_note", "%FIRST30%").limit(1)
+      .then(function (res) { return !!(res.data && res.data.length); })
+      .catch(function () { return true; });
+  }
 
   function calcTotal() {
     if (!orderTier) return { usd: 0, pkr: 0, qty: 0 };
@@ -328,18 +340,50 @@
       // DISC10 is only valid on coupon-eligible tiers (markup > 50%)
       if (orderTier && orderTier.tier && orderTier.tier.cpn === false) {
         couponDiscount = 0;
+        couponCodeApplied = "";
         msg.textContent = "Coupon not valid on this service.";
         msg.style.color = "var(--danger)";
       } else {
         couponDiscount = 0.1;
+        couponCodeApplied = "DISC10";
         msg.textContent = "✅ 10% OFF applied!";
         msg.style.color = "var(--accent-dark)";
       }
+    } else if (code === "FIRST30") {
+      // Private one-time code: 30% off Instagram Followers, single use only.
+      couponDiscount = 0;
+      couponCodeApplied = "";
+      if (!orderTier || orderTier.platform.id !== "instagram" || orderTier.category.id !== "followers") {
+        msg.textContent = "Coupon not valid on this service.";
+        msg.style.color = "var(--danger)";
+        updateOrderTotal();
+        return;
+      }
+      msg.textContent = "Checking code…";
+      msg.style.color = "";
+      checkFirst30Used().then(function (used) {
+        if ($("order-coupon").value.trim().toUpperCase() !== "FIRST30") return;
+        if (used) {
+          couponDiscount = 0;
+          couponCodeApplied = "";
+          msg.textContent = "This one-time code has already been used.";
+          msg.style.color = "var(--danger)";
+        } else {
+          couponDiscount = 0.3;
+          couponCodeApplied = "FIRST30";
+          msg.textContent = "✅ 30% OFF applied!";
+          msg.style.color = "var(--accent-dark)";
+        }
+        updateOrderTotal();
+      });
+      return;
     } else if (code === "") {
       couponDiscount = 0;
+      couponCodeApplied = "";
       msg.textContent = "";
     } else {
       couponDiscount = 0;
+      couponCodeApplied = "";
       msg.textContent = "❌ Invalid coupon code.";
       msg.style.color = "var(--danger)";
     }
@@ -430,6 +474,9 @@
       transaction_id: tid,
       status: "pending"
     };
+    // Record a redeemed FIRST30 on the order's admin_note — that record is
+    // what makes the code one-time (checkFirst30Used reads it back).
+    if (couponCodeApplied === "FIRST30") payload.admin_note = "Coupon FIRST30 (-30%)";
 
     function done(ok, errMsg) {
       btn.disabled = false;
@@ -454,26 +501,44 @@
     // Resolve the next sequential code (BK-0503, BK-0504, ...) first,
     // then insert. genSequentialOrderCode() itself falls back to the
     // random generator if the lookup fails, so this chain always runs.
-    genSequentialOrderCode().then(function (seqCode) {
-      code = seqCode;
-      payload.order_code = code;
-      return sb.from("orders").insert(payload);
-    }).then(function (res) {
-      if (res.error) {
-        if (res.error.code === "23505") {
-          payload.order_code = genOrderCode();
-          code = payload.order_code;
-          return sb.from("orders").insert(payload).then(function (res2) {
-            done(!res2.error, res2.error && res2.error.message);
-          });
+    function proceed() {
+      genSequentialOrderCode().then(function (seqCode) {
+        code = seqCode;
+        payload.order_code = code;
+        return sb.from("orders").insert(payload);
+      }).then(function (res) {
+        if (res.error) {
+          if (res.error.code === "23505") {
+            payload.order_code = genOrderCode();
+            code = payload.order_code;
+            return sb.from("orders").insert(payload).then(function (res2) {
+              done(!res2.error, res2.error && res2.error.message);
+            });
+          }
+          done(false, res.error.message);
+        } else {
+          done(true);
         }
-        done(false, res.error.message);
-      } else {
-        done(true);
-      }
-    }).catch(function (e) {
-      done(false, e && e.message);
-    });
+      }).catch(function (e) {
+        done(false, e && e.message);
+      });
+    }
+
+    // One-time guard: re-verify FIRST30 is still unused right before the
+    // order is written, so the same code can never be redeemed twice.
+    if (couponCodeApplied === "FIRST30") {
+      checkFirst30Used().then(function (used) {
+        if (used) {
+          btn.disabled = false;
+          btn.textContent = "Submit Order";
+          showError("The FIRST30 code has already been used.");
+          return;
+        }
+        proceed();
+      });
+    } else {
+      proceed();
+    }
   }
 
   // ---- Order tracking lives on the dedicated /track page (new design) ----
@@ -728,7 +793,9 @@
     $("order-qty").addEventListener("input", updateOrderTotal);
     $("coupon-apply").addEventListener("click", applyCoupon);
     $("order-coupon").addEventListener("input", function() {
-      if (this.value.trim() === "") { couponDiscount = 0; $("coupon-msg").textContent = ""; updateOrderTotal(); }
+      var v = this.value.trim().toUpperCase();
+      if (v === "") { couponDiscount = 0; couponCodeApplied = ""; $("coupon-msg").textContent = ""; updateOrderTotal(); }
+      else if (couponCodeApplied && v !== couponCodeApplied) { couponDiscount = 0; couponCodeApplied = ""; $("coupon-msg").textContent = ""; updateOrderTotal(); }
     });
     $("order-submit").addEventListener("click", submitOrder);
     $("modal-close").addEventListener("click", function () { $("order-modal").classList.remove("open"); });
