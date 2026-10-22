@@ -175,40 +175,6 @@ footer p{font-size:.92rem;color:#b9cdf3}
 }
 .promo-fine { font-size: .8rem; color: #ff4757; font-weight: 700; margin: 12px 0 0; }
 
-/* Update notice popup (shows on every page load) */
-.update-popup-overlay {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(15, 22, 40, .55); backdrop-filter: blur(3px);
-  display: flex; align-items: center; justify-content: center; padding: 16px;
-  animation: updateFadeIn .3s ease;
-}
-@keyframes updateFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.update-popup {
-  position: relative; width: min(440px, 92vw);
-  background: #fff; border-radius: 20px; overflow: hidden;
-  padding: 34px 28px 22px; text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,.3);
-  animation: updatePop .35s cubic-bezier(.2,1.4,.4,1);
-}
-.update-popup:before {
-  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px;
-  background: linear-gradient(90deg, var(--blue), var(--yellow), var(--blue-dark));
-}
-@keyframes updatePop { from { transform: scale(.9) translateY(8px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-.update-popup-close {
-  position: absolute; top: 12px; right: 14px;
-  background: #eef1f7; border: none; width: 34px; height: 34px; border-radius: 50%;
-  font-size: 1.3rem; line-height: 1; color: var(--muted); cursor: pointer; padding: 0;
-}
-.update-popup-close:hover { color: var(--ink); background: #e2e9f5; }
-.update-popup-title { font-size: 1.55rem; margin: 0 0 12px; color: var(--brand-dark); }
-.update-popup-text { font-size: 1rem; margin: 0 0 12px; color: var(--ink); }
-.update-popup-bonus {
-  font-size: .92rem; color: var(--blue-dark); font-weight: 600;
-  background: #f4f7ff; border: 1px dashed var(--line); border-radius: 12px;
-  padding: 10px 12px; margin: 0 0 18px;
-}
-.update-popup-date { font-size: .72rem; color: var(--muted); margin: 14px 0 0; text-align: center; }
 
 /* Drill-down breadcrumbs */
 .crumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin: 14px 0 4px; }
@@ -431,8 +397,6 @@ html, body { overflow-x: hidden; }
   .promo-popup { padding: 28px 18px 22px; }
   .promo-popup h2 { font-size: 2rem; }
   .promo-code { font-size: 1.4rem; letter-spacing: 2px; }
-  .update-popup { padding: 28px 18px 18px; }
-  .update-popup-title { font-size: 1.3rem; }
   .converter { padding: 8px 14px; gap: 8px; }
   .checks { padding: 18px; }
   .stat { padding: 16px; }

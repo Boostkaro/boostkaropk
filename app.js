@@ -298,9 +298,7 @@
         price_usd: sel.tier.p
       });
     }
-    // Popups never stack: close the update notice first, then offer the
-    // DISC10 discount popup if this tier is coupon-eligible.
-    hideUpdatePopup();
+    // Offer the DISC10 discount popup if this tier is coupon-eligible.
     maybeShowCheckoutPromo(sel.tier);
   }
 
@@ -810,14 +808,7 @@
     renderAll();
     trackPageView();
     initPromoPopup();
-    initUpdatePopup();
   });
-
-  // ---- Popup coordination (update notice + checkout discount) ----
-  function hideUpdatePopup() {
-    var overlay = $("update-overlay");
-    if (overlay) overlay.style.display = "none";
-  }
 
   // Show the DISC10 popup at checkout — every time checkout opens, but only
   // for coupon-eligible tiers and only while DISC10 is not already applied.
@@ -857,27 +848,4 @@
     });
   }
 
-  // ---- Update notice popup ----
-  // Shows on EVERY page load (no seen-flag in localStorage/sessionStorage/cookies).
-  function initUpdatePopup() {
-    var overlay = $("update-overlay");
-    if (!overlay) return;
-    function close() { hideUpdatePopup(); }
-    setTimeout(function () {
-      // Never stack over an open checkout (popups must not show together)
-      var modal = $("order-modal");
-      if (modal && modal.classList.contains("open")) return;
-      overlay.style.display = "flex";
-    }, 700);
-    $("update-close").addEventListener("click", close);
-    overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
-    document.addEventListener("keydown", function (e) {
-      if ((e.key === "Escape" || e.keyCode === 27) && overlay.style.display !== "none") close();
-    });
-    $("update-cta").addEventListener("click", function () {
-      close();
-      var sec = $("order");
-      if (sec && sec.scrollIntoView) sec.scrollIntoView({ behavior: "smooth" });
-    });
-  }
 })();
