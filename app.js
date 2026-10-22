@@ -23,7 +23,7 @@
     { id: "instagram", label: "Instagram", categories: [
       { id: "followers", label: "Followers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 2.6002, u: "k", cpn: true, s: "Max 1K, High Drop, No Refill, 02 Hour Start, avg 6 Hours 19 Minutes" }
+          { p: 2.6002, u: "k", cpn: true, s: "Max 1K, High Drop, No Refill, 0-2 Hour Start, avg 6 Hours 19 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 4.225, u: "k", cpn: true, s: "Max 10K, Real Accounts Verified By Phone Number (High Overflow), Non-Drop Stable, Instant Start, Speed 5K/Day, No Refill, avg 20 Hours 29 Minutes" }
@@ -34,7 +34,7 @@
       ]},
       { id: "likes", label: "Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.2998, u: "k", cpn: true, s: "Max 10K, Instagram Likes Real Accounts, Non-Drop, 50K/Day, Lifetime Refill (World Cheapest), avg 5 Hours 2 Minutes" }
+          { p: 0.2998, u: "k", cpn: true, s: "Max 5M, Instagram Likes Old Accounts, Low Drop Possible, 50K/Day, No Refill, avg 6 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 0.4004, u: "k", cpn: true, s: "Max 500K, Old Real, Non-Drop, 200K/Day, avg 14 Minutes" }
@@ -131,7 +131,7 @@
       ]},
       { id: "pagelikes", label: "Page Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.8, u: "k", cpn: true, s: "Max 5K, Non-Drop, Speed 2000/Day, Start 02 Hrs, avg 36 Minutes" }
+          { p: 0.8, u: "k", cpn: true, s: "Max 500K, Facebook Post Likes, HQ Real Accounts, Cancel Enable, Instant Start, 100K/Day, Drop Possible, No Refill, avg 8 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 1, u: "k", cpn: true, s: "Max 100K, Non-Drop, Speed 5000/Day, Start 01Hrs, avg 28 Minutes" }
@@ -147,7 +147,7 @@
       ]},
       { id: "videoviews", label: "Video Views", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.4, u: "k", cpn: true, s: "Max Unlimited, Non Drop, 20K/Day, Lifetime Guaranteed, avg 50 Minutes" }
+          { p: 0.4, u: "k", cpn: true, s: "Max Unlimited, Facebook Video/Reels Views, 1M/Day, Instant Start, 30 Days Refill, avg 1 Hour 17 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 0.8, u: "k", cpn: true, s: "Max Unlimited, Non Drop, Lifetime, Instant Start, avg 10 Hours 15 Minutes" }
@@ -163,12 +163,12 @@
           { p: 12, u: "k", cpn: true, s: "Max 10K, Youtube Bot Subscribers Fast All Drop, Instantly Start, avg 50 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 30, u: "k", cpn: false, s: "Max 500, NonDrop, Speed 50+ / DAY, Start Time 012 Hours, avg 25 Hours 28 Minutes" }
+          { p: 30, u: "k", cpn: false, s: "Max 500, NonDrop, Speed 50+ / DAY, Start Time 0-12 Hours, Lifetime Refill, avg 25 Hours 28 Minutes" }
         ]}
       ]},
       { id: "views", label: "Views", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 2.5, u: "k", cpn: true, s: "Max 10K, YouTube Views Exclusive, Speed 500+/Day, Non Drop, Lifetime Guaranteed, Start Time 0-1 Hours, Own Server, avg 5 Hours 47 Minutes" }
+          { p: 2.5, u: "k", cpn: false, s: "Max 20K, YouTube Video Views Promotion, 100% Real Users, Ranking Views, Good for Channel Ranking, Drop Possible, No Refill, avg 14 Hours 46 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 3.5, u: "k", cpn: true, s: "Max 100M, Lifetime 1K -5k/ day NON DROP, Start Time 0-60 Minutes, avg 34 Hours 57 Minutes" }
