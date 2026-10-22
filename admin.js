@@ -212,23 +212,76 @@
       list.innerHTML = '<div class="orders-empty muted">No reviews yet.</div>';
       return;
     }
-    rows.forEach(function (r) {
-      var card = document.createElement("div");
-      card.className = "order-card";
-      var stars = "★★★★★".slice(0, r.rating) + "☆☆☆☆☆".slice(0, 5 - r.rating);
-      var head = document.createElement("div");
-      head.className = "oc-bar";
-      head.innerHTML = "<span>" + esc(r.order_code || "Review") + "</span><span style='color:#ffc107'>" + stars + "</span>";
-      var body = document.createElement("div");
-      body.className = "oc-details open";
-      body.appendChild(kv("Customer", esc(r.customer_name || "—")));
-      body.appendChild(kv("Rating", r.rating + " / 5"));
-      body.appendChild(kv("Review", esc(r.review_text || "")));
-      body.appendChild(kv("Date", esc(new Date(r.created_at).toLocaleString())));
-      card.appendChild(head);
-      card.appendChild(body);
-      list.appendChild(card);
+    rows.forEach(function (r) { list.appendChild(reviewCard(r)); });
+  }
+
+  // Same blue-bar accordion as the order cards: bar shows the order code +
+  // star rating; details stay hidden until the bar is tapped.
+  function reviewCard(r) {
+    var card = document.createElement("div");
+    card.className = "order-card";
+    var d = new Date(r.created_at);
+    var stars = "★★★★★".slice(0, r.rating) + "☆☆☆☆☆".slice(0, 5 - r.rating);
+
+    var head = document.createElement("div");
+    head.className = "oc-bar";
+    head.setAttribute("role", "button");
+    head.setAttribute("aria-expanded", "false");
+    var code = document.createElement("strong");
+    code.className = "code";
+    code.textContent = r.order_code || "Review";
+    var right = document.createElement("span");
+    right.className = "oc-bar-right";
+    var starSpan = document.createElement("span");
+    starSpan.style.color = "#ffc107";
+    starSpan.textContent = stars;
+    var chev = document.createElement("span");
+    chev.className = "oc-chev";
+    chev.textContent = "▾";
+    right.appendChild(starSpan);
+    right.appendChild(chev);
+    head.appendChild(code);
+    head.appendChild(right);
+    card.appendChild(head);
+
+    var details = document.createElement("div");
+    details.className = "oc-details";
+    card.appendChild(details);
+
+    head.addEventListener("click", function () {
+      var open = details.classList.toggle("open");
+      chev.textContent = open ? "▴" : "▾";
+      head.setAttribute("aria-expanded", open ? "true" : "false");
     });
+
+    details.appendChild(kv("Customer", esc(r.customer_name || "—")));
+    details.appendChild(kv("Rating", r.rating + " / 5 — " + stars));
+    details.appendChild(kv("Review", esc(r.review_text || "")));
+    details.appendChild(kv("Date", esc(d.toLocaleString())));
+
+    var actions = document.createElement("div");
+    actions.className = "oc-actions";
+    var del = document.createElement("button");
+    del.className = "btn-reject";
+    del.textContent = "🗑 Delete Review";
+    del.addEventListener("click", function () {
+      if (!window.confirm("Delete this review permanently?")) return;
+      del.disabled = true;
+      del.textContent = "Deleting…";
+      sb.from("reviews").delete().eq("id", r.id).then(function (res) {
+        if (res.error) {
+          del.disabled = false;
+          del.textContent = "🗑 Delete Review";
+          window.alert("Could not delete this review — the one-time delete permission may not be added yet.");
+          return;
+        }
+        reviewsCache = (reviewsCache || []).filter(function (x) { return x.id !== r.id; });
+        paintReviews(reviewsCache);
+      });
+    });
+    actions.appendChild(del);
+    details.appendChild(actions);
+    return card;
   }
 
   function renderOrders() {
