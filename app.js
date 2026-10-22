@@ -37,7 +37,7 @@
           { p: 0.2998, u: "k", cpn: true, s: "Max 5M, Instagram Likes Old Accounts, Low Drop Possible, 50K/Day, No Refill, avg 3 Hours 6 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 0.4004, u: "k", cpn: true, s: "Max 500K, Old Real, Non-Drop, 200K/Day, avg 3 Hours 14 Minutes" }
+          { p: 0.4004, u: "k", cpn: true, s: "Max 500K, Old Real, Non-Drop, 200K/Day, Lifetime Refill, avg 3 Hours 14 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
           { p: 2.0871, u: "k", cpn: false, s: "Max 20K, 100% Old Accounts With Posts, 500K/Day, Lifetime Refill, avg 6 Hours 54 Minutes" }
@@ -51,7 +51,7 @@
           { p: 0.2, u: "k", cpn: true, s: "Max 7M, Instagram Reels Views Non-Drop 300k/500k Per Hour, Lifetime Refill, avg 5 Hours 55 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 0.3, u: "k", cpn: true, s: "Max 10M, Instagram Reels views NonDrop 20M/50M Days ULTRA FAST Lifetime One click Done, avg 7 Hours 13 Minutes" }
+          { p: 0.3, u: "k", cpn: true, s: "Max 10M, Instagram Reels views NonDrop 20M/50M Days ULTRA FAST Lifetime Refill, One click Done, avg 7 Hours 13 Minutes" }
         ]}
       ]},
       { id: "comments", label: "Comments", subcats: [
@@ -69,18 +69,18 @@
           { p: 3.9039, u: "k", cpn: false, s: "Max 50K, TikTok Followers 100% Real Active Accounts, 100% Non-Drop, No Refill, avg 18 Hours 23 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 7.0093, u: "k", cpn: false, s: "Max 50K, Premium Quality, Real HQ Profiles, Speed Up to 50K per Day, avg 21 Hours 33 Minutes" }
+          { p: 7.0093, u: "k", cpn: false, s: "Max 50K, Premium Quality, Real HQ Profiles, Speed Up to 50K per Day, Lifetime Refill, avg 21 Hours 33 Minutes" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 1M, Start 1 Hour, Speed 10K/Day, Cancel Enabled, avg 4 Hours 11 Minutes" }
+          { p: 1.5, u: "k", cpn: true, s: "Max 1M, Start 1 Hour, Speed 10K/Day, Cancel Enabled, No Refill, avg 4 Hours 11 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 2.5, u: "k", cpn: true, s: "Max 50K, TikTok Likes Max 50k No Drop, Cancel Enable, Refill 30 Days, avg 3 Hours 36 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 4.16, u: "k", cpn: false, s: "Max 50K, 100% NonDrop, Real User, Instant, avg 66 Hours 8 Minutes" }
+          { p: 4.16, u: "k", cpn: false, s: "Max 50K, 100% NonDrop, Real User, Instant, 30 Days Refill, avg 66 Hours 8 Minutes" }
         ]}
       ]},
       { id: "views", label: "Views", subcats: [
@@ -88,18 +88,18 @@
           { p: 0.1, u: "k", cpn: true, s: "Max 100K, Cancel Enable, No Refill, Instant Start, avg 3 Hours 23 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 0.2, u: "k", cpn: true, s: "Max Unlimited, ALWAYS STABLE, Non-Drop, Speed 10M/Day, avg 3 Hours 25 Minutes" }
+          { p: 0.2, u: "k", cpn: true, s: "Max Unlimited, ALWAYS STABLE, Non-Drop, Speed 10M/Day, No Refill, avg 3 Hours 25 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 0.3, u: "k", cpn: true, s: "Max 50M, Speed 1M/Day, 100% Non Drop, Refill Lifetime, avg 11 Hours 56 Minutes" }
+          { p: 0.3, u: "k", cpn: true, s: "Max 50M, Speed 1M/Day, 100% Non Drop, Lifetime Refill, avg 11 Hours 56 Minutes" }
         ]}
       ]},
       { id: "comments", label: "Comments", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 2.5, u: "k", cpn: true, s: "Max 1K, TikTok Comments 3 Comments Post Related Emojis Text 100% Real Humans Top Accounts, avg 3 Hours 47 Minutes" }
+          { p: 2.5, u: "k", cpn: true, s: "Max 1K, TikTok Comments 3 Comments Post Related Emojis Text 100% Real Humans Top Accounts, No Refill, avg 3 Hours 47 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 6, u: "k", cpn: true, s: "Max 1K, Non Drop, High Quality, Slow Speed 100+/Day, avg 5 Hours 42 Minutes" }
+          { p: 6, u: "k", cpn: true, s: "Max 1K, Non Drop, High Quality, Slow Speed 100+/Day, No Refill, avg 5 Hours 42 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
           { p: 8, u: "k", cpn: false, s: "Max 10K, TikTok Video Comments, 100% Real Users, Speed 1K/Day, Lifetime Guaranteed, Start 0-1 Minute, avg 57 Hours 42 Minutes" }
@@ -109,24 +109,24 @@
     { id: "facebook", label: "Facebook", categories: [
       { id: "pagelikesfol", label: "Page Likes + Followers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 1, u: "k", cpn: true, s: "Max 100K, Non Drop, Speed 3000+ Per Day, Start Time 0-2 Hours, avg 20 Hours 40 Minutes" }
+          { p: 1, u: "k", cpn: true, s: "Max 100K, Non Drop, Speed 3000+ Per Day, Start Time 0-2 Hours, No Refill, avg 20 Hours 40 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 500K, Non-Drop, Speed 10K+/Day, Fast Start 0 1 Hrs, avg 8 Hours 56 Minutes" }
+          { p: 1.5, u: "k", cpn: true, s: "Max 500K, Non-Drop, Speed 10K+/Day, Fast Start 0 1 Hrs, No Refill, avg 8 Hours 56 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 3, u: "k", cpn: true, s: "Max 500K, Non-Drop, Speed 20k+/Day, Fast Start 0 1 Hrs, avg 15 Hours 52 Minutes" }
+          { p: 3, u: "k", cpn: true, s: "Max 500K, Non-Drop, Speed 20k+/Day, Fast Start 0 1 Hrs, Lifetime Guarantee, avg 15 Hours 52 Minutes" }
         ]}
       ]},
       { id: "profilefol", label: "Profile / Page Followers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 1, u: "k", cpn: true, s: "Max 10K, HQ Global Name, Instant Start, Refill No, avg 4 Hours 35 Minutes" }
+          { p: 1, u: "k", cpn: true, s: "Max 10K, HQ Global Name, Instant Start, No Refill, avg 4 Hours 35 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 50K, High-Quality Accounts, 100% Non-Drop, Instant Start, avg 3 Hours 24 Minutes" }
+          { p: 1.5, u: "k", cpn: true, s: "Max 50K, High-Quality Accounts, 100% Non-Drop, Instant Start, No Refill, avg 3 Hours 24 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 3, u: "k", cpn: true, s: "Max 100K, High-Quality Accounts, 100% Non-Drop, Instant Start, avg 3 Hours 16 Minutes" }
+          { p: 3, u: "k", cpn: true, s: "Max 100K, High-Quality Accounts, 100% Non-Drop, Instant Start, Lifetime Refill, avg 3 Hours 16 Minutes" }
         ]}
       ]},
       { id: "pagelikes", label: "Page Likes", subcats: [
@@ -134,15 +134,15 @@
           { p: 0.8, u: "k", cpn: true, s: "Max 500K, Facebook Post Likes, HQ Real Accounts, Cancel Enable, Instant Start, 100K/Day, Drop Possible, No Refill, avg 3 Hours 8 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 1, u: "k", cpn: true, s: "Max 100K, Non-Drop, Speed 5000/Day, Start 01Hrs, avg 3 Hours 28 Minutes" }
+          { p: 1, u: "k", cpn: true, s: "Max 100K, Non-Drop, Speed 5000/Day, Start 01Hrs, Lifetime Refill, avg 3 Hours 28 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 500K, HQ Real Accounts, Cancel Enable, Lifetime, avg 3 Hours 7 Minutes" }
+          { p: 1.5, u: "k", cpn: true, s: "Max 500K, HQ Real Accounts, Cancel Enable, Lifetime Refill, avg 3 Hours 7 Minutes" }
         ]}
       ]},
       { id: "comments", label: "Comments", subcats: [
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 6, u: "k", cpn: true, s: "Max 100K, Facebook Custom Comments Drop- No Speed 100/Day Start Time 0-1 Hours, avg 7 Hours 39 Minutes" }
+          { p: 6, u: "k", cpn: true, s: "Max 100K, Facebook Custom Comments Drop- No Speed 100/Day Start Time 0-1 Hours, No Refill, avg 7 Hours 39 Minutes" }
         ]}
       ]},
       { id: "videoviews", label: "Video Views", subcats: [
@@ -150,17 +150,17 @@
           { p: 0.4, u: "k", cpn: true, s: "Max Unlimited, Facebook Video/Reels Views, 1M/Day, Instant Start, 30 Days Refill, avg 4 Hours 17 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 0.8, u: "k", cpn: true, s: "Max Unlimited, Non Drop, Lifetime, Instant Start, avg 13 Hours 15 Minutes" }
+          { p: 0.8, u: "k", cpn: true, s: "Max Unlimited, Non Drop, Lifetime Refill, Instant Start, avg 13 Hours 15 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 500M, HQ VIP SERVER, Non Drop, 1M/Day, avg 3 Hours 6 Minutes" }
+          { p: 1.5, u: "k", cpn: true, s: "Max 500M, HQ VIP SERVER, Non Drop, 1M/Day, Lifetime Refill, avg 3 Hours 6 Minutes" }
         ]}
       ]}
     ]},
     { id: "youtube", label: "YouTube", categories: [
       { id: "subscribers", label: "Subscribers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 12, u: "k", cpn: true, s: "Max 10K, Youtube Bot Subscribers Fast All Drop, Instantly Start, avg 3 Hours 50 Minutes" }
+          { p: 12, u: "k", cpn: true, s: "Max 10K, Youtube Bot Subscribers Fast All Drop, Instantly Start, No Refill, avg 3 Hours 50 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 30, u: "k", cpn: false, s: "Max 500, NonDrop, Speed 50+ / DAY, Start Time 0-12 Hours, Lifetime Refill, avg 25 Hours 28 Minutes" }
@@ -179,7 +179,7 @@
       ]},
       { id: "likes", label: "Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 100K, YouTube Likes- Speed -100K/D Start Time Instant, avg 6 Hours 35 Minutes" }
+          { p: 1.5, u: "k", cpn: true, s: "Max 100K, YouTube Likes- Speed -100K/D Start Time Instant, No Refill, avg 6 Hours 35 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
           { p: 3, u: "k", cpn: true, s: "Max 10K, YouTube Likes Stable, Speed 1000/Day, Non Drop, Lifetime Guaranteed, Start Time 0-1 Hours, Own Server, avg 3 Hours 35 Minutes" }
