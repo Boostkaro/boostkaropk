@@ -476,48 +476,7 @@
     });
   }
 
-  // ---- Track order ----
-  function trackOrder() {
-    var out = $("track-result");
-    var code = $("track-code").value.trim().toUpperCase();
-    var phone = $("track-phone").value.trim();
-    if (!code || !phone) {
-      out.innerHTML = '<div class="alert error">Enter both your order code and contact number.</div>';
-      return;
-    }
-    if (!sb) {
-      out.innerHTML = '<div class="alert error">Database not connected. Please try again later.</div>';
-      return;
-    }
-    out.innerHTML = '<p class="muted">Looking up your order…</p>';
-    sb.from("orders").select("*").eq("order_code", code).eq("contact_number", phone).limit(1)
-      .then(function (res) {
-        if (res.error) {
-          out.innerHTML = '<div class="alert error">Lookup failed: ' + esc(res.error.message) + "</div>";
-          return;
-        }
-        if (!res.data || !res.data.length) {
-          out.innerHTML = '<div class="alert error">No order found. Check your code and contact number.</div>';
-          return;
-        }
-        var o = res.data[0];
-        var d = new Date(o.created_at);
-        out.innerHTML =
-          '<div class="track-result">' +
-          '<span class="status ' + esc(o.status) + '">' + esc(o.status) + "</span>" +
-          "<dl>" +
-          "<dt>Order</dt><dd>" + esc(o.order_code) + "</dd>" +
-          "<dt>Service</dt><dd>" + esc(o.platform) + " · " + esc(o.service_type) + " · " + esc(o.quality) + "</dd>" +
-          "<dt>Quantity</dt><dd>" + Number(o.quantity).toLocaleString() + "</dd>" +
-          "<dt>Paid</dt><dd>" + fmtUSD(o.price_usd) + " (≈ " + fmtPKR(o.price_pkr) + ")</dd>" +
-          "<dt>Placed</dt><dd>" + esc(d.toLocaleString()) + "</dd>" +
-          (o.admin_note ? "<dt>Note</dt><dd>" + esc(o.admin_note) + "</dd>" : "") +
-          "</dl></div>";
-      })
-      .catch(function () {
-        out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
-      });
-  }
+  // ---- Order tracking lives on the dedicated /track page (new design) ----
 
   // ---- Page view tracking (for traffic reports) ----
   function trackPageView() {
@@ -781,7 +740,6 @@
     $("confirm-modal").addEventListener("click", function (e) {
       if (e.target === this) this.classList.remove("open");
     });
-    $("track-btn").addEventListener("click", trackOrder);
     renderAll();
     trackPageView();
     initPromoPopup();
