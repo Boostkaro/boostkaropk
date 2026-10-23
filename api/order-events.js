@@ -146,6 +146,57 @@ async function syncStatuses() {
   return updated;
 }
 
+
+// ---------------- WhatsApp (Meta Cloud API) ----------------
+// Token lives ONLY as a Vercel env var on Raji's account (WHATSAPP_TOKEN).
+const WA_PHONE_ID = process.env.WHATSAPP_PHONE_ID || "1351878108014876";
+const WA_ADMIN_NUMBER = "971562654855"; // Raji's personal number (alerts)
+const GRAPH = "https://graph.facebook.com/v22.0";
+
+function waPhone(raw) {
+  let n = String(raw || "").replace(/[^0-9]/g, "");
+  if (n.startsWith("0")) n = "92" + n.slice(1);
+  else if (n.length === 10 && n.startsWith("3")) n = "92" + n;
+  return n;
+}
+function waName(order) {
+  let n = String(order.customer_name || "").split(" (Username:")[0].trim();
+  return n || "Customer";
+}
+const SVC_LABEL = { followers: "Followers", likes: "Likes", views: "Views",
+  comments: "Comments", subscribers: "Subscribers", pagelikes: "Page Likes",
+  pagelikesfol: "Page Followers", watchtime: "Watch Time" };
+function waService(order) {
+  const plat = String(order.platform || "");
+  const cap = plat.charAt(0).toUpperCase() + plat.slice(1);
+  return cap + " " + (SVC_LABEL[order.service_type] || order.service_type || "");
+}
+async function waSend(to, template, params) {
+  if (!process.env.WHATSAPP_TOKEN) return { sent: false, reason: "no token" };
+  const payload = { messaging_product: "whatsapp", to, type: "template",
+    template: { name: template, language: { code: "en" },
+      components: params && params.length
+        ? [{ type: "body", parameters: params.map((t) => ({ type: "text", text: String(t) })) }]
+        : [] } };
+  const r = await fetch(GRAPH + "/" + WA_PHONE_ID + "/messages", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + process.env.WHATSAPP_TOKEN,
+               "Content-Type": "application/json" },
+    body: JSON.stringify(payload) });
+  const data = await r.json().catch(() => ({}));
+  return { sent: r.ok, status: r.status, data };
+}
+// Claim a one-time notification flag; true only for the caller that wins.
+async function waClaim(orderId, column) {
+  const body = {}; body[column] = new Date().toISOString();
+  const rows = await sbPatch("orders?id=eq." + orderId + "&" + column + "=is.null", body);
+  return rows.length > 0;
+}
+async function waUnclaim(orderId, column) {
+  const body = {}; body[column] = null;
+  await sbPatch("orders?id=eq." + orderId, body).catch(() => {});
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") { res.status(405).json({ error: "POST only" }); return; }
   if (!process.env.TRIGGER_KEY || req.headers["x-trigger-key"] !== process.env.TRIGGER_KEY) {
@@ -166,6 +217,44 @@ module.exports = async (req, res) => {
       for (const o of waiting) { placed.push(await placeOrder(o)); await sleep(800); }
       const synced = await syncStatuses();
       res.status(200).json({ placed, status_updates: synced }); return;
+    }
+    if (body.op === "notify_new_order" && body.order_id) {
+      const rows = await sbGet("orders?id=eq." + body.order_id + "&select=*&limit=1");
+      const o = rows[0];
+      if (!o) { res.status(200).json({ sent: false, reason: "no order" }); return; }
+      if (!(await waClaim(o.id, "wa_alert_sent_at"))) {
+        res.status(200).json({ sent: false, reason: "already alerted" }); return;
+      }
+      const out = await waSend(WA_ADMIN_NUMBER, "new_order_alert",
+        [o.order_code, waService(o), o.quantity, "$" + Number(o.price_usd || 0).toFixed(2)]);
+      if (!out.sent) await waUnclaim(o.id, "wa_alert_sent_at");
+      res.status(200).json(out); return;
+    }
+    if (body.op === "wa_event" && body.order_id && body.event) {
+      const rows = await sbGet("orders?id=eq." + body.order_id + "&select=*&limit=1");
+      const o = rows[0];
+      if (!o) { res.status(200).json({ sent: false, reason: "no order" }); return; }
+      const to = waPhone(o.contact_number);
+      let out = { sent: false, reason: "event ignored" };
+      if (body.event === "paid") {
+        if (await waClaim(o.id, "wa_paid_sent_at")) {
+          out = await waSend(to, "order_received_payment_confirmed",
+            [waName(o), o.order_code, waService(o)]);
+          if (!out.sent) await waUnclaim(o.id, "wa_paid_sent_at");
+        } else out = { sent: false, reason: "already sent" };
+      } else if (body.event === "cancelled" && !o.provider_order_id) {
+        if (await waClaim(o.id, "wa_rejected_sent_at")) {
+          out = await waSend(to, "order_received_payment_rejected",
+            [waName(o), o.order_code]);
+          if (!out.sent) await waUnclaim(o.id, "wa_rejected_sent_at");
+        } else out = { sent: false, reason: "already sent" };
+      } else if (body.event === "completed") {
+        if (await waClaim(o.id, "wa_completed_sent_at")) {
+          out = await waSend(to, "order_completed", [o.order_code]);
+          if (!out.sent) await waUnclaim(o.id, "wa_completed_sent_at");
+        } else out = { sent: false, reason: "already sent" };
+      }
+      res.status(200).json(out); return;
     }
     res.status(400).json({ error: "unknown op" });
   } catch (e) {
