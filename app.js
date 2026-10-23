@@ -29,7 +29,7 @@
           { p: 4.225, u: "k", cpn: true, s: "Max 10K, Real Accounts Verified By Phone Number (High Overflow), Non-Drop Stable, Instant Start, Speed 5K/Day, No Refill, avg 20 Hours" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 5, u: "k", cpn: true, s: "Max 100K, Old Accounts With Posts, All Flag Types Working, Speed 50K/Day, Lifetime Refill, Start Time 0-1 Hours, avg 21 Hours" }
+          { p: 5, u: "k", cpn: true, s: "Max 100K, Old Accounts With Posts, All Flag Types Working, Speed 50K/Day, Lifetime Refill, Start Time 0-1 Hours, avg 40 Hours" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
