@@ -283,25 +283,6 @@
       });
     });
     actions.appendChild(del);
-    // Affiliate flag only — all affiliate details (name/number, claim,
-    // payment) are managed in the Affiliated Orders panel below Reviews.
-    var affWrap = document.createElement("div");
-    affWrap.className = "oc-actions";
-    var affLabel = document.createElement("label");
-    var affChk = document.createElement("input");
-    affChk.type = "checkbox";
-    affChk.checked = !!o.affiliated;
-    affLabel.appendChild(affChk);
-    affLabel.appendChild(document.createTextNode(" 🤝 Affiliated order"));
-    affWrap.appendChild(affLabel);
-    affChk.addEventListener("change", function () {
-      saveAffiliate(o.id, {
-        affiliated: affChk.checked,
-        affiliate_claimed: affChk.checked ? !!o.affiliate_claimed : false
-      });
-    });
-    details.appendChild(affWrap);
-
     details.appendChild(actions);
     return card;
   }
@@ -443,7 +424,8 @@
       actions.appendChild(rejBtn);
     }
 
-    // Affiliate program: flag orders an affiliate brought + claim state.
+    // Affiliate flag only — all affiliate details (name/number, claim,
+    // payment) are managed in the Affiliated Orders panel below Reviews.
     var affWrap = document.createElement("div");
     affWrap.className = "oc-actions";
     var affLabel = document.createElement("label");
@@ -453,32 +435,12 @@
     affLabel.appendChild(affChk);
     affLabel.appendChild(document.createTextNode(" 🤝 Affiliated order"));
     affWrap.appendChild(affLabel);
-    var affInfo = document.createElement("input");
-    affInfo.type = "text";
-    affInfo.placeholder = "Affiliate name / number…";
-    affInfo.value = o.affiliate_info || "";
-    affInfo.style.display = o.affiliated ? "" : "none";
-    affWrap.appendChild(affInfo);
-    var claimLabel = document.createElement("label");
-    claimLabel.style.display = o.affiliated ? "" : "none";
-    var claimChk = document.createElement("input");
-    claimChk.type = "checkbox";
-    claimChk.checked = !!o.affiliate_claimed;
-    claimLabel.appendChild(claimChk);
-    claimLabel.appendChild(document.createTextNode(" ✅ Claimed by affiliate"));
-    affWrap.appendChild(claimLabel);
-    function affSave() {
-      affInfo.style.display = affChk.checked ? "" : "none";
-      claimLabel.style.display = affChk.checked ? "" : "none";
+    affChk.addEventListener("change", function () {
       saveAffiliate(o.id, {
         affiliated: affChk.checked,
-        affiliate_claimed: affChk.checked ? claimChk.checked : false,
-        affiliate_info: affInfo.value.trim() || null
+        affiliate_claimed: affChk.checked ? !!o.affiliate_claimed : false
       });
-    }
-    affChk.addEventListener("change", affSave);
-    claimChk.addEventListener("change", affSave);
-    affInfo.addEventListener("change", affSave);
+    });
     details.appendChild(affWrap);
 
     details.appendChild(actions);
