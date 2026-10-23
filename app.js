@@ -840,4 +840,20 @@
   });
 
 
+
+  // ---- Affiliation program popup (homepage, once per session) ----
+  function initAffiliatePopup() {
+    var overlay = $("affiliate-overlay");
+    if (!overlay) return;
+    function close() { overlay.style.display = "none"; }
+    $("affiliate-close").addEventListener("click", close);
+    overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
+    try {
+      if (sessionStorage.getItem("bk_aff_seen")) return;
+      sessionStorage.setItem("bk_aff_seen", "1");
+    } catch (e) {}
+    setTimeout(function () { overlay.style.display = "flex"; }, 1500);
+  }
+  initAffiliatePopup();
+
 })();
