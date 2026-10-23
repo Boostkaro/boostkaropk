@@ -283,6 +283,44 @@
       });
     });
     actions.appendChild(del);
+    // Affiliate program: flag orders an affiliate brought + claim state.
+    var affWrap = document.createElement("div");
+    affWrap.className = "oc-actions";
+    var affLabel = document.createElement("label");
+    var affChk = document.createElement("input");
+    affChk.type = "checkbox";
+    affChk.checked = !!o.affiliated;
+    affLabel.appendChild(affChk);
+    affLabel.appendChild(document.createTextNode(" 🤝 Affiliated order"));
+    affWrap.appendChild(affLabel);
+    var affInfo = document.createElement("input");
+    affInfo.type = "text";
+    affInfo.placeholder = "Affiliate name / number…";
+    affInfo.value = o.affiliate_info || "";
+    affInfo.style.display = o.affiliated ? "" : "none";
+    affWrap.appendChild(affInfo);
+    var claimLabel = document.createElement("label");
+    claimLabel.style.display = o.affiliated ? "" : "none";
+    var claimChk = document.createElement("input");
+    claimChk.type = "checkbox";
+    claimChk.checked = !!o.affiliate_claimed;
+    claimLabel.appendChild(claimChk);
+    claimLabel.appendChild(document.createTextNode(" ✅ Claimed by affiliate"));
+    affWrap.appendChild(claimLabel);
+    function affSave() {
+      affInfo.style.display = affChk.checked ? "" : "none";
+      claimLabel.style.display = affChk.checked ? "" : "none";
+      saveAffiliate(o.id, {
+        affiliated: affChk.checked,
+        affiliate_claimed: affChk.checked ? claimChk.checked : false,
+        affiliate_info: affInfo.value.trim() || null
+      });
+    }
+    affChk.addEventListener("change", affSave);
+    claimChk.addEventListener("change", affSave);
+    affInfo.addEventListener("change", affSave);
+    details.appendChild(affWrap);
+
     details.appendChild(actions);
     return card;
   }
@@ -326,6 +364,14 @@
     code.textContent = o.order_code;
     var right = document.createElement("span");
     right.className = "oc-bar-right";
+    if (o.affiliated) {
+      var ab = document.createElement("span");
+      ab.className = "badge";
+      ab.style.background = "#fff3cd";
+      ab.style.color = "#7a5b00";
+      ab.textContent = o.affiliate_claimed ? "🤝 Claimed" : "🤝 Affiliate";
+      right.appendChild(ab);
+    }
     var badge = document.createElement("span");
     badge.className = "badge " + (STATUS_BADGES[o.status] || "b-pending");
     badge.textContent = STATUS_LABELS[o.status] || o.status;
@@ -415,6 +461,44 @@
       actions.appendChild(rejBtn);
     }
 
+    // Affiliate program: flag orders an affiliate brought + claim state.
+    var affWrap = document.createElement("div");
+    affWrap.className = "oc-actions";
+    var affLabel = document.createElement("label");
+    var affChk = document.createElement("input");
+    affChk.type = "checkbox";
+    affChk.checked = !!o.affiliated;
+    affLabel.appendChild(affChk);
+    affLabel.appendChild(document.createTextNode(" 🤝 Affiliated order"));
+    affWrap.appendChild(affLabel);
+    var affInfo = document.createElement("input");
+    affInfo.type = "text";
+    affInfo.placeholder = "Affiliate name / number…";
+    affInfo.value = o.affiliate_info || "";
+    affInfo.style.display = o.affiliated ? "" : "none";
+    affWrap.appendChild(affInfo);
+    var claimLabel = document.createElement("label");
+    claimLabel.style.display = o.affiliated ? "" : "none";
+    var claimChk = document.createElement("input");
+    claimChk.type = "checkbox";
+    claimChk.checked = !!o.affiliate_claimed;
+    claimLabel.appendChild(claimChk);
+    claimLabel.appendChild(document.createTextNode(" ✅ Claimed by affiliate"));
+    affWrap.appendChild(claimLabel);
+    function affSave() {
+      affInfo.style.display = affChk.checked ? "" : "none";
+      claimLabel.style.display = affChk.checked ? "" : "none";
+      saveAffiliate(o.id, {
+        affiliated: affChk.checked,
+        affiliate_claimed: affChk.checked ? claimChk.checked : false,
+        affiliate_info: affInfo.value.trim() || null
+      });
+    }
+    affChk.addEventListener("change", affSave);
+    claimChk.addEventListener("change", affSave);
+    affInfo.addEventListener("change", affSave);
+    details.appendChild(affWrap);
+
     details.appendChild(actions);
     return card;
   }
@@ -439,6 +523,24 @@
       })
       .catch(function () {
         $("admin-msg").innerHTML = '<div class="alert error">Update failed. Try again.</div>';
+      });
+  }
+
+  function saveAffiliate(id, patch) {
+    sb.from("orders").update(patch).eq("id", id)
+      .then(function (res) {
+        if (res.error) {
+          $("admin-msg").innerHTML = '<div class="alert error">Affiliate update failed: ' + esc(res.error.message) + "</div>";
+          return;
+        }
+        var o = allOrders.find(function (x) { return x.id === id; });
+        if (o) { Object.keys(patch).forEach(function (k) { o[k] = patch[k]; }); }
+        $("admin-msg").innerHTML = '<div class="alert ok">Affiliate status updated.</div>';
+        renderOrders();
+        setTimeout(function () { $("admin-msg").innerHTML = ""; }, 2000);
+      })
+      .catch(function () {
+        $("admin-msg").innerHTML = '<div class="alert error">Affiliate update failed. Try again.</div>';
       });
   }
 
