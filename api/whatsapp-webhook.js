@@ -7,7 +7,7 @@ const VERIFY_TOKEN = "fa73520d429945084a48edcf97ee3928";
 const SB_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
 const WA_PHONE_ID = process.env.WHATSAPP_PHONE_ID || "1351878108014876";
 const GRAPH = "https://graph.facebook.com/v22.0";
-const REDIRECT_TEXT = "This is BoostKaro's automated number — it only sends order updates, and we don't reply from here. For any help, please message our customer service on WhatsApp: +92 334 0942542";
+const REDIRECT_TEXT = "This is BoostKaro's automated number — it only sends order updates, and we don't reply from here. For any help, please message our customer service on WhatsApp: +92 334 0942542 or visit our website: boostkaropk.com";
 const SKIP_SENDERS = new Set(["971562654855", "923340942542", "923348139464"]);
 
 function sbHeaders() {
