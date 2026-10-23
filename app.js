@@ -850,6 +850,10 @@
     overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
     setTimeout(function () { overlay.style.display = "flex"; }, 1500);
   }
-  initAffiliatePopup();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initAffiliatePopup);
+  } else {
+    initAffiliatePopup();
+  }
 
 })();
