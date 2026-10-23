@@ -242,6 +242,41 @@
   }
   function qtyMinFor(unit) { return (unit === "pkg" || unit === "ch") ? 1 : 100; }
   function qtyDefaultFor(unit) { return (unit === "pkg" || unit === "ch") ? 1 : 1000; }
+  // Finite ceiling for tiers the provider labels "Max Unlimited": the
+  // provider's own maximum, 2^31 - 1 = 2,147,483,647. A real number (not
+  // Infinity) so the quantity input's max attribute and the submit-time
+  // block both work with it. Safe: quantities are read with parseInt and
+  // compared as JS doubles — exact far beyond this value (below 2^53).
+  var PROVIDER_UNLIMITED_MAX = 2147483647;
+
+  // Per-tier maximum overrides, keyed by the tier's EXACT spec text so an
+  // override can only ever match that one tier; consulted by qtyMaxFor()
+  // before parsing. The spec text is customer display text and is NOT
+  // edited.
+  // - YouTube Views / No Drop: its spec text rounds the cap up to
+  //   "Max 100M" (= 100,000,000), but the provider's true maximum for
+  //   that service is 99,999,999 — enforce the provider's number.
+  var QTY_MAX_OVERRIDES = {
+    "Max 100M, Lifetime 1K -5k/ day NON DROP, Start Time 0-60 Minutes, avg 34 Hours 57 Minutes": 99999999
+  };
+
+  // Per-tier maximum, parsed from the tier's own spec text ("Max 10K",
+  // "Max 500", "Max Unlimited", ...) — the same text shown to customers
+  // in the service description, so the enforced cap can never drift from
+  // the displayed one. Returns Infinity when a tier has no cap.
+  function qtyMaxFor(tier) {
+    if (!tier || !tier.s) return Infinity;
+    if (Object.prototype.hasOwnProperty.call(QTY_MAX_OVERRIDES, tier.s)) return QTY_MAX_OVERRIDES[tier.s];
+    var m = /Max\s+(Unlimited|[0-9]+(?:\.[0-9]+)?\s*[KM]?)/i.exec(tier.s);
+    if (!m) return Infinity;
+    var raw = m[1].replace(/\s+/g, "");
+    if (/^unlimited$/i.test(raw)) return PROVIDER_UNLIMITED_MAX;
+    var mult = 1;
+    if (/K$/i.test(raw)) mult = 1000;
+    else if (/M$/i.test(raw)) mult = 1000000;
+    var v = parseFloat(raw) * mult;
+    return isNaN(v) ? Infinity : v;
+  }
   function calcTotalUSD(tier, qty) {
     if (tier.u === "k" || tier.u === "kh") return tier.p * qty / 1000;
     return tier.p * qty;
@@ -275,9 +310,12 @@
     $("order-service-line").textContent = sel.subcat.label + " · " + fmtUSD(t.p) + " " + UNIT_LABEL[t.u] + (t.s ? " · " + t.s : "");
     var qty = $("order-qty");
     qty.min = qtyMinFor(t.u);
+    var maxQ = qtyMaxFor(t);
+    qty.max = isFinite(maxQ) ? maxQ : "";
     qty.value = qtyDefaultFor(t.u);
     document.querySelector('label[for="order-qty"]').innerHTML = esc(qtyLabelFor(t.u)) + ' <span class="req">*</span>';
-    $("order-qty-hint").textContent = "Min " + qtyMinFor(t.u).toLocaleString() + (t.u === "k" || t.u === "kh" ? " units" : "");
+    $("order-qty-hint").textContent = "Min " + qtyMinFor(t.u).toLocaleString() + (t.u === "k" || t.u === "kh" ? " units" : "") +
+      (isFinite(maxQ) ? " · Max " + maxQ.toLocaleString("en-US") + (t.u === "k" || t.u === "kh" ? " units" : "") : "");
     $("order-name").value = "";
     $("order-phone").value = "";
     $("order-link").value = "";
@@ -308,10 +346,14 @@
   // FIRST30 is a private ONE-TIME code: 30% off Instagram Followers only.
   // Single use is enforced against past orders: a redeemed order carries
   // "FIRST30" in its admin_note, so any later apply/submit is refused.
+  // Privacy fix: the orders table is no longer publicly readable, so the
+  // one-time check goes through the first30_used() function instead of a
+  // direct SELECT on admin_note. Failure semantics unchanged: any error
+  // means "treat as unusable".
   function checkFirst30Used() {
     if (!sb) return Promise.resolve(true); // cannot verify -> treat as unusable
-    return sb.from("orders").select("id").ilike("admin_note", "%FIRST30%").limit(1)
-      .then(function (res) { return !!(res.data && res.data.length); })
+    return sb.rpc("first30_used")
+      .then(function (res) { return res.error ? true : !!res.data; })
       .catch(function () { return true; });
   }
 
@@ -396,22 +438,18 @@
   }
 
   // Sequential public order codes starting at BK-0503: BK-0503, BK-0504, ...
-  // Next number = 503 + (count of existing orders whose code already
-  // matches BK-<digits>). Existing random codes (BK-XXXXXX) are untouched.
-  // Any lookup failure falls back to the random generator so checkout
-  // never breaks.
+  // Privacy fix: the next code is computed server-side by the
+  // next_order_code() function (the orders table is no longer publicly
+  // readable). It applies the same rule as before: 503 + (count of
+  // existing BK-<digits> codes). Existing random codes (BK-XXXXXX) are
+  // untouched. Any lookup failure falls back to the random generator so
+  // checkout never breaks.
   function genSequentialOrderCode() {
     if (!sb) return Promise.resolve(genOrderCode());
-    return sb.from("orders").select("order_code").like("order_code", "BK-%").limit(10000)
+    return sb.rpc("next_order_code")
       .then(function (res) {
         if (res.error || !res.data) return genOrderCode();
-        var count = 0;
-        for (var i = 0; i < res.data.length; i++) {
-          if (/^BK-\d+$/.test(res.data[i].order_code || "")) count++;
-        }
-        var s = String(503 + count);
-        while (s.length < 4) s = "0" + s;
-        return "BK-" + s;
+        return String(res.data);
       })
       .catch(function () { return genOrderCode(); });
   }
@@ -441,6 +479,13 @@
 
     if (!t.qty || t.qty < minQ) {
       showError("Quantity must be at least " + minQ + " " + unitWord(tier.u) + ".");
+      return;
+    }
+    // Max-quantity enforcement (the bridge re-validates against the live
+    // provider range as a second layer, unchanged).
+    var maxQ = qtyMaxFor(tier);
+    if (isFinite(maxQ) && t.qty > maxQ) {
+      showError("Maximum quantity for this service is " + maxQ.toLocaleString("en-US") + " " + unitWord(tier.u) + ".");
       return;
     }
     if (!phone) { showError("Contact number is required — we need it in case your link is wrong."); return; }

@@ -202,7 +202,6 @@
       return;
     }
     out.innerHTML = '<p class="muted">Looking up your order…</p>';
-    var BASE = "order_code,platform,service_type,quality,quantity,status,created_at,updated_at";
     function handle(res) {
       if (res.error) {
         out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
@@ -214,18 +213,11 @@
       }
       out.innerHTML = render(res.data[0]);
     }
-    // Try the provider-status-aware select first; if that column does not
-    // exist yet, fall back to the base columns only.
-    sb.from("orders").select(BASE + ",provider_status")
-      .eq("order_code", code).eq("contact_number", phone).limit(1)
-      .then(function (res) {
-        if (res.error) {
-          return sb.from("orders").select(BASE)
-            .eq("order_code", code).eq("contact_number", phone).limit(1)
-            .then(handle);
-        }
-        handle(res);
-      })
+    // Privacy fix: the orders table is no longer publicly readable. The
+    // track_order function returns display-safe fields for the single
+    // order whose code AND contact number both match — and nothing else.
+    sb.rpc("track_order", { p_code: code, p_contact: phone })
+      .then(handle)
       .catch(function () {
         out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
       });
