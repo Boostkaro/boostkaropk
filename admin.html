@@ -16,6 +16,8 @@
 .admin-head{background:#0d47a1;color:#fff;padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .admin-head a{color:#fff;text-decoration:none;font-size:.9rem;font-weight:600}
 .admin-head a:hover{text-decoration:underline}
+.admin-head .muted{color:#bcd3f7;font-weight:600}
+.admin-head{font-size:1.05rem}
 .admin-body{padding:16px}
 .admin-body h2{margin:0 0 6px;color:var(--blue-dark);font-size:1.3rem}
 .admin-login{max-width:460px;margin:30px auto}
@@ -95,8 +97,8 @@
   <div id="admin-panel" style="display:none">
     <div class="admin-card" style="margin-top:26px">
       <div class="admin-head"><span>🚀 BoostKaroPK Admin</span><button class="admin-logout" id="logout-btn" type="button">Logout</button></div>
+      <div class="admin-head"><span>Orders 📦 <span class="muted" id="orders-count"></span></span></div>
       <div class="admin-body">
-        <h2>Orders 📦 <span class="muted" id="orders-count"></span></h2>
         <div class="admin-filters">
           <input type="text" id="filter-text" placeholder="Search code, name, phone, TID…">
           <select id="filter-status">
@@ -120,14 +122,14 @@
       </div>
     </div>
     <div class="admin-card" style="margin-top:18px">
+      <div class="admin-head"><span>Customer Reviews ⭐ <span class="muted" id="reviews-count"></span></span></div>
       <div class="admin-body">
-        <h2>Customer Reviews ⭐ <span class="muted" id="reviews-count"></span></h2>
         <div class="orders-list" id="reviews-list"></div>
       </div>
     </div>
     <div class="admin-card" style="margin-top:18px">
+      <div class="admin-head"><span>Affiliated Orders 🤝 <span class="muted" id="affiliates-count"></span></span></div>
       <div class="admin-body">
-        <h2>Affiliated Orders 🤝 <span class="muted" id="affiliates-count"></span></h2>
         <div class="muted" id="affiliates-summary" style="margin-bottom:10px"></div>
         <div class="orders-list" id="affiliates-list"></div>
       </div>
