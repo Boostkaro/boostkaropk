@@ -15,7 +15,7 @@
   }
 
   // ---- Service catalog ----
-  // Tier: { p: price USD, u: unit ("k"=per 1000, "kh"=per 1000 hours, "pkg"=per package, "ch"=per channel), cpn: DISC10 coupon eligible (markup > 50%), s: specs }
+  // Tier: { p: price USD, u: unit ("k"=per 1000, "kh"=per 1000 hours, "pkg"=per package, "ch"=per channel), cpn: legacy coupon flag (unused), s: specs }
   var UNIT_LABEL = { k: "per 1,000", kh: "per 1,000 hours", pkg: "per package", ch: "per channel" };
   var UNIT_SHORT = { k: "/1k", kh: "/1k hrs", pkg: "/pkg", ch: "/channel" };
 
@@ -336,8 +336,6 @@
         price_usd: sel.tier.p
       });
     }
-    // Offer the DISC10 discount popup if this tier is coupon-eligible.
-    maybeShowCheckoutPromo(sel.tier);
   }
 
   var couponDiscount = 0; // 0.1 = 10% off
@@ -376,20 +374,7 @@
   function applyCoupon() {
     var code = $("order-coupon").value.trim().toUpperCase();
     var msg = $("coupon-msg");
-    if (code === "DISC10") {
-      // DISC10 is only valid on coupon-eligible tiers (markup > 50%)
-      if (orderTier && orderTier.tier && orderTier.tier.cpn === false) {
-        couponDiscount = 0;
-        couponCodeApplied = "";
-        msg.textContent = "Coupon not valid on this service.";
-        msg.style.color = "var(--danger)";
-      } else {
-        couponDiscount = 0.1;
-        couponCodeApplied = "DISC10";
-        msg.textContent = "✅ 10% OFF applied!";
-        msg.style.color = "var(--accent-dark)";
-      }
-    } else if (code === "FIRST30") {
+    if (code === "FIRST30") {
       // Private one-time code: 30% off Instagram Followers, single use only.
       couponDiscount = 0;
       couponCodeApplied = "";
@@ -852,45 +837,7 @@
     });
     renderAll();
     trackPageView();
-    initPromoPopup();
   });
 
-  // Show the DISC10 popup at checkout — every time checkout opens, but only
-  // for coupon-eligible tiers and only while DISC10 is not already applied.
-  function maybeShowCheckoutPromo(tier) {
-    if (!tier || tier.cpn === false) return;
-    if (couponDiscount > 0) return;
-    var field = $("order-coupon");
-    if (field && field.value.trim().toUpperCase() === "DISC10") return;
-    var overlay = $("promo-overlay");
-    if (overlay) overlay.style.display = "flex";
-  }
-
-  // ---- 10% OFF discount popup (shown at checkout, never on page load) ----
-  function initPromoPopup() {
-    var overlay = $("promo-overlay");
-    if (!overlay) return;
-    function close() { overlay.style.display = "none"; }
-    $("promo-close").addEventListener("click", close);
-    overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
-    // Claim: close the popup, auto-fill DISC10 and apply it so the
-    // discount is reflected in the order totals right away.
-    $("promo-cta").addEventListener("click", function () {
-      close();
-      var field = $("order-coupon");
-      if (field) field.value = "DISC10";
-      applyCoupon();
-    });
-    var codeEl = $("promo-code");
-    if (codeEl) codeEl.addEventListener("click", function () {
-      var t = document.createElement("textarea");
-      t.value = codeEl.textContent.trim();
-      document.body.appendChild(t); t.select();
-      try { document.execCommand("copy"); } catch (e) {}
-      document.body.removeChild(t);
-      codeEl.textContent = "Copied!";
-      setTimeout(function () { codeEl.textContent = "DISC10"; }, 1500);
-    });
-  }
 
 })();
