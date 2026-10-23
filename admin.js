@@ -344,6 +344,7 @@
       return;
     }
     shown.forEach(function (o) { list.appendChild(orderCard(o)); });
+    paintAffiliates();
   }
 
   function orderCard(o) {
@@ -542,6 +543,76 @@
       .catch(function () {
         $("admin-msg").innerHTML = '<div class="alert error">Affiliate update failed. Try again.</div>';
       });
+  }
+
+
+  // ---- Affiliated orders panel (below Reviews) ----
+  // A live view over the orders already loaded: every order flagged
+  // affiliated appears here with its 10% affiliate earning + claim state.
+  function paintAffiliates() {
+    var list = $("affiliates-list");
+    if (!list) return;
+    var rows = (allOrders || []).filter(function (o) { return o.affiliated; });
+    $("affiliates-count").textContent = "(" + rows.length + ")";
+    var total = 0, due = 0, claimedAmt = 0;
+    rows.forEach(function (o) {
+      var earn = Number(o.price_usd || 0) * 0.10;
+      total += earn;
+      if (o.affiliate_claimed) claimedAmt += earn; else if (o.status === "completed") due += earn;
+    });
+    $("affiliates-summary").innerHTML =
+      "Total 10% earned: <strong>" + fmtUSD(total) + "</strong>" +
+      " · Ready to pay (completed, unclaimed): <strong>" + fmtUSD(due) + "</strong>" +
+      " · Already claimed: <strong>" + fmtUSD(claimedAmt) + "</strong>" +
+      "<br>Affiliates earn only on <strong>completed</strong> orders — a failed or cancelled order earns nothing.";
+    if (!rows.length) {
+      list.innerHTML = '<div class="orders-empty muted">No affiliated orders yet. Tick \'🤝 Affiliated order\' on any order card and it will appear here.</div>';
+      return;
+    }
+    list.innerHTML = "";
+    rows.forEach(function (o) {
+      var earn = Number(o.price_usd || 0) * 0.10;
+      var card = document.createElement("div");
+      card.className = "order-card";
+      var head = document.createElement("div");
+      head.className = "oc-bar";
+      var code = document.createElement("strong");
+      code.className = "code";
+      code.textContent = o.order_code;
+      var right = document.createElement("span");
+      right.className = "oc-bar-right";
+      var st = document.createElement("span");
+      st.className = "badge " + (STATUS_BADGES[o.status] || "b-pending");
+      st.textContent = STATUS_LABELS[o.status] || o.status;
+      var cb = document.createElement("span");
+      cb.className = "badge";
+      if (o.affiliate_claimed) { cb.style.background = "#d4edda"; cb.style.color = "#155724"; cb.textContent = "✅ Claimed"; }
+      else { cb.style.background = "#fff3cd"; cb.style.color = "#7a5b00"; cb.textContent = "🤝 Unclaimed"; }
+      right.appendChild(st); right.appendChild(cb);
+      head.appendChild(code); head.appendChild(right);
+      card.appendChild(head);
+      var body = document.createElement("div");
+      body.style.padding = "10px 14px";
+      body.innerHTML =
+        kv2("Affiliate", esc(o.affiliate_info || "—")) +
+        kv2("Customer", esc(o.customer_name || "—") + " · " + esc(o.contact_number || "")) +
+        kv2("Service", esc(o.platform) + " · " + esc(o.service_type) + " — " + esc(o.quality)) +
+        kv2("Order amount", fmtUSD(o.price_usd) + " · " + fmtPKR(o.price_pkr)) +
+        kv2("Affiliate earns (10%)", "<strong>" + fmtUSD(earn) + "</strong>");
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn";
+      btn.textContent = o.affiliate_claimed ? "↩ Mark as Unclaimed" : "✅ Mark as Claimed";
+      btn.addEventListener("click", function () {
+        saveAffiliate(o.id, { affiliated: true, affiliate_claimed: !o.affiliate_claimed, affiliate_info: o.affiliate_info || null });
+      });
+      body.appendChild(btn);
+      card.appendChild(body);
+      list.appendChild(card);
+    });
+    function kv2(k, v) {
+      return '<div style="display:flex;gap:8px;margin:2px 0"><span class="muted" style="min-width:150px">' + k + '</span><span>' + v + '</span></div>';
+    }
   }
 
   // ---- Init ----
