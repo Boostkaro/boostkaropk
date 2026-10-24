@@ -410,3 +410,5 @@ html, body { overflow-x: hidden; }
 #rev-grid .rev-top .nm{font-weight:700;font-size:1rem}
 #rev-grid .rev-top .stars{color:#ffc107;font-size:.95rem;letter-spacing:1px;white-space:nowrap}
 #rev-grid .rev p{margin:6px 0 0}
+#rev-grid .rev-id{display:flex;align-items:center;gap:10px}
+#rev-grid .rev .ava{width:36px;height:36px;font-size:.95rem;flex:none}
