@@ -862,10 +862,12 @@
 })();
 
 // ---- Public reviews on homepage (real reviews only, 2026-10-24) ----
+// NOTE: this block sits OUTSIDE the main IIFE, so it builds its own client.
 function loadPublicReviews() {
   var grid = document.getElementById("rev-grid");
-  if (!grid || !sb) return;
-  sb.rpc("public_reviews").then(function (res) {
+  if (!grid || !window.supabase) return;
+  var client = window.supabase.createClient("https://jixdvkssgqitqjucjiob.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppeGR2a3NzZ3FpdHFqdWNqaW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5Njk5NjYsImV4cCI6MjEwNzU0NTk2Nn0._UkyTqLweinByQpoyqXxhv-BIgciRhw59PY6sS8fb2E");
+  client.rpc("public_reviews").then(function (res) {
     if (res.error || !res.data) return;
     var rows = res.data;
     if (!rows.length) return;
@@ -875,7 +877,7 @@ function loadPublicReviews() {
     var avgEl = document.getElementById("rev-avg");
     if (avgEl) avgEl.textContent = avg.toFixed(1);
     var stEl = document.getElementById("rev-stars");
-    if (stEl) stEl.textContent = "★★★★★".slice(0, Math.round(avg)) + "☆☆☆☆☆".slice(0, 5 - Math.round(avg));
+    if (stEl) stEl.textContent = "\u2605".repeat(Math.round(avg)) + "\u2606".repeat(5 - Math.round(avg));
     var cntEl = document.getElementById("rev-count");
     if (cntEl) cntEl.textContent = total + (total === 1 ? " real review" : " real reviews") + " from real orders";
     [5, 4, 3, 2, 1].forEach(function (n) {
@@ -889,11 +891,11 @@ function loadPublicReviews() {
       var card = document.createElement("div");
       card.className = "rev";
       var initial = (String(r.customer_name || "?").trim().charAt(0) || "?").toUpperCase();
-      card.innerHTML = '<div class="who"><div class="ava"></div><div><div class="nm"></div><div class="dt"></div></div></div><div class="stars"></div><p></p><div class="verified">✓ Verified Customer</div>';
+      card.innerHTML = '<div class="who"><div class="ava"></div><div><div class="nm"></div><div class="dt"></div></div></div><div class="stars"></div><p></p><div class="verified">\u2713 Verified Customer</div>';
       card.querySelector(".ava").textContent = initial;
       card.querySelector(".nm").textContent = r.customer_name || "Customer";
       card.querySelector(".dt").textContent = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
-      card.querySelector(".stars").textContent = "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
+      card.querySelector(".stars").textContent = "\u2605".repeat(n) + "\u2606".repeat(5 - n);
       card.querySelector("p").textContent = r.review_text || "";
       grid.appendChild(card);
     });
