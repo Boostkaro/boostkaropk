@@ -860,3 +860,43 @@
   }
 
 })();
+
+// ---- Public reviews on homepage (real reviews only, 2026-10-24) ----
+function loadPublicReviews() {
+  var grid = document.getElementById("rev-grid");
+  if (!grid || !sb) return;
+  sb.rpc("public_reviews").then(function (res) {
+    if (res.error || !res.data) return;
+    var rows = res.data;
+    if (!rows.length) return;
+    var total = rows.length, sum = 0, dist = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    rows.forEach(function (r) { var n = Number(r.rating) || 0; sum += n; if (dist[n] != null) dist[n]++; });
+    var avg = sum / total;
+    var avgEl = document.getElementById("rev-avg");
+    if (avgEl) avgEl.textContent = avg.toFixed(1);
+    var stEl = document.getElementById("rev-stars");
+    if (stEl) stEl.textContent = "★★★★★".slice(0, Math.round(avg)) + "☆☆☆☆☆".slice(0, 5 - Math.round(avg));
+    var cntEl = document.getElementById("rev-count");
+    if (cntEl) cntEl.textContent = total + (total === 1 ? " real review" : " real reviews") + " from real orders";
+    [5, 4, 3, 2, 1].forEach(function (n) {
+      var bar = document.getElementById("rev-bar" + n);
+      if (bar) bar.style.width = Math.round(dist[n] / total * 100) + "%";
+    });
+    grid.innerHTML = "";
+    rows.forEach(function (r) {
+      var n = Number(r.rating) || 0;
+      var d = new Date(r.created_at);
+      var card = document.createElement("div");
+      card.className = "rev";
+      var initial = (String(r.customer_name || "?").trim().charAt(0) || "?").toUpperCase();
+      card.innerHTML = '<div class="who"><div class="ava"></div><div><div class="nm"></div><div class="dt"></div></div></div><div class="stars"></div><p></p><div class="verified">✓ Verified Customer</div>';
+      card.querySelector(".ava").textContent = initial;
+      card.querySelector(".nm").textContent = r.customer_name || "Customer";
+      card.querySelector(".dt").textContent = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+      card.querySelector(".stars").textContent = "★★★★★".slice(0, n) + "☆☆☆☆☆".slice(0, 5 - n);
+      card.querySelector("p").textContent = r.review_text || "";
+      grid.appendChild(card);
+    });
+  }).catch(function () {});
+}
+document.addEventListener("DOMContentLoaded", function () { setTimeout(loadPublicReviews, 600); });

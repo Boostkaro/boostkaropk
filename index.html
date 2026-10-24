@@ -177,17 +177,16 @@
 <section class="block" id="reviews"><div class="wrap">
   <h2 class="sec-head">Customer Ratings &amp; Reviews</h2>
   <div class="big-card rating-card">
-    <div><div class="big-score">—</div><div class="stars">★★★★★</div><div style="color:var(--muted);font-size:.88rem">Real reviews from real orders</div></div>
+    <div><div class="big-score" id="rev-avg">—</div><div class="stars" id="rev-stars">★★★★★</div><div style="color:var(--muted);font-size:.88rem" id="rev-count">Real reviews from real orders</div></div>
     <div class="bars">
-      <div class="bar-row">5 ★<span class="bar"><i style="width:0%"></i></span></div>
-      <div class="bar-row">4 ★<span class="bar"><i style="width:0%"></i></span></div>
-      <div class="bar-row">3 ★<span class="bar"><i style="width:0%"></i></span></div>
+      <div class="bar-row">5 ★<span class="bar"><i id="rev-bar5" style="width:0%"></i></span></div>
+      <div class="bar-row">4 ★<span class="bar"><i id="rev-bar4" style="width:0%"></i></span></div>
+      <div class="bar-row">3 ★<span class="bar"><i id="rev-bar3" style="width:0%"></i></span></div>
+      <div class="bar-row">2 ★<span class="bar"><i id="rev-bar2" style="width:0%"></i></span></div>
+      <div class="bar-row">1 ★<span class="bar"><i id="rev-bar1" style="width:0%"></i></span></div>
     </div>
   </div>
-  <div class="grid3">
-    <div class="rev"><div class="who"><div class="ava">?</div><div><div class="nm">Your review here</div><div class="dt">Coming soon</div></div></div><div class="stars">★★★★★</div><p>This space fills with genuine customer reviews as orders complete.</p><div class="verified">✓ Verified Customer</div></div>
-    <div class="rev"><div class="who"><div class="ava">?</div><div><div class="nm">Your review here</div><div class="dt">Coming soon</div></div></div><div class="stars">★★★★★</div><p>Every completed order can leave a review — no fake ratings, ever.</p><div class="verified">✓ Verified Customer</div></div>
-  </div>
+  <div class="grid3" id="rev-grid"></div>
 </div></section>
 
 <section class="block"><div class="wrap">
