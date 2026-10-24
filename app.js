@@ -885,20 +885,20 @@ function loadPublicReviews() {
       if (bar) bar.style.width = Math.round(dist[n] / total * 100) + "%";
     });
     grid.innerHTML = "";
-    var SHOW_FIRST = 6;
+    var SHOW_FIRST = 3;
     var shownRows = rows.slice(0, SHOW_FIRST);
     var moreBtn = null;
     if (rows.length > SHOW_FIRST) {
       moreBtn = document.createElement("button");
       moreBtn.type = "button";
-      moreBtn.className = "btn btn-outline";
-      moreBtn.style.cssText = "display:block;margin:16px auto 0";
-      moreBtn.textContent = "Show all " + rows.length + " reviews";
+      moreBtn.className = "btn btn-blue";
+      moreBtn.style.cssText = "display:block;margin:14px auto 0;padding:8px 20px;font-size:.92rem";
+      moreBtn.textContent = "See all reviews";
       var expanded = false;
       moreBtn.addEventListener("click", function () {
         expanded = !expanded;
         shownRows = expanded ? rows : rows.slice(0, SHOW_FIRST);
-        moreBtn.textContent = expanded ? "Show less" : "Show all " + rows.length + " reviews";
+        moreBtn.textContent = expanded ? "Show less" : "See all reviews";
         paint();
       });
       grid.parentNode.appendChild(moreBtn);
@@ -910,11 +910,8 @@ function loadPublicReviews() {
       var d = new Date(r.created_at);
       var card = document.createElement("div");
       card.className = "rev";
-      var initial = (String(r.customer_name || "?").trim().charAt(0) || "?").toUpperCase();
-      card.innerHTML = '<div class="who"><div class="ava"></div><div><div class="nm"></div><div class="dt"></div></div></div><div class="stars"></div><p></p><div class="verified">\u2713 Verified Customer</div>';
-      card.querySelector(".ava").textContent = initial;
+      card.innerHTML = '<div class="rev-top"><span class="nm"></span><span class="stars"></span></div><p></p>';
       card.querySelector(".nm").textContent = r.customer_name || "Customer";
-      card.querySelector(".dt").textContent = d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
       card.querySelector(".stars").textContent = "\u2605".repeat(n) + "\u2606".repeat(5 - n);
       card.querySelector("p").textContent = r.review_text || "";
       grid.appendChild(card);
