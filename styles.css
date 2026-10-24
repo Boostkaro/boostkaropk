@@ -403,3 +403,10 @@ html, body { overflow-x: hidden; }
   .stat .num { font-size: 1.6rem; }
   .price-row { padding: 10px 12px; }
 }
+
+/* Compact homepage review cards (2026-10-24, Raji): name + stars one row, then text */
+#rev-grid .rev{padding:14px 16px}
+#rev-grid .rev-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#rev-grid .rev-top .nm{font-weight:700;font-size:1rem}
+#rev-grid .rev-top .stars{color:#ffc107;font-size:.95rem;letter-spacing:1px;white-space:nowrap}
+#rev-grid .rev p{margin:6px 0 0}
