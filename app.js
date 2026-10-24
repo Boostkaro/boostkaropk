@@ -885,7 +885,27 @@ function loadPublicReviews() {
       if (bar) bar.style.width = Math.round(dist[n] / total * 100) + "%";
     });
     grid.innerHTML = "";
-    rows.forEach(function (r) {
+    var SHOW_FIRST = 6;
+    var shownRows = rows.slice(0, SHOW_FIRST);
+    var moreBtn = null;
+    if (rows.length > SHOW_FIRST) {
+      moreBtn = document.createElement("button");
+      moreBtn.type = "button";
+      moreBtn.className = "btn btn-outline";
+      moreBtn.style.cssText = "display:block;margin:16px auto 0";
+      moreBtn.textContent = "Show all " + rows.length + " reviews";
+      var expanded = false;
+      moreBtn.addEventListener("click", function () {
+        expanded = !expanded;
+        shownRows = expanded ? rows : rows.slice(0, SHOW_FIRST);
+        moreBtn.textContent = expanded ? "Show less" : "Show all " + rows.length + " reviews";
+        paint();
+      });
+      grid.parentNode.appendChild(moreBtn);
+    }
+    function paint() {
+    grid.innerHTML = "";
+    shownRows.forEach(function (r) {
       var n = Number(r.rating) || 0;
       var d = new Date(r.created_at);
       var card = document.createElement("div");
@@ -899,6 +919,8 @@ function loadPublicReviews() {
       card.querySelector("p").textContent = r.review_text || "";
       grid.appendChild(card);
     });
+    }
+    paint();
   }).catch(function () {});
 }
 document.addEventListener("DOMContentLoaded", function () { setTimeout(loadPublicReviews, 600); });
