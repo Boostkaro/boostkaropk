@@ -626,29 +626,7 @@
   });
 })();
 
-  // ---- Section boxes + popup modals (2026-10-24, Raji) ----
-  function openAdminModal(id) {
-    var m = document.getElementById(id);
-    if (m) m.classList.add("open");
-    document.body.style.overflow = "hidden";
-  }
-  function closeAdminModal(id) {
-    var m = document.getElementById(id);
-    if (m) m.classList.remove("open");
-    if (!document.querySelector(".admin-modal.open")) document.body.style.overflow = "";
-  }
-  document.querySelectorAll(".admin-box").forEach(function (b) {
-    b.addEventListener("click", function () { openAdminModal(b.getAttribute("data-modal")); });
-  });
-  document.querySelectorAll(".admin-modal-close").forEach(function (b) {
-    b.addEventListener("click", function () { closeAdminModal(b.getAttribute("data-close")); });
-  });
-  document.querySelectorAll(".admin-modal").forEach(function (m) {
-    m.addEventListener("click", function (e) { if (e.target === m) closeAdminModal(m.id); });
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape") document.querySelectorAll(".admin-modal.open").forEach(function (m) { closeAdminModal(m.id); });
-  });
+  // ---- Section box counts sync (2026-10-24) ----
   // Keep the box counts in sync with each section's own count label.
   [["orders-count", "box-orders-count"], ["reviews-count", "box-reviews-count"], ["affiliates-count", "box-affiliates-count"]].forEach(function (pair) {
     var src = document.getElementById(pair[0]), dst = document.getElementById(pair[1]);

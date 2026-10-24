@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reviews ⭐ · BoostKaro Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" type="image/webp" href="logo.webp">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+/* Admin-only components — styled after the approved API-integration demo:
+   white cards (14px radius, soft shadow) with a #0d47a1 "BoostKaroPK Admin"
+   head bar, dashed #e3e9f7 row separators, demo badge + button colors. */
+.admin-card{background:#f4f8ff;border:3px solid #0d47a1;border-radius:16px;box-shadow:0 10px 30px rgba(13,71,161,.25);overflow:hidden}
+.admin-head{background:linear-gradient(90deg,#0d47a1,#1a73e8);color:#fff;padding:18px 20px;font-weight:700;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.admin-head a{color:#fff;text-decoration:none;font-size:.9rem;font-weight:600}
+.admin-head a:hover{text-decoration:underline}
+.admin-head .muted{color:#bcd3f7;font-weight:600}
+.admin-head{font-size:1.3rem;letter-spacing:.2px}
+.admin-body{padding:20px}
+.admin-body h2{margin:0 0 6px;color:var(--blue-dark);font-size:1.3rem}
+.admin-login{max-width:460px;margin:30px auto}
+.admin-logout{background:transparent;border:1.5px solid rgba(255,255,255,.65);color:#fff;border-radius:9px;padding:6px 14px;font-size:.85rem;font-weight:700;cursor:pointer}
+.admin-logout:hover{background:rgba(255,255,255,.14)}
+.admin-filters{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.admin-filters input,.admin-filters select{padding:10px 12px;border:1.5px solid #e3e9f7;border-radius:10px;font-size:.95rem;background:#fff;color:var(--ink)}
+.admin-filters input{flex:1;min-width:200px}
+.admin-filters input:focus,.admin-filters select:focus{outline:2px solid var(--brand);border-color:var(--brand)}
+.admin-filters .btn{border-radius:9px}
+.admin-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 14px}
+.admin-tab{border:1.5px solid #e3e9f7;background:#fff;color:var(--blue-dark);border-radius:999px;padding:8px 14px;font-size:.9rem;font-weight:700;cursor:pointer}
+.admin-tab:hover{border-color:var(--brand)}
+.admin-tab.on{background:#0d47a1;border-color:#0d47a1;color:#fff}
+.admin-tab .cnt{font-weight:600;opacity:.75;font-size:.82rem}
+.orders-list{display:flex;flex-direction:column;gap:10px}
+.order-card{border:1px solid #e3e9f7;border-radius:12px;padding:0;background:#fff;box-shadow:0 2px 10px rgba(20,38,74,.05);overflow:hidden}
+.oc-bar{background:#0d47a1;color:#fff;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.oc-bar .code{font-size:1.02rem;color:#fff}
+.oc-bar-right{display:flex;align-items:center;gap:8px}
+.oc-chev{font-size:.85rem;line-height:1;color:#fff}
+.oc-details{display:none;padding:6px 16px 14px;background:#fff}
+.oc-details.open{display:block}
+.badge{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.b-pending{background:#fff3cd;color:#8a6d00}
+.b-paid{background:#e0e7ff;color:#3730a3}
+.b-inprog{background:#dbeafe;color:#1d4ed8}
+.b-done{background:#d1fae5;color:#047857}
+.b-cancel{background:#fee2e2;color:#b91c1c}
+.oc-kv{display:flex;justify-content:space-between;gap:16px;padding:6px 0;border-bottom:1px dashed #e3e9f7;font-size:.92rem}
+.oc-kv span{color:#66779e;flex:none}
+.oc-kv b{font-weight:600;text-align:right;word-break:break-word}
+.oc-kv a{color:var(--brand)}
+.oc-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.oc-actions select,.oc-actions input{padding:8px 10px;border:1.5px solid #e3e9f7;border-radius:9px;font-size:.9rem;background:#fff;color:var(--ink)}
+.oc-actions select:focus,.oc-actions input:focus{outline:2px solid var(--brand);border-color:var(--brand)}
+.oc-actions input{flex:1;min-width:130px}
+.oc-actions .btn{border-radius:9px;padding:8px 14px;font-size:.88rem}
+.btn-paid{background:#16a34a!important;color:#fff!important;padding:9px 14px;font-size:.88rem;font-weight:700;border-radius:9px}
+.btn-reject{background:#dc2626!important;color:#fff!important;padding:9px 14px;font-size:.88rem;font-weight:700;border-radius:9px}
+.orders-empty{border:1px dashed #e3e9f7;border-radius:12px;padding:22px;text-align:center}
+.admin-foot{margin-top:44px;background:linear-gradient(160deg,#103a75,var(--blue-dark) 45%,#081c38);color:#b9cdf3}
+.admin-foot .wrap{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:16px 18px;font-size:.86rem}
+@media(max-width:640px){
+  .admin-body{padding:14px}
+  .admin-login{margin:18px auto}
+  .oc-kv{font-size:.88rem}
+  .oc-bar{padding:10px 12px}
+  .oc-details{padding:6px 12px 12px}
+}
+
+.admin-topbar{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#0d47a1,#1a73e8);color:#fff;padding:16px 20px;border-radius:14px;margin-top:26px;font-weight:700;font-size:1.2rem;box-shadow:0 8px 22px rgba(13,71,161,.28)}
+.admin-boxes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+.admin-box{background:linear-gradient(135deg,#0d47a1,#1a73e8);color:#fff;border:3px solid #0d47a1;border-radius:16px;padding:28px 16px;font-size:1.3rem;font-weight:700;cursor:pointer;box-shadow:0 10px 26px rgba(13,71,161,.32);display:flex;flex-direction:column;align-items:center;gap:8px;font-family:inherit}
+.admin-box:hover{filter:brightness(1.1)}
+.admin-box .ab-ico{font-size:2.1rem;line-height:1}
+.admin-box .ab-count{font-size:.92rem;font-weight:600;color:#cfe2ff;min-height:1.1em}
+.admin-modal{position:fixed;inset:0;background:rgba(6,20,45,.62);display:none;z-index:300;padding:16px;overflow:auto}
+.admin-modal.open{display:block}
+.admin-modal-panel{max-width:900px;margin:3vh auto;position:relative}
+.admin-modal-close{position:absolute;top:-12px;right:-6px;z-index:5;width:40px;height:40px;border-radius:50%;border:2px solid #0d47a1;background:#fff;color:#0d47a1;font-size:1.05rem;font-weight:800;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+@media(max-width:420px){.admin-boxes{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+  <!-- Login gate -->
+  <div id="admin-login" class="admin-card admin-login">
+    <div class="admin-head"><span>🚀 BoostKaroPK Admin</span><a href="index.html">← Storefront</a></div>
+    <div class="admin-body">
+      <h2>Admin Login 🔐</h2>
+      <p class="muted">Sign in with your admin account to view and manage orders.</p>
+      <div class="field">
+        <label for="admin-email">Email</label>
+        <input type="email" id="admin-email" autocomplete="username" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label for="admin-pass">Password</label>
+        <input type="password" id="admin-pass" autocomplete="current-password">
+      </div>
+      <div id="login-error"></div>
+      <button class="btn block" id="login-btn" type="button">Login</button>
+    </div>
+  </div>
+
+  <!-- Dashboard -->
+  <div id="admin-panel" style="display:none">
+    <div class="admin-topbar"><a href="admin.html" style="color:#fff;text-decoration:none;font-size:1rem">← Back</a><span>Reviews ⭐</span><button class="admin-logout" id="logout-btn" type="button">Logout</button></div>
+    <div style="margin-top:18px"></div>
+    <div class="admin-card">
+      <div class="admin-head"><span>Customer Reviews ⭐ <span class="muted" id="reviews-count"></span></span></div>
+      <div class="admin-body">
+        <div class="orders-list" id="reviews-list"></div>
+      </div>
+    </div>
+    <div style="display:none">
+    <div class="admin-card">
+      <div class="admin-head"><span>Orders 📦 <span class="muted" id="orders-count"></span></span></div>
+      <div class="admin-body">
+        <div class="admin-filters">
+          <input type="text" id="filter-text" placeholder="Search code, name, phone, TID…">
+          <select id="filter-status">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="paid">Paid — Queued</option>
+            <option value="processing">Processing</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <button class="btn ghost" id="refresh-btn" type="button">↻ Refresh</button>
+        </div>
+        <div class="admin-tabs" id="admin-tabs">
+          <button type="button" class="admin-tab on" data-tab="review">To Review <span class="cnt" id="cnt-review"></span></button>
+          <button type="button" class="admin-tab" data-tab="approved">Approved <span class="cnt" id="cnt-approved"></span></button>
+          <button type="button" class="admin-tab" data-tab="completed">Completed <span class="cnt" id="cnt-completed"></span></button>
+          <button type="button" class="admin-tab" data-tab="rejected">Rejected <span class="cnt" id="cnt-rejected"></span></button>
+        </div>
+        <div id="admin-msg"></div>
+        <div class="orders-list" id="orders-list"></div>
+      </div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-head"><span>Affiliated Orders 🤝 <span class="muted" id="affiliates-count"></span></span></div>
+      <div class="admin-body">
+        <div class="muted" id="affiliates-summary" style="margin-bottom:10px"></div>
+        <div class="orders-list" id="affiliates-list"></div>
+      </div>
+    </div>
+    <div class="admin-card">
+      <div class="admin-head"><span>Business Emails 📧</span></div>
+      <div class="admin-body">
+        <div class="oc-kv"><span>Admin</span><b>admin@boostkaropk.com</b></div>
+        <div class="oc-kv"><span>Support</span><b>support@boostkaropk.com</b></div>
+        <p class="muted" style="margin:10px 0">Both addresses forward into your <b>btssiraj@gmail.com</b> Gmail inbox. Mail to either address arrives in that same inbox.</p>
+        <p style="margin:6px 0"><span class="badge b-paid">Forwarding: Active ✅</span></p>
+        <a class="btn" href="https://mail.google.com" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px">Open Gmail Inbox</a>
+      </div>
+    </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="admin-foot">
+  <div class="wrap"><span>BoostKaro Admin — private page.</span><span>© 2026 BoostKaro · boostkaropk.com</span></div>
+</footer>
+
+<script src="admin.js"></script>
+</body>
+</html>
