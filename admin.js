@@ -262,6 +262,14 @@
     details.appendChild(kv("Review", esc(r.review_text || "")));
     details.appendChild(kv("Date", esc(d.toLocaleString())));
 
+    // WhatsApp auto-message delivery record (wa_*_sent_at written by the
+    // order-events endpoint when each template is actually sent).
+    var waBits = [];
+    if (o.wa_paid_sent_at) waBits.push("✅ Payment confirmed — " + esc(new Date(o.wa_paid_sent_at).toLocaleString()));
+    if (o.wa_rejected_sent_at) waBits.push("⚠️ Payment rejected — " + esc(new Date(o.wa_rejected_sent_at).toLocaleString()));
+    if (o.wa_completed_sent_at) waBits.push("🎉 Completed — " + esc(new Date(o.wa_completed_sent_at).toLocaleString()));
+    if (waBits.length) details.appendChild(kv("Auto WhatsApp", waBits.join("<br>")));
+
     var actions = document.createElement("div");
     actions.className = "oc-actions";
     var del = document.createElement("button");
