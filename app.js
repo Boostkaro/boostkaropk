@@ -706,7 +706,7 @@
     var sel2 = heroSelection();
     var tier = sel2 ? cheapestTier(sel2.subcat) : null;
     if (tier && tier.s) {
-      txt.textContent = tier.s;
+      txt.textContent = tier.s + " \u2014 \u26A0\uFE0F Important: If your account has 0 followers or likes, please order the minimum quantity first to build a base, then order your full quantity.";
       box.style.display = "";
     } else {
       txt.textContent = "";
