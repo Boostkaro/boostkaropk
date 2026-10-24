@@ -412,3 +412,5 @@ html, body { overflow-x: hidden; }
 #rev-grid .rev p{margin:6px 0 0}
 #rev-grid .rev-id{display:flex;align-items:center;gap:10px}
 #rev-grid .rev .ava{width:36px;height:36px;font-size:.95rem;flex:none}
+#rev-grid .rev-nm{display:flex;flex-direction:column;line-height:1.25}
+#rev-grid .rev .dt{color:var(--muted);font-size:.78rem}

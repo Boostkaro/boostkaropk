@@ -910,9 +910,10 @@ function loadPublicReviews() {
       var d = new Date(r.created_at);
       var card = document.createElement("div");
       card.className = "rev";
-      card.innerHTML = '<div class="rev-top"><div class="rev-id"><div class="ava"></div><span class="nm"></span></div><span class="stars"></span></div><p></p>';
+      card.innerHTML = '<div class="rev-top"><div class="rev-id"><div class="ava"></div><div class="rev-nm"><span class="nm"></span><div class="dt"></div></div></div><span class="stars"></span></div><p></p>';
       card.querySelector(".ava").textContent = (String(r.customer_name || "?").trim().charAt(0) || "?").toUpperCase();
       card.querySelector(".nm").textContent = r.customer_name || "Customer";
+      card.querySelector(".dt").textContent = new Date(r.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
       card.querySelector(".stars").textContent = "\u2605".repeat(n) + "\u2606".repeat(5 - n);
       card.querySelector("p").textContent = r.review_text || "";
       grid.appendChild(card);
