@@ -707,14 +707,9 @@
     var tier = sel2 ? cheapestTier(sel2.subcat) : null;
     if (tier && tier.s) {
       var catId = (sel2.category && sel2.category.id) || "";
-      var metric = catId.indexOf("follow") >= 0 ? "followers"
-        : catId.indexOf("like") >= 0 ? "likes"
-        : catId.indexOf("view") >= 0 ? "views"
-        : catId.indexOf("comment") >= 0 ? "comments"
-        : catId.indexOf("subscri") >= 0 ? "subscribers"
-        : catId.indexOf("share") >= 0 ? "shares"
-        : "followers or likes";
-      txt.textContent = tier.s + " \u2014 \u26A0\uFE0F Important: If your account has 0 " + metric + ", please order the minimum quantity first to build a base, then order your full quantity.";
+      txt.textContent = tier.s + (catId.indexOf("follow") >= 0
+        ? " \u2014 \u26A0\uFE0F Important: If your account has 0 followers, please order the minimum quantity first to build a base, then order your full quantity."
+        : "");
       box.style.display = "";
     } else {
       txt.textContent = "";
