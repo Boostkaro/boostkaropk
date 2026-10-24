@@ -28,7 +28,7 @@ const PROVIDER_MAP = {
  "facebook/videoviews/No Drop": 332,
  "instagram/comments/No Drop": 966,
  "instagram/followers/Droppable": 1485,
- "instagram/followers/High Quality": 1497,
+ "instagram/followers/High Quality": 1495,
  "instagram/followers/No Drop": 1492,
  "instagram/likes/Droppable": 1263,
  "instagram/likes/High Quality": 1227,
