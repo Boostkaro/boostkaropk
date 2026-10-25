@@ -135,5 +135,20 @@
 <p>Follow BoostKaro: <a href="https://www.facebook.com/profile.php?id=61595906934885" target="_blank" rel="noopener">Facebook</a> · <a href="https://www.tiktok.com/@boostkaro1" target="_blank" rel="noopener">TikTok</a> · <a href="https://www.reddit.com/user/Boostkaro/" target="_blank" rel="noopener">Reddit</a> · <a href="https://www.trustpilot.com/review/boostkaropk.com" target="_blank" rel="noopener">Trustpilot</a></p>
 </footer>
 <a class="wa-float" href="https://wa.me/923340942542?text=Hi%20BoostKaro%2C%20I%20need%20help.&utm_source=blog&utm_medium=whatsapp&utm_campaign=instagram-followers-price-pakistan" target="_blank" rel="noopener">💬 WhatsApp</a>
+<script>
+// GA4: blog_service_click (Group B5, 2026-10-25) - counts clicks from blog
+// pages to service pages. Only the post slug and service slug are sent.
+document.addEventListener("click", function (e) {
+  var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+  if (!a || typeof gtag !== "function") return;
+  var href = a.getAttribute("href") || "";
+  if (href.indexOf("/blog/") !== -1) return;
+  var m = href.match(/(?:boostkaropk\.com)?\/([a-z]+-(?:followers|likes|views|comments|subscribers))\b/);
+  if (!m) return;
+  var path = window.location.pathname.replace(/\/$/, "");
+  var post = path === "/blog" ? "blog-index" : path.split("/").pop();
+  gtag("event", "blog_service_click", { post: post, target_service: m[1] });
+});
+</script>
 </body>
 </html>

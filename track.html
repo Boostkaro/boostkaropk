@@ -9,6 +9,13 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" type="image/webp" href="logo.webp">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-V8HDW1W1P9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-V8HDW1W1P9');
+</script>
 <style>
 /* Tracking page components — BoostKaro palette, layout per Raji's reference design */
 .track-brand{background:#0d47a1;color:#fff;padding:12px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
@@ -97,6 +104,15 @@
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
+  }
+  // GA4: track_lookup_result (Group B2, 2026-10-25) - result and coarse
+  // stage only; never the order code, contact number or order details.
+  var TRACK_STAGES = { pending: "payment_pending", paid: "confirmed", processing: "in_progress", completed: "completed", cancelled: "cancelled", rejected: "cancelled" };
+  function gaTrack(result, stage) {
+    if (typeof gtag !== "function") return;
+    var info = { result: result };
+    if (stage) info.order_stage = stage;
+    gtag("event", "track_lookup_result", info);
   }
   function fmtDT(iso) {
     var d = new Date(iso);
@@ -204,13 +220,16 @@
     out.innerHTML = '<p class="muted">Looking up your order…</p>';
     function handle(res) {
       if (res.error) {
+        gaTrack("error");
         out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
         return;
       }
       if (!res.data || !res.data.length) {
+        gaTrack("not_found");
         out.innerHTML = '<div class="alert error">No order found. Check your code and contact number.</div>';
         return;
       }
+      gaTrack("found", TRACK_STAGES[res.data[0].status] || "found");
       out.innerHTML = render(res.data[0]);
     }
     // Privacy fix: the orders table is no longer publicly readable. The
@@ -219,6 +238,7 @@
     sb.rpc("track_order", { p_code: code, p_contact: phone })
       .then(handle)
       .catch(function () {
+        gaTrack("error");
         out.innerHTML = '<div class="alert error">Lookup failed. Please try again.</div>';
       });
   }

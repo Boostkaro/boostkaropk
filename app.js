@@ -464,8 +464,20 @@
       .catch(function () { return genOrderCode(); });
   }
 
-  function showError(msg) {
+  function showError(msg, errCat) {
     $("order-error").innerHTML = '<div class="alert error">' + esc(msg) + "</div>";
+    // GA4: checkout_validation_error (Group B1, 2026-10-25). Only a fixed
+    // category code, the selected payment app and the service/tier are
+    // sent - never the message text, TID, phone, link or any other
+    // personal or order data.
+    if (errCat && typeof gtag === "function") {
+      var info = { error_category: errCat, payment_method: selectedPayMethod() };
+      if (orderTier) {
+        info.service = orderTier.platform.id + " " + orderTier.category.id;
+        info.tier = orderTier.subcat.label;
+      }
+      gtag("event", "checkout_validation_error", info);
+    }
   }
 
   function unitWord(u) {
@@ -476,7 +488,7 @@
   }
 
   function submitOrder() {
-    if (!sb) { showError("Database not connected. Please try again later."); return; }
+    if (!sb) { showError("Database not connected. Please try again later.", "db_unavailable"); return; }
     if (!orderTier) return;
     var t = calcTotal();
     var tier = orderTier.tier;
@@ -488,19 +500,19 @@
     var minQ = qtyMinFor(tier.u);
 
     if (!t.qty || t.qty < minQ) {
-      showError("Quantity must be at least " + minQ + " " + unitWord(tier.u) + ".");
+      showError("Quantity must be at least " + minQ + " " + unitWord(tier.u) + ".", "quantity_min");
       return;
     }
     // Max-quantity enforcement (the bridge re-validates against the live
     // provider range as a second layer, unchanged).
     var maxQ = qtyMaxFor(tier);
     if (isFinite(maxQ) && t.qty > maxQ) {
-      showError("Maximum quantity for this service is " + maxQ.toLocaleString("en-US") + " " + unitWord(tier.u) + ".");
+      showError("Maximum quantity for this service is " + maxQ.toLocaleString("en-US") + " " + unitWord(tier.u) + ".", "quantity_max");
       return;
     }
-    if (!phone) { showError("Contact number is required — we need it in case your link is wrong."); return; }
-    if (!link || !/^https?:\/\//i.test(link)) { showError("Please enter a valid profile/post link starting with http."); return; }
-    if (!tid) { showError("Please enter your JazzCash/Easypaisa/NayaPay transaction ID (TID)."); return; }
+    if (!phone) { showError("Contact number is required — we need it in case your link is wrong.", "contact_missing"); return; }
+    if (!link || !/^https?:\/\//i.test(link)) { showError("Please enter a valid profile/post link starting with http.", "link_invalid"); return; }
+    if (!tid) { showError("Please enter your JazzCash/Easypaisa/NayaPay transaction ID (TID).", "tid_empty"); return; }
     // TID format check (Group A2, 2026-10-25; NayaPay + payment-app
     // selector added 2026-10-25). The TID is checked against the app the
     // customer selected in Step 1. Formats verified from real paid
@@ -516,19 +528,19 @@
     if (payMethod === "nayapay") {
       var tidIsNayaPay = /^[0-9a-fA-F]{24}$/.test(tid) || /^TMICFBPK\d{18}$/.test(tid);
       if (!tidIsNayaPay) {
-        if (tidIsNumeric && (tidDigits.length === 11 || tidDigits.length === 12)) { showError("That looks like an Easypaisa/JazzCash TID. If you paid with that app, select it in Step 1 — or paste the NayaPay code from your receipt."); return; }
-        showError("That NayaPay TID doesn't look right — it is the long code on your NayaPay receipt. Please copy it exactly."); return;
+        if (tidIsNumeric && (tidDigits.length === 11 || tidDigits.length === 12)) { showError("That looks like an Easypaisa/JazzCash TID. If you paid with that app, select it in Step 1 — or paste the NayaPay code from your receipt.", "tid_wrong_app"); return; }
+        showError("That NayaPay TID doesn't look right — it is the long code on your NayaPay receipt. Please copy it exactly.", "tid_nayapay_format"); return;
       }
     } else if (!tidIsNumeric) {
-      showError("Your TID should be numbers only — please copy the transaction ID from your " + PAY_METHODS[payMethod].label + " receipt."); return;
+      showError("Your TID should be numbers only — please copy the transaction ID from your " + PAY_METHODS[payMethod].label + " receipt.", "tid_not_numeric"); return;
     } else if (tidDigits.length === 11 && tidDigits.indexOf("03") === 0) {
-      showError("That looks like a phone number, not a TID. Please enter the transaction ID from your payment receipt."); return;
+      showError("That looks like a phone number, not a TID. Please enter the transaction ID from your payment receipt.", "tid_phone_number"); return;
     } else if (payMethod === "easypaisa" && tidDigits.length !== 11) {
-      if (tidDigits.length === 12) { showError("That looks like a JazzCash TID (12 digits). If you paid with JazzCash, select JazzCash in Step 1 — Easypaisa TIDs are 11 digits."); return; }
-      showError("That TID doesn't look right — Easypaisa TIDs are 11 digits. Please check the transaction ID on your receipt."); return;
+      if (tidDigits.length === 12) { showError("That looks like a JazzCash TID (12 digits). If you paid with JazzCash, select JazzCash in Step 1 — Easypaisa TIDs are 11 digits.", "tid_wrong_app"); return; }
+      showError("That TID doesn't look right — Easypaisa TIDs are 11 digits. Please check the transaction ID on your receipt.", "tid_wrong_length"); return;
     } else if (payMethod === "jazzcash" && tidDigits.length !== 12) {
-      if (tidDigits.length === 11) { showError("That looks like an Easypaisa TID (11 digits). If you paid with Easypaisa, select Easypaisa in Step 1 — JazzCash TIDs are 12 digits."); return; }
-      showError("That TID doesn't look right — JazzCash TIDs are 12 digits. Please check the transaction ID on your receipt."); return;
+      if (tidDigits.length === 11) { showError("That looks like an Easypaisa TID (11 digits). If you paid with Easypaisa, select Easypaisa in Step 1 — JazzCash TIDs are 12 digits.", "tid_wrong_app"); return; }
+      showError("That TID doesn't look right — JazzCash TIDs are 12 digits. Please check the transaction ID on your receipt.", "tid_wrong_length"); return;
     }
 
     var btn = $("order-submit");
@@ -568,7 +580,7 @@
     function done(ok, errMsg) {
       btn.disabled = false;
       btn.textContent = "Submit Order";
-      if (!ok) { showError(errMsg || "Could not submit order. Please try again."); return; }
+      if (!ok) { showError(errMsg || "Could not submit order. Please try again.", "submit_failed"); return; }
       // GA4: order_submitted (only on successful submission, no PII)
       if (typeof gtag === "function") {
         gtag("event", "order_submitted", {
@@ -618,7 +630,7 @@
         if (used) {
           btn.disabled = false;
           btn.textContent = "Submit Order";
-          showError("The FIRST30 code has already been used.");
+          showError("The FIRST30 code has already been used.", "coupon_first30_used");
           return;
         }
         proceed();
@@ -889,7 +901,15 @@
     });
     $("order-submit").addEventListener("click", submitOrder);
     var pmEl = $("order-paymethod");
-    if (pmEl) { pmEl.addEventListener("change", updatePayMethod); updatePayMethod(); }
+    if (pmEl) {
+      pmEl.addEventListener("change", function () {
+        updatePayMethod();
+        // GA4: payment_method_select (Group B3, 2026-10-25) - the app
+        // name only; no personal or order data.
+        if (typeof gtag === "function") gtag("event", "payment_method_select", { payment_method: selectedPayMethod() });
+      });
+      updatePayMethod();
+    }
     $("modal-close").addEventListener("click", function () { $("order-modal").classList.remove("open"); });
     $("confirm-close").addEventListener("click", function () { $("confirm-modal").classList.remove("open"); });
     $("confirm-ok").addEventListener("click", function () { $("confirm-modal").classList.remove("open"); });
