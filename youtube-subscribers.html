@@ -45,7 +45,7 @@
     {
       "@type": "Question",
       "name": "How do I pay?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Prices are in USD. Customers in Pakistan can pay via JazzCash, Easypaisa or NayaPay. International customers \u2014 contact us on WhatsApp to discuss payment options." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Prices are in PKR (Rs). Customers in Pakistan can pay via JazzCash, Easypaisa or NayaPay. International customers \u2014 contact us on WhatsApp to discuss payment options." }
     }
   ]
 }
@@ -83,7 +83,7 @@
   <span class="badge">🚀 PAKISTAN'S AFFORDABLE SMM PANEL</span>
   <h1 class="page-h1">Buy YouTube Subscribers</h1>
   <p class="lead">Subscribers are key to YouTube monetization. BoostKaro offers subscriber options with natural delivery speeds.</p>
-  <p>Prices in USD. Customers in Pakistan can pay in PKR via JazzCash / Easypaisa / NayaPay. No password needed — just your profile link.</p>
+  <p>Prices in PKR (Rs). Pay easily via JazzCash / Easypaisa / NayaPay. No password needed — just your profile link.</p>
   <div class="cta-row">
     <a class="btn btn-blue" href="/?platform=youtube&category=subscribers#services">Order Subscribers →</a>
     <a class="btn btn-outline" href="/?platform=youtube#services">All YouTube Services</a>
@@ -92,19 +92,19 @@
 
 <section class="block"><div class="wrap">
   <h2 class="sec-head">YouTube Subscribers — Prices &amp; Quality Tiers</h2>
-  <p class="muted">Three simple quality tiers — <strong>Droppable</strong> for the lowest price, <strong>No Drop</strong> for stability, and <strong>High Quality</strong> for premium delivery. Prices per 1,000 · ≈ Rs 292 per USD.</p>
+  <p class="muted">Three simple quality tiers — <strong>Droppable</strong> for the lowest price, <strong>No Drop</strong> for stability, and <strong>High Quality</strong> for premium delivery. Prices per 1,000 · PKR (Rs).</p>
   <div class="tier-grid">
-      <div class="tier-card cheapest" data-price="12.0">
+      <div class="tier-card cheapest" data-price="3504">
         <h3>Droppable</h3>
         <p class="desc">Max 10K, Youtube Bot Subscribers Fast All Drop, Instantly Start, No Refill, avg 3 Hours 50 Minutes</p>
-        <div class="price">$12.00 <small>per 1,000 · ≈ Rs 3,504</small></div>
+        <div class="price">Rs 3,504 <small>per 1,000</small></div>
         <a class="btn block" href="/?platform=youtube&category=subscribers&subcat=droppable#services">Order Now</a>
       </div>
-      <div class="tier-card" data-price="30.0">
+      <div class="tier-card" data-price="8760">
         
         <h3>No Drop</h3>
         <p class="desc">Max 500, NonDrop, Speed 50+ / DAY, Start Time 0-12 Hours, Lifetime Refill, avg 25 Hours 28 Minutes</p>
-        <div class="price">$30.00 <small>per 1,000 · ≈ Rs 8,760</small></div>
+        <div class="price">Rs 8,760 <small>per 1,000</small></div>
         
         <a class="btn block" href="/?platform=youtube&category=subscribers&subcat=nodrop#services">Order Now</a>
       </div>
@@ -129,7 +129,7 @@
   <div class="checks" style="margin-top:16px">
     <div>✅ No password required — ever</div>
     <div>✅ JazzCash, Easypaisa &amp; NayaPay payments</div>
-    <div>✅ Prices in USD with PKR conversion</div>
+    <div>✅ All prices in PKR (Rs)</div>
     <div>✅ Delivery starts within hours</div>
     <div>✅ Non-drop &amp; refill tiers available</div>
     <div>✅ Order tracking with your code</div>
@@ -142,7 +142,7 @@
     <details><summary>Do you need my social media password?</summary><p>Never. We only need your public profile links.</p></details>
     <details><summary>How fast is delivery?</summary><p>Most services start within hours. Speeds vary by tier — check the specifications for each option.</p></details>
     <details><summary>What if followers drop?</summary><p>Choose tiers with refill guarantees. If numbers drop within the guarantee period, contact us on WhatsApp for a refill.</p></details>
-    <details><summary>How do I pay?</summary><p>Prices are in USD. Customers in Pakistan can pay via JazzCash, Easypaisa or NayaPay. International customers — contact us on WhatsApp to discuss payment options.</p></details>
+    <details><summary>How do I pay?</summary><p>Prices are in PKR (Rs). Customers in Pakistan can pay via JazzCash, Easypaisa or NayaPay. International customers — contact us on WhatsApp to discuss payment options.</p></details>
   </div>
 </div></section>
 
@@ -196,8 +196,8 @@ document.addEventListener("DOMContentLoaded", function() {
       var priceEl = card.querySelector(".price");
       var price = 0;
       if (priceEl) {
-        var m = priceEl.textContent.match(/\$([0-9.]+)/);
-        if (m) price = parseFloat(m[1]);
+        var m = priceEl.textContent.match(/Rs\s*([0-9,]+)/);
+        if (m) price = Math.round(parseFloat(m[1].replace(/,/g, "")) / 292 * 100) / 100;
       }
       if (typeof gtag === "function") {
         gtag("event", "order_now_click", {

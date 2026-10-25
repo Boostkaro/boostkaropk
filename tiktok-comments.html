@@ -45,7 +45,7 @@
     {
       "@type": "Question",
       "name": "How do I pay?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Prices are in USD. Customers in Pakistan can pay via JazzCash, Easypaisa or NayaPay. International customers \u2014 contact us on WhatsApp to discuss payment options." }
+      "acceptedAnswer": { "@type": "Answer", "text": "Prices are in PKR (Rs). Customers in Pakistan can pay via JazzCash, Easypaisa or NayaPay. International customers \u2014 contact us on WhatsApp to discuss payment options." }
     }
   ]
 }
@@ -83,7 +83,7 @@
   <span class="badge">🚀 PAKISTAN'S AFFORDABLE SMM PANEL</span>
   <h1 class="page-h1">Buy TikTok Comments</h1>
   <p class="lead">Comments make your TikTok videos look active and engaging. Choose from 3 quality tiers of TikTok comments.</p>
-  <p>Prices in USD. Customers in Pakistan can pay in PKR via JazzCash / Easypaisa / NayaPay. No password needed — just your profile link.</p>
+  <p>Prices in PKR (Rs). Pay easily via JazzCash / Easypaisa / NayaPay. No password needed — just your profile link.</p>
   <div class="cta-row">
     <a class="btn btn-blue" href="/?platform=tiktok&category=comments#services">Order Comments →</a>
     <a class="btn btn-outline" href="/?platform=tiktok#services">All TikTok Services</a>
@@ -92,28 +92,13 @@
 
 <section class="block"><div class="wrap">
   <h2 class="sec-head">TikTok Comments — Prices &amp; Quality Tiers</h2>
-  <p class="muted">Three simple quality tiers — <strong>Droppable</strong> for the lowest price, <strong>No Drop</strong> for stability, and <strong>High Quality</strong> for premium delivery. Prices per 1,000 · ≈ Rs 292 per USD.</p>
+  <p class="muted">One simple quality — every TikTok comments order is fulfilled the same way. Prices per 1,000 · PKR (Rs).</p>
   <div class="tier-grid">
-      <div class="tier-card cheapest" data-price="2.5">
+      <div class="tier-card cheapest" data-price="1800">
         <h3>Droppable</h3>
-        <p class="desc">Max 1K, TikTok Comments 3 Comments Post Related Emojis Text 100% Real Humans Top Accounts, No Refill, avg 3 Hours 47 Minutes</p>
-        <div class="price">$2.50 <small>per 1,000 · ≈ Rs 730</small></div>
-        <a class="btn block" href="/?platform=tiktok&category=comments&subcat=droppable#services">Order Now</a>
-      </div>
-      <div class="tier-card" data-price="6.0">
-        
-        <h3>No Drop</h3>
-        <p class="desc">Max 1K, Non Drop, High Quality, Slow Speed 100+/Day, No Refill, avg 5 Hours 42 Minutes</p>
-        <div class="price">$6.00 <small>per 1,000 · ≈ Rs 1,752</small></div>
-        <a class="btn block" href="/?platform=tiktok&category=comments&subcat=nodrop#services">Order Now</a>
-      </div>
-      <div class="tier-card" data-price="8.0">
-        
-        <h3>High Quality</h3>
-        <p class="desc">Max 10K, TikTok Video Comments, 100% Real Users, Speed 1K/Day, Lifetime Guaranteed, Start 0-1 Minute, avg 57 Hours 42 Minutes</p>
-        <div class="price">$8.00 <small>per 1,000 · ≈ Rs 2,336</small></div>
-        
-        <a class="btn block" href="/?platform=tiktok&category=comments&subcat=highquality#services">Order Now</a>
+        <p class="desc">Max 10K, TikTok Comments</p>
+        <div class="price">Rs 1,800 <small>per 1,000</small></div>
+        <a class="btn block" href="/?platform=tiktok&amp;category=comments&amp;subcat=droppable#services">Order Now</a>
       </div>
   </div>
 </div></section>
@@ -136,7 +121,7 @@
   <div class="checks" style="margin-top:16px">
     <div>✅ No password required — ever</div>
     <div>✅ JazzCash, Easypaisa &amp; NayaPay payments</div>
-    <div>✅ Prices in USD with PKR conversion</div>
+    <div>✅ All prices in PKR (Rs)</div>
     <div>✅ Delivery starts within hours</div>
     <div>✅ Non-drop &amp; refill tiers available</div>
     <div>✅ Order tracking with your code</div>
@@ -149,7 +134,7 @@
     <details><summary>Do you need my social media password?</summary><p>Never. We only need your public profile links.</p></details>
     <details><summary>How fast is delivery?</summary><p>Most services start within hours. Speeds vary by tier — check the specifications for each option.</p></details>
     <details><summary>What if followers drop?</summary><p>Choose tiers with refill guarantees. If numbers drop within the guarantee period, contact us on WhatsApp for a refill.</p></details>
-    <details><summary>How do I pay?</summary><p>Prices are in USD. Customers in Pakistan can pay via JazzCash, Easypaisa or NayaPay. International customers — contact us on WhatsApp to discuss payment options.</p></details>
+    <details><summary>How do I pay?</summary><p>Prices are in PKR (Rs). Customers in Pakistan can pay via JazzCash, Easypaisa or NayaPay. International customers — contact us on WhatsApp to discuss payment options.</p></details>
   </div>
 </div></section>
 
@@ -203,8 +188,8 @@ document.addEventListener("DOMContentLoaded", function() {
       var priceEl = card.querySelector(".price");
       var price = 0;
       if (priceEl) {
-        var m = priceEl.textContent.match(/\$([0-9.]+)/);
-        if (m) price = parseFloat(m[1]);
+        var m = priceEl.textContent.match(/Rs\s*([0-9,]+)/);
+        if (m) price = Math.round(parseFloat(m[1].replace(/,/g, "")) / 292 * 100) / 100;
       }
       if (typeof gtag === "function") {
         gtag("event", "order_now_click", {

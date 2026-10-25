@@ -15,7 +15,7 @@
   }
 
   // ---- Service catalog ----
-  // Tier: { p: price USD, u: unit ("k"=per 1000, "kh"=per 1000 hours, "pkg"=per package, "ch"=per channel), cpn: legacy coupon flag (unused), s: specs }
+  // Tier: { p: price PKR, u: unit ("k"=per 1000, "kh"=per 1000 hours, "pkg"=per package, "ch"=per channel), cpn: legacy coupon flag (unused), s: specs }
   var UNIT_LABEL = { k: "per 1,000", kh: "per 1,000 hours", pkg: "per package", ch: "per channel" };
   var UNIT_SHORT = { k: "/1k", kh: "/1k hrs", pkg: "/pkg", ch: "/channel" };
 
@@ -23,169 +23,163 @@
     { id: "instagram", label: "Instagram", categories: [
       { id: "followers", label: "Followers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 2.6002, u: "k", cpn: true, s: "Max 100K, Real Accounts, Most With Posts and Profiles, All Flag Types Working, Speed 50K/Day, Drop Unknown, No Refill, Fast Start (Delay Possible)" }
+          { p: 760, u: "k", cpn: true, s: "Max 100K, Real Accounts, Most With Posts and Profiles, All Flag Types Working, Speed 50K/Day, Drop Unknown, No Refill, Fast Start (Delay Possible)" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 4.225, u: "k", cpn: true, s: "Max 1M, Real Accounts, Old Accounts With Posts and Stories, Speed Up to 20K/Day, Drop Rate: None So Far, Refill 365 Days, Start Time 0-1 Hours, Turn Off Flag for Review Before Ordering" }
+          { p: 1235, u: "k", cpn: true, s: "Max 1M, Real Accounts, Old Accounts With Posts and Stories, Speed Up to 20K/Day, Drop Rate: None So Far, Refill 365 Days, Start Time 0-1 Hours, Turn Off Flag for Review Before Ordering" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 5, u: "k", cpn: true, s: "Max 10M, 100% Old Accounts, High Quality Profiles, Non Drop, Speed 15K/Day, Guarantee 365 Days, Start Time 0-15 Minutes, Turn Off Flag for Review Before Ordering" }
+          { p: 2190, u: "k", cpn: true, s: "Max 10M, 100% Old Accounts, High Quality Profiles, Non Drop, Speed 15K/Day, Guarantee 365 Days, Start Time 0-15 Minutes, Turn Off Flag for Review Before Ordering" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.2998, u: "k", cpn: true, s: "Max 1M, Real Accounts, All With Posts and Profiles, Speed 50K-100K/Day, Drop 0%, Refill 30 Days, Fast Start" }
+          { p: 250, u: "k", cpn: true, s: "Max 1M, Real Accounts, All With Posts and Profiles, Speed 50K-100K/Day, Drop 0%, Refill 30 Days, Fast Start" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 0.4004, u: "k", cpn: true, s: "Max 1M, Old Accounts, All With Posts and Profiles, Speed 150K-200K/Day, Drop 0-5%, No Refill, Fast Start" }
+          { p: 280, u: "k", cpn: true, s: "Max 1M, Old Accounts, All With Posts and Profiles, Speed 150K-200K/Day, Drop 0-5%, No Refill, Fast Start" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 2.0871, u: "k", cpn: false, s: "Max 1M, Old Accounts, Most With Posts and Profiles, Speed 100K-150K/Day, Drop 0-5%, Refill 365 Days, Fast Start" }
+          { p: 610, u: "k", cpn: false, s: "Max 1M, Old Accounts, Most With Posts and Profiles, Speed 100K-150K/Day, Drop 0-5%, Refill 365 Days, Fast Start" }
         ]}
       ]},
       { id: "views", label: "Views", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.1, u: "k", cpn: true, s: "Max 100M, Speed 100K/Day, No Guarantee, Start Time 0-15 Minutes" }
+          { p: 58, u: "k", cpn: true, s: "Max 100M, Speed 100K/Day, No Guarantee, Start Time 0-15 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 0.2, u: "k", cpn: true, s: "Max 1000M, VIP Video Views, All Videos, No-Drop, Instant Start 0-15 Minutes, Speed 50M/Day, avg 17 Hours 34 Minutes" }
+          { p: 70, u: "k", cpn: true, s: "Max 1000M, VIP Video Views, All Videos, No-Drop, Instant Start 0-15 Minutes, Speed 50M/Day, avg 17 Hours 34 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 0.3, u: "k", cpn: true, s: "Max 100M, All Links (Video + Reel + IGTV), Best Quality, Speed 1M/Day, Start 0-15 Minutes" }
+          { p: 88, u: "k", cpn: true, s: "Max 100M, All Links (Video + Reel + IGTV), Best Quality, Speed 1M/Day, Start 0-15 Minutes" }
         ]}
       ]},
       { id: "comments", label: "Comments", subcats: [
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 2.9976, u: "k", cpn: true, s: "Max 1M, Instagram Comments" }
+          { p: 875, u: "k", cpn: true, s: "Max 1M, Instagram Comments" }
         ]}
       ]}
     ]},
     { id: "tiktok", label: "TikTok", categories: [
       { id: "followers", label: "Followers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 3.5007, u: "k", cpn: true, s: "Max 1M, High Quality Accounts, Drop 50% or More Possible, No Refill, Cancel Enabled, Instant Start, Speed 10K+/Day, avg 5 Hours 13 Minutes" }
+          { p: 1025, u: "k", cpn: true, s: "Max 1M, High Quality Accounts, Drop 50% or More Possible, No Refill, Cancel Enabled, Instant Start, Speed 10K+/Day, avg 5 Hours 13 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 3.9039, u: "k", cpn: false, s: "Max 5M, High Quality Accounts, 0% Drop, No Refill, Cancel Enabled, Instant Start, Speed 10K+/Day, avg 17 Hours 48 Minutes" }
+          { p: 1140, u: "k", cpn: false, s: "Max 5M, High Quality Accounts, 0% Drop, No Refill, Cancel Enabled, Instant Start, Speed 10K+/Day, avg 17 Hours 48 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 7.0093, u: "k", cpn: false, s: "Max 100K, High Quality, 100% Non Drop, Lifetime Guarantee, Speed 5K/Day, avg 12 Hours 15 Minutes" }
+          { p: 2050, u: "k", cpn: false, s: "Max 100K, High Quality, 100% Non Drop, Lifetime Guarantee, Speed 5K/Day, avg 12 Hours 15 Minutes" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 50K, No Drop, No Refill, Cancel Enabled, Instant Start, Speed 50K/Day" }
+          { p: 499, u: "k", cpn: true, s: "Max 50K, No Drop, No Refill, Cancel Enabled, Instant Start, Speed 50K/Day" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 2.5, u: "k", cpn: true, s: "Max 50K, No Drop, Refill 30 Days, Cancel Enabled, Instant Start, Speed 50K/Day, avg 4 Hours 14 Minutes" }
+          { p: 730, u: "k", cpn: true, s: "Max 50K, No Drop, Refill 30 Days, Cancel Enabled, Instant Start, Speed 50K/Day, avg 4 Hours 14 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 4.16, u: "k", cpn: false, s: "Max 50K, No Drop, Refill Lifetime, Cancel Enabled, Instant Start, Speed 50K/Day, avg 4 Hours 17 Minutes" }
+          { p: 1215, u: "k", cpn: false, s: "Max 50K, No Drop, Refill Lifetime, Cancel Enabled, Instant Start, Speed 50K/Day, avg 4 Hours 17 Minutes" }
         ]}
       ]},
       { id: "views", label: "Views", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.1, u: "k", cpn: true, s: "Max 1000M, Fast Video Views" }
+          { p: 58, u: "k", cpn: true, s: "Max 1000M, Fast Video Views" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 0.2, u: "k", cpn: true, s: "Max 1000M, Min 500, Non Drop, High Quality, Speed 10M/Day, Lifetime Guarantee, Cancel Enabled, Super Fast, Start Time 0-5 Minutes, avg 4 Hours 18 Minutes" }
+          { p: 68, u: "k", cpn: true, s: "Max 1000M, Min 500, Non Drop, High Quality, Speed 10M/Day, Lifetime Guarantee, Cancel Enabled, Super Fast, Start Time 0-5 Minutes, avg 4 Hours 18 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 0.3, u: "k", cpn: true, s: "Max 500M, Confirmed Non Drop, Stable, High Quality + Real, Speed 10M/Day, Lifetime Guarantee, Start Time 0-15 Minutes" }
+          { p: 88, u: "k", cpn: true, s: "Max 500M, Confirmed Non Drop, Stable, High Quality + Real, Speed 10M/Day, Lifetime Guarantee, Start Time 0-15 Minutes" }
         ]}
       ]},
       { id: "comments", label: "Comments", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 2.5, u: "k", cpn: true, s: "Max 1K, TikTok Comments 3 Comments Post Related Emojis Text 100% Real Humans Top Accounts, No Refill, avg 3 Hours 47 Minutes" }
-        ]},
-        { id: "nodrop", label: "No Drop", tiers: [
-          { p: 6, u: "k", cpn: true, s: "Max 1K, Non Drop, High Quality, Slow Speed 100+/Day, No Refill, avg 5 Hours 42 Minutes" }
-        ]},
-        { id: "highquality", label: "High Quality", tiers: [
-          { p: 8, u: "k", cpn: false, s: "Max 10K, TikTok Video Comments, 100% Real Users, Speed 1K/Day, Lifetime Guaranteed, Start 0-1 Minute, avg 57 Hours 42 Minutes" }
+          { p: 1800, u: "k", cpn: true, s: "Max 10K, TikTok Comments" }
         ]}
       ]}
     ]},
     { id: "facebook", label: "Facebook", categories: [
       { id: "pagelikesfol", label: "Page Likes + Followers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 1, u: "k", cpn: true, s: "Max 500K, Facebook Followers, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
+          { p: 1070, u: "k", cpn: true, s: "Max 500K, Facebook Followers, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 500K, All Links, Non Drop, Speed 50K/Day, Guarantee 30 Days, Start 0-15 Minutes, avg 32 Hours 38 Minutes" }
+          { p: 1120, u: "k", cpn: true, s: "Max 500K, All Links, Non Drop, Speed 50K/Day, Guarantee 30 Days, Start 0-15 Minutes, avg 32 Hours 38 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 3, u: "k", cpn: true, s: "Max 100K, Page/Profile Followers, 100% Non Drop, Speed 50K-100K/Day, Lifetime Guarantee, Refill 365 Days, Start 0-12 Hours" }
+          { p: 1250, u: "k", cpn: true, s: "Max 100K, Page/Profile Followers, 100% Non Drop, Speed 50K-100K/Day, Lifetime Guarantee, Refill 365 Days, Start 0-12 Hours" }
         ]}
       ]},
       { id: "profilefol", label: "Profile / Page Followers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 1, u: "k", cpn: true, s: "Max 500K, Facebook Followers, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
+          { p: 1070, u: "k", cpn: true, s: "Max 500K, Facebook Followers, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 500K, All Links, Non Drop, Speed 2K-5K/Day, Guarantee 30 Days, Start 0-15 Minutes" }
+          { p: 1155, u: "k", cpn: true, s: "Max 500K, All Links, Non Drop, Speed 2K-5K/Day, Guarantee 30 Days, Start 0-15 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 3, u: "k", cpn: true, s: "Max 500K, 100% Real Users, Non Drop, Speed 5K/Day, Lifetime Guarantee, Start 0-24 Hours" }
+          { p: 1290, u: "k", cpn: true, s: "Max 500K, 100% Real Users, Non Drop, Speed 5K/Day, Lifetime Guarantee, Start 0-24 Hours" }
         ]}
       ]},
       { id: "pagelikes", label: "Page Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.8, u: "k", cpn: true, s: "Max 5M, Facebook Post Likes, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
+          { p: 349, u: "k", cpn: true, s: "Max 5M, Facebook Post Likes, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 1, u: "k", cpn: true, s: "Max 5M, Facebook Post Likes, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
+          { p: 399, u: "k", cpn: true, s: "Max 5M, Facebook Post Likes, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 5M, Facebook Post Likes, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
+          { p: 499, u: "k", cpn: true, s: "Max 5M, Facebook Post Likes, Old Accounts, High Quality, Speed 100K/Day, No Guarantee, Cancel Enabled, Start Time 0-15 Minutes" }
         ]}
       ]},
       { id: "comments", label: "Comments", subcats: [
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 6, u: "k", cpn: true, s: "Max 100K, Facebook Custom Comments Drop- No Speed 100/Day Start Time 0-1 Hours, No Refill, avg 7 Hours 39 Minutes" }
+          { p: 1752, u: "k", cpn: true, s: "Max 100K, Facebook Custom Comments Drop- No Speed 100/Day Start Time 0-1 Hours, No Refill, avg 7 Hours 39 Minutes" }
         ]}
       ]},
       { id: "videoviews", label: "Video Views", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 0.4, u: "k", cpn: true, s: "Max Unlimited, Facebook Video/Reels Views, 1M/Day, Instant Start, 30 Days Refill, avg 4 Hours 17 Minutes" }
+          { p: 117, u: "k", cpn: true, s: "Max Unlimited, Facebook Video/Reels Views, 1M/Day, Instant Start, 30 Days Refill, avg 4 Hours 17 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 0.8, u: "k", cpn: true, s: "Max Unlimited, Non Drop, Lifetime Refill, Instant Start, avg 13 Hours 15 Minutes" }
+          { p: 234, u: "k", cpn: true, s: "Max Unlimited, Non Drop, Lifetime Refill, Instant Start, avg 13 Hours 15 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 500M, HQ VIP SERVER, Non Drop, 1M/Day, Lifetime Refill, avg 3 Hours 6 Minutes" }
+          { p: 438, u: "k", cpn: true, s: "Max 500M, HQ VIP SERVER, Non Drop, 1M/Day, Lifetime Refill, avg 3 Hours 6 Minutes" }
         ]}
       ]}
     ]},
     { id: "youtube", label: "YouTube", categories: [
       { id: "subscribers", label: "Subscribers", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 12, u: "k", cpn: true, s: "Max 10K, Youtube Bot Subscribers Fast All Drop, Instantly Start, No Refill, avg 3 Hours 50 Minutes" }
+          { p: 3504, u: "k", cpn: true, s: "Max 10K, Youtube Bot Subscribers Fast All Drop, Instantly Start, No Refill, avg 3 Hours 50 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 30, u: "k", cpn: false, s: "Max 500, NonDrop, Speed 50+ / DAY, Start Time 0-12 Hours, Lifetime Refill, avg 25 Hours 28 Minutes" }
+          { p: 8760, u: "k", cpn: false, s: "Max 500, NonDrop, Speed 50+ / DAY, Start Time 0-12 Hours, Lifetime Refill, avg 25 Hours 28 Minutes" }
         ]}
       ]},
       { id: "views", label: "Views", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 2.5, u: "k", cpn: false, s: "Max 20K, YouTube Video Views Promotion, 100% Real Users, Ranking Views, Good for Channel Ranking, Drop Possible, No Refill, avg 17 Hours 46 Minutes" }
+          { p: 730, u: "k", cpn: false, s: "Max 20K, YouTube Video Views Promotion, 100% Real Users, Ranking Views, Good for Channel Ranking, Drop Possible, No Refill, avg 17 Hours 46 Minutes" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 3.5, u: "k", cpn: true, s: "Max 100M, Lifetime 1K -5k/ day NON DROP, Start Time 0-60 Minutes, avg 34 Hours 57 Minutes" }
+          { p: 1022, u: "k", cpn: true, s: "Max 100M, Lifetime 1K -5k/ day NON DROP, Start Time 0-60 Minutes, avg 34 Hours 57 Minutes" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 5.5, u: "k", cpn: true, s: "Max 9M, YouTube Views Organic, Speed 1K-2K/Day, Monetizable, 100% Active Human, Lifetime, avg 44 Hours 7 Minutes" }
+          { p: 1606, u: "k", cpn: true, s: "Max 9M, YouTube Views Organic, Speed 1K-2K/Day, Monetizable, 100% Active Human, Lifetime, avg 44 Hours 7 Minutes" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
         { id: "droppable", label: "Droppable", tiers: [
-          { p: 1.5, u: "k", cpn: true, s: "Max 10K, Instant Start, Zero Drop, Refill 30 Days" }
+          { p: 790, u: "k", cpn: true, s: "Max 10K, Instant Start, Zero Drop, Refill 30 Days" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 3, u: "k", cpn: true, s: "Max 100K, Instant Start, Zero Drop, Refill 360 Days" }
+          { p: 1065, u: "k", cpn: true, s: "Max 100K, Instant Start, Zero Drop, Refill 360 Days" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 6, u: "k", cpn: true, s: "Max 100K, Instant Start, Zero Drop, Refill 360 Days" }
+          { p: 1750, u: "k", cpn: true, s: "Max 100K, Instant Start, Zero Drop, Refill 360 Days" }
         ]}
       ]}
     ]}
@@ -232,7 +226,7 @@
   }
 
   function tierName(subcatLabel, tier) {
-    return subcatLabel + " — " + fmtUSD(tier.p) + UNIT_SHORT[tier.u];
+    return subcatLabel + " — " + fmtPKR(tier.p) + UNIT_SHORT[tier.u];
   }
   function qtyLabelFor(unit) {
     if (unit === "pkg") return "Number of packages";
@@ -277,7 +271,7 @@
     var v = parseFloat(raw) * mult;
     return isNaN(v) ? Infinity : v;
   }
-  function calcTotalUSD(tier, qty) {
+  function calcTotalPKR(tier, qty) {
     if (tier.u === "k" || tier.u === "kh") return tier.p * qty / 1000;
     return tier.p * qty;
   }
@@ -329,7 +323,7 @@
     orderTier = sel;
     var t = sel.tier;
     $("order-title").textContent = "Order: " + sel.platform.label.replace(/^[📸🎵▶️📘📦]\s*/, "") + " " + sel.category.label;
-    $("order-service-line").textContent = sel.subcat.label + " · " + fmtUSD(t.p) + " " + UNIT_LABEL[t.u] + (t.s ? " · " + t.s : "");
+    $("order-service-line").textContent = sel.subcat.label + " · " + fmtPKR(t.p) + " " + UNIT_LABEL[t.u] + (t.s ? " · " + t.s : "");
     var qty = $("order-qty");
     qty.min = qtyMinFor(t.u);
     var maxQ = qtyMaxFor(t);
@@ -384,9 +378,9 @@
     if (!orderTier) return { usd: 0, pkr: 0, qty: 0 };
     var qty = parseInt($("order-qty").value, 10);
     if (isNaN(qty)) qty = 0;
-    var usd = calcTotalUSD(orderTier.tier, qty);
-    usd = usd * (1 - couponDiscount);
-    return { usd: usd, pkr: usd * PKR_RATE, qty: qty };
+    var pkr = calcTotalPKR(orderTier.tier, qty);
+    pkr = pkr * (1 - couponDiscount);
+    return { usd: pkr / PKR_RATE, pkr: pkr, qty: qty };
   }
 
   function updateOrderTotal() {
@@ -558,7 +552,7 @@
       service_id: null,
       platform: orderTier.platform.id,
       service_type: orderTier.category.id,
-      quality: orderTier.subcat.label + " " + fmtUSD(tier.p) + UNIT_SHORT[tier.u],
+      quality: orderTier.subcat.label + " " + fmtPKR(tier.p) + UNIT_SHORT[tier.u],
       quantity: t.qty,
       price_usd: Math.round(t.usd * 100) / 100,
       price_pkr: Math.round(t.pkr),
@@ -595,7 +589,7 @@
       var trackLink = $("confirm-track-link");
       if (trackLink) trackLink.href = "/track?code=" + encodeURIComponent(code);
       $("confirm-detail").textContent = tierName(orderTier.subcat.label, tier) + " × " + t.qty.toLocaleString() +
-        " — " + fmtUSD(t.usd) + " (≈ " + fmtPKR(t.pkr) + ")";
+        " — " + fmtPKR(t.pkr) + " (≈ " + fmtUSD(t.usd) + ")";
       $("confirm-modal").classList.add("open");
     }
 
@@ -767,9 +761,9 @@
     if (!cheap) return;
     var qty = parseInt($("hero-qty").value, 10);
     if (isNaN(qty) || qty < 0) qty = 0;
-    var usd = calcTotalUSD(cheap, qty);
-    $("hero-price-usd").textContent = fmtUSD(usd);
-    $("hero-price-pkr").textContent = "≈ " + fmtPKR(usd * PKR_RATE);
+    var pkr = calcTotalPKR(cheap, qty);
+    $("hero-price-pkr").textContent = fmtPKR(pkr);
+    $("hero-price-usd").textContent = "≈ " + fmtUSD(pkr / PKR_RATE);
   }
 
   function updateHeroDesc() {
@@ -821,7 +815,7 @@
       var cheap = cheapestTier(sc);
       var opt = document.createElement("option");
       opt.value = sc.id;
-      opt.textContent = sc.label + (cheap ? " (from " + fmtUSD(cheap.p) + UNIT_SHORT[cheap.u] + ")" : "");
+      opt.textContent = sc.label + (cheap ? " (from " + fmtPKR(cheap.p) + UNIT_SHORT[cheap.u] + ")" : "");
       sel.appendChild(opt);
     });
     // Preselect Instagram Followers — No Drop (hero default quality)
