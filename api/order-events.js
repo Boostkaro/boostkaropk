@@ -181,16 +181,17 @@ function waService(order) {
 // Best-effort only: a logging failure must never break the send flow,
 // and the wa_messages table may not exist until Raji runs the one-time
 // delivery-tracking SQL.
-async function waLog(ctx, to, template, data) {
+async function waLog(ctx, to, template, data, extra) {
   try {
     const wamid = data && data.messages && data.messages[0] && data.messages[0].id;
     const h = sbHeaders(); h.Prefer = "resolution=ignore-duplicates,return=minimal";
+    const row = { order_id: ctx && ctx.order_id || null,
+      order_code: ctx && ctx.order_code || null,
+      recipient: String(to), template: template,
+      wamid: wamid || null, status: "accepted" };
+    if (extra) Object.assign(row, extra);
     await fetch(SB_URL + "/rest/v1/wa_messages", {
-      method: "POST", headers: h,
-      body: JSON.stringify({ order_id: ctx && ctx.order_id || null,
-        order_code: ctx && ctx.order_code || null,
-        recipient: String(to), template: template,
-        wamid: wamid || null, status: "accepted" }) });
+      method: "POST", headers: h, body: JSON.stringify(row) });
   } catch (e) { /* tracking is best-effort */ }
 }
 async function waSend(to, template, params, ctx) {
@@ -206,7 +207,17 @@ async function waSend(to, template, params, ctx) {
                "Content-Type": "application/json" },
     body: JSON.stringify(payload) });
   const data = await r.json().catch(() => ({}));
-  if (r.ok && ctx) await waLog(ctx, to, template, data);
+  if (ctx) {
+    if (r.ok) await waLog(ctx, to, template, data);
+    else {
+      // Even a rejected send leaves a record, so the admin always shows
+      // the attempt (and Meta's reason) instead of an empty gap.
+      const err = (data && data.error) || {};
+      await waLog(ctx, to, template, data, { status: "send_failed",
+        error_code: err.code || null,
+        error_message: String(err.title || err.message || ("HTTP " + r.status)).slice(0, 300) });
+    }
+  }
   return { sent: r.ok, status: r.status, data };
 }
 // Claim a one-time notification flag; true only for the caller that wins.

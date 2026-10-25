@@ -387,33 +387,45 @@
     // message ID. Fallback: the wa_*_sent_at flags, which only prove the
     // send was accepted (messages sent before delivery tracking existed
     // have no receipts and can never be proven delivered after the fact).
-    var waBits = [];
+    // The Auto WhatsApp row ALWAYS renders — even when nothing was sent
+    // yet — so every order shows the state of each customer message.
     var waMsgs = waByOrder[o.order_code] || [];
-    if (waMsgs.length) {
-      var WA_TPL = [
-        ["order_received_payment_confirmed", "✅ Payment confirmed"],
-        ["order_received_payment_rejected", "⚠️ Payment rejected"],
-        ["order_completed", "🎉 Completed"],
-        ["new_order_alert", "🔔 Admin alert"]
-      ];
-      WA_TPL.forEach(function (pair) {
-        var m = null;
-        waMsgs.forEach(function (x) { if (!m && x.template === pair[0]) m = x; });
-        if (!m) return;
-        var when = function (v) { return v ? " — " + esc(new Date(v).toLocaleString()) : ""; };
-        if (m.status === "read") waBits.push(pair[1] + ": 👀 Read" + when(m.read_at || m.updated_at));
-        else if (m.status === "delivered") waBits.push(pair[1] + ": ✔✔ Delivered" + when(m.delivered_at || m.updated_at));
-        else if (m.status === "sent") waBits.push(pair[1] + ": ✔ Sent" + when(m.updated_at));
-        else if (m.status === "failed") waBits.push(pair[1] + ": ❌ FAILED" + when(m.failed_at) +
-          (m.error_message ? " — " + esc(m.error_message) : ""));
-        else waBits.push(pair[1] + ": 📤 Accepted by WhatsApp — awaiting delivery" + when(m.sent_at));
-      });
-    } else {
-      if (o.wa_paid_sent_at) waBits.push("✅ Payment confirmed — accepted " + esc(new Date(o.wa_paid_sent_at).toLocaleString()) + " (delivery not tracked)");
-      if (o.wa_rejected_sent_at) waBits.push("⚠️ Payment rejected — accepted " + esc(new Date(o.wa_rejected_sent_at).toLocaleString()) + " (delivery not tracked)");
-      if (o.wa_completed_sent_at) waBits.push("🎉 Completed — accepted " + esc(new Date(o.wa_completed_sent_at).toLocaleString()) + " (delivery not tracked)");
+    var when = function (v) { return v ? " — " + esc(new Date(v).toLocaleString()) : ""; };
+    function waMsgFor(tpl) {
+      var m = null;
+      waMsgs.forEach(function (x) { if (!m && x.template === tpl) m = x; });
+      return m;
     }
-    if (waBits.length) details.appendChild(kv("Auto WhatsApp", waBits.join("<br>")));
+    function waStateText(m) {
+      if (!m) return null;
+      if (m.status === "read") return "👀 Read" + when(m.read_at || m.updated_at);
+      if (m.status === "delivered") return "✔✔ Delivered" + when(m.delivered_at || m.updated_at);
+      if (m.status === "sent") return "✔ Sent" + when(m.updated_at);
+      if (m.status === "failed") return "❌ FAILED" + when(m.failed_at) +
+        (m.error_message ? " — " + esc(m.error_message) : "");
+      if (m.status === "send_failed") return "❌ SEND FAILED" + when(m.sent_at) +
+        (m.error_message ? " — " + esc(m.error_message) : "");
+      return "📤 Accepted by WhatsApp — awaiting delivery" + when(m.sent_at);
+    }
+    function waLine(label, tpl, flagAt, showWhenEmpty) {
+      var m = waMsgFor(tpl);
+      if (m) return label + ": " + waStateText(m);
+      if (flagAt) return label + ": 📤 Accepted " + esc(new Date(flagAt).toLocaleString()) + " (delivery not tracked)";
+      return showWhenEmpty ? label + ": 📭 Not sent yet" : null;
+    }
+    var waBits = [];
+    // Payment confirmed + Completed lines always show, even when empty.
+    var l1 = waLine("✅ Payment confirmed", "order_received_payment_confirmed", o.wa_paid_sent_at, true);
+    if (l1) waBits.push(l1);
+    var l3 = waLine("🎉 Completed", "order_completed", o.wa_completed_sent_at, true);
+    if (l3) waBits.push(l3);
+    // Rejected line shows when the order is cancelled or a send/flag exists.
+    var l2 = waLine("⚠️ Payment rejected", "order_received_payment_rejected", o.wa_rejected_sent_at,
+      o.status === "cancelled");
+    if (l2) waBits.push(l2);
+    var alertMsg = waMsgFor("new_order_alert");
+    if (alertMsg) waBits.push("🔔 Admin alert: " + waStateText(alertMsg));
+    details.appendChild(kv("Auto WhatsApp", waBits.join("<br>")));
 
     var actions = document.createElement("div");
     actions.className = "oc-actions";
