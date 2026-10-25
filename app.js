@@ -476,6 +476,16 @@
     if (!phone) { showError("Contact number is required — we need it in case your link is wrong."); return; }
     if (!link || !/^https?:\/\//i.test(link)) { showError("Please enter a valid profile/post link starting with http."); return; }
     if (!tid) { showError("Please enter your JazzCash/Easypaisa transaction ID (TID)."); return; }
+    // TID format check (Group A2, 2026-10-25). Formats verified from real
+    // paid orders + provider statements: Easypaisa TIDs are 11 digits,
+    // JazzCash TIDs are 12 digits. A leading "#" is part of the TID as
+    // copied from the receipt app, so it is accepted as entered — the
+    // value itself is never rewritten. An 11-digit number starting "03"
+    // is a mobile number, not a TID.
+    var tidDigits = tid.replace(/^#/, "");
+    if (!/^\d+$/.test(tidDigits)) { showError("Your TID should be numbers only — please copy the transaction ID from your JazzCash/Easypaisa receipt."); return; }
+    if (tidDigits.length === 11 && tidDigits.indexOf("03") === 0) { showError("That looks like a phone number, not a TID. Please enter the transaction ID from your payment receipt (Easypaisa: 11 digits, JazzCash: 12 digits)."); return; }
+    if (tidDigits.length !== 11 && tidDigits.length !== 12) { showError("That TID doesn't look right — Easypaisa TIDs are 11 digits and JazzCash TIDs are 12 digits. Please check the transaction ID on your receipt."); return; }
 
     var btn = $("order-submit");
     btn.disabled = true;

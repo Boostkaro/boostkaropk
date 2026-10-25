@@ -392,6 +392,7 @@
     <div class="field">
       <label for="order-tid">Step 2 — Transaction ID (TID) <span class="req">*</span></label>
       <input type="text" id="order-tid" placeholder="Enter TID from JazzCash/Easypaisa" autocomplete="off">
+      <span class="hint">Easypaisa TID is 11 digits, JazzCash TID is 12 digits. Please don't enter your phone number.</span>
     </div>
 
     <div id="order-error"></div>
@@ -405,7 +406,7 @@
     <button class="modal-close" id="confirm-close" type="button" aria-label="Close">✕</button>
     <div class="confirm-box">
       <h2>✅ Order Received!</h2>
-      <p class="muted">Your order code (save this to track your order):</p>
+      <p class="muted">Save your order code and the contact number you used. You'll need both to track your order on the Track Order page.</p>
       <div class="order-code" id="confirm-code">BK-XXXXXX</div>
       <p class="muted" id="confirm-detail"></p>
       <p class="muted">We'll verify your payment and start your order soon. Track it anytime on the <a href="track.html">Track Order</a> page.</p>
