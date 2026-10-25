@@ -592,6 +592,8 @@
       }
       $("order-modal").classList.remove("open");
       $("confirm-code").textContent = code;
+      var trackLink = $("confirm-track-link");
+      if (trackLink) trackLink.href = "/track?code=" + encodeURIComponent(code);
       $("confirm-detail").textContent = tierName(orderTier.subcat.label, tier) + " × " + t.qty.toLocaleString() +
         " — " + fmtUSD(t.usd) + " (≈ " + fmtPKR(t.pkr) + ")";
       $("confirm-modal").classList.add("open");
