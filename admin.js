@@ -15,6 +15,7 @@
   }
 
   var allOrders = [];
+  var waByOrder = {}; // order_code -> [wa_messages rows, newest first]
   var activeTab = "review";
 
   // Status model (2026-10-22): statuses mirror the provider. "paid" means
@@ -143,8 +144,24 @@
         }
         allOrders = res.data || [];
         $("admin-msg").innerHTML = "";
-        renderOrders();
-        renderReviews();
+        // Delivery receipts live in wa_messages (may not exist yet if
+        // the one-time SQL hasn't been run — then just render as before).
+        sb.from("wa_messages").select("*").order("sent_at", { ascending: false }).limit(1000)
+          .then(function (wres) {
+            waByOrder = {};
+            if (!wres.error && wres.data) {
+              wres.data.forEach(function (m) {
+                if (!m.order_code) return;
+                (waByOrder[m.order_code] = waByOrder[m.order_code] || []).push(m);
+              });
+            }
+            renderOrders();
+            renderReviews();
+          }, function () {
+            waByOrder = {};
+            renderOrders();
+            renderReviews();
+          });
       })
       .catch(function () {
         $("admin-msg").innerHTML = '<div class="alert error">Could not load orders. Check connection.</div>';
@@ -365,12 +382,37 @@
         (o.provider_status ? " · " + esc(o.provider_status) : "")));
     }
 
-    // WhatsApp auto-message delivery record (wa_*_sent_at written by the
-    // order-events endpoint when each template is actually sent).
+    // WhatsApp auto-message record. Preferred source: wa_messages rows —
+    // Meta's own delivery receipts (delivered / read / failed) matched by
+    // message ID. Fallback: the wa_*_sent_at flags, which only prove the
+    // send was accepted (messages sent before delivery tracking existed
+    // have no receipts and can never be proven delivered after the fact).
     var waBits = [];
-    if (o.wa_paid_sent_at) waBits.push("✅ Payment confirmed — " + esc(new Date(o.wa_paid_sent_at).toLocaleString()));
-    if (o.wa_rejected_sent_at) waBits.push("⚠️ Payment rejected — " + esc(new Date(o.wa_rejected_sent_at).toLocaleString()));
-    if (o.wa_completed_sent_at) waBits.push("🎉 Completed — " + esc(new Date(o.wa_completed_sent_at).toLocaleString()));
+    var waMsgs = waByOrder[o.order_code] || [];
+    if (waMsgs.length) {
+      var WA_TPL = [
+        ["order_received_payment_confirmed", "✅ Payment confirmed"],
+        ["order_received_payment_rejected", "⚠️ Payment rejected"],
+        ["order_completed", "🎉 Completed"],
+        ["new_order_alert", "🔔 Admin alert"]
+      ];
+      WA_TPL.forEach(function (pair) {
+        var m = null;
+        waMsgs.forEach(function (x) { if (!m && x.template === pair[0]) m = x; });
+        if (!m) return;
+        var when = function (v) { return v ? " — " + esc(new Date(v).toLocaleString()) : ""; };
+        if (m.status === "read") waBits.push(pair[1] + ": 👀 Read" + when(m.read_at || m.updated_at));
+        else if (m.status === "delivered") waBits.push(pair[1] + ": ✔✔ Delivered" + when(m.delivered_at || m.updated_at));
+        else if (m.status === "sent") waBits.push(pair[1] + ": ✔ Sent" + when(m.updated_at));
+        else if (m.status === "failed") waBits.push(pair[1] + ": ❌ FAILED" + when(m.failed_at) +
+          (m.error_message ? " — " + esc(m.error_message) : ""));
+        else waBits.push(pair[1] + ": 📤 Accepted by WhatsApp — awaiting delivery" + when(m.sent_at));
+      });
+    } else {
+      if (o.wa_paid_sent_at) waBits.push("✅ Payment confirmed — accepted " + esc(new Date(o.wa_paid_sent_at).toLocaleString()) + " (delivery not tracked)");
+      if (o.wa_rejected_sent_at) waBits.push("⚠️ Payment rejected — accepted " + esc(new Date(o.wa_rejected_sent_at).toLocaleString()) + " (delivery not tracked)");
+      if (o.wa_completed_sent_at) waBits.push("🎉 Completed — accepted " + esc(new Date(o.wa_completed_sent_at).toLocaleString()) + " (delivery not tracked)");
+    }
     if (waBits.length) details.appendChild(kv("Auto WhatsApp", waBits.join("<br>")));
 
     var actions = document.createElement("div");

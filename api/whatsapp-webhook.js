@@ -3,6 +3,9 @@
 // POST — incoming events, acknowledged with 200. For an incoming customer
 //        message to the automated number, sends the approved one-time
 //        redirect reply (once per customer, tracked in wa_redirect_log).
+//        Delivery receipts (statuses) for automated sends are written
+//        back to wa_messages, matched by WhatsApp message ID, so the
+//        admin panel can prove delivered / read / failed per order.
 const VERIFY_TOKEN = "fa73520d429945084a48edcf97ee3928";
 const SB_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
 const WA_PHONE_ID = process.env.WHATSAPP_PHONE_ID || "1351878108014876";
@@ -40,6 +43,63 @@ async function sendRedirect(to) {
   }).catch(() => {});
 }
 
+// ---- Delivery receipts -> wa_messages --------------------------------
+const STATUS_RANK = { accepted: 0, sent: 1, delivered: 2, read: 3 };
+
+async function sbGetWaMessage(wamid) {
+  const r = await fetch(SB_URL + "/rest/v1/wa_messages?wamid=eq." +
+    encodeURIComponent(wamid) + "&select=id,status&limit=1",
+    { headers: sbHeaders() });
+  if (!r.ok) return null;
+  const rows = await r.json();
+  return rows.length ? rows[0] : null;
+}
+
+async function sbPatchWaMessage(id, fields) {
+  const body = Object.assign({ updated_at: new Date().toISOString() }, fields);
+  await fetch(SB_URL + "/rest/v1/wa_messages?id=eq." + id, {
+    method: "PATCH",
+    headers: Object.assign(sbHeaders(), { Prefer: "return=minimal" }),
+    body: JSON.stringify(body),
+  }).catch(() => {});
+}
+
+async function handleStatuses(body) {
+  try {
+    const entries = (body && body.entry) || [];
+    for (const e of entries) {
+      for (const ch of e.changes || []) {
+        const statuses = (ch.value && ch.value.statuses) || [];
+        for (const st of statuses) {
+          if (!st.id || !st.status) continue;
+          const row = await sbGetWaMessage(st.id);
+          if (!row) continue; // not one of our tracked sends
+          const ts = st.timestamp
+            ? new Date(Number(st.timestamp) * 1000).toISOString()
+            : new Date().toISOString();
+          if (st.status === "failed") {
+            if (row.status === "read" || row.status === "failed") continue;
+            const err = (st.errors || [])[0] || {};
+            await sbPatchWaMessage(row.id, {
+              status: "failed", failed_at: ts,
+              error_code: err.code || null,
+              error_message: String(err.title || err.message || "Delivery failed").slice(0, 300),
+            });
+            continue;
+          }
+          const next = STATUS_RANK[st.status];
+          const cur = STATUS_RANK[row.status];
+          if (next === undefined || (cur !== undefined && next <= cur)) continue;
+          const fields = { status: st.status };
+          if (st.status === "delivered") fields.delivered_at = ts;
+          if (st.status === "read") fields.read_at = ts;
+          await sbPatchWaMessage(row.id, fields);
+        }
+      }
+    }
+  } catch (err) { /* ack regardless; Meta retries on non-200 */ }
+}
+
 async function handleIncoming(body) {
   try {
     const entries = (body && body.entry) || [];
@@ -72,7 +132,7 @@ module.exports = (req, res) => {
     res.status(200).json({ received: true });
     let body = req.body;
     if (typeof body === "string") { try { body = JSON.parse(body); } catch (e) { body = null; } }
-    if (body) handleIncoming(body);
+    if (body) { handleIncoming(body); handleStatuses(body); }
     return;
   }
   res.status(405).send("Method not allowed");

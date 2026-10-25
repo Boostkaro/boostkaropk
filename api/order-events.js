@@ -176,7 +176,24 @@ function waService(order) {
   const cap = plat.charAt(0).toUpperCase() + plat.slice(1);
   return cap + " " + (SVC_LABEL[order.service_type] || order.service_type || "");
 }
-async function waSend(to, template, params) {
+// Record one automated WhatsApp send so Meta's delivery receipts
+// (matched by wamid in api/whatsapp-webhook.js) can prove delivery.
+// Best-effort only: a logging failure must never break the send flow,
+// and the wa_messages table may not exist until Raji runs the one-time
+// delivery-tracking SQL.
+async function waLog(ctx, to, template, data) {
+  try {
+    const wamid = data && data.messages && data.messages[0] && data.messages[0].id;
+    const h = sbHeaders(); h.Prefer = "resolution=ignore-duplicates,return=minimal";
+    await fetch(SB_URL + "/rest/v1/wa_messages", {
+      method: "POST", headers: h,
+      body: JSON.stringify({ order_id: ctx && ctx.order_id || null,
+        order_code: ctx && ctx.order_code || null,
+        recipient: String(to), template: template,
+        wamid: wamid || null, status: "accepted" }) });
+  } catch (e) { /* tracking is best-effort */ }
+}
+async function waSend(to, template, params, ctx) {
   if (!process.env.WHATSAPP_TOKEN) return { sent: false, reason: "no token" };
   const payload = { messaging_product: "whatsapp", to, type: "template",
     template: { name: template, language: { code: "en" },
@@ -189,6 +206,7 @@ async function waSend(to, template, params) {
                "Content-Type": "application/json" },
     body: JSON.stringify(payload) });
   const data = await r.json().catch(() => ({}));
+  if (r.ok && ctx) await waLog(ctx, to, template, data);
   return { sent: r.ok, status: r.status, data };
 }
 // Claim a one-time notification flag; true only for the caller that wins.
@@ -231,7 +249,8 @@ module.exports = async (req, res) => {
         res.status(200).json({ sent: false, reason: "already alerted" }); return;
       }
       const out = await waSend(WA_ADMIN_NUMBER, "new_order_alert",
-        [o.order_code, waService(o), o.quantity, "Rs " + Number(o.price_pkr || 0).toLocaleString("en-US")]);
+        [o.order_code, waService(o), o.quantity, "Rs " + Number(o.price_pkr || 0).toLocaleString("en-US")],
+        { order_id: o.id, order_code: o.order_code });
       if (!out.sent) await waUnclaim(o.id, "wa_alert_sent_at");
       res.status(200).json(out); return;
     }
@@ -244,18 +263,21 @@ module.exports = async (req, res) => {
       if (body.event === "paid") {
         if (await waClaim(o.id, "wa_paid_sent_at")) {
           out = await waSend(to, "order_received_payment_confirmed",
-            [waName(o), o.order_code, waService(o)]);
+            [waName(o), o.order_code, waService(o)],
+            { order_id: o.id, order_code: o.order_code });
           if (!out.sent) await waUnclaim(o.id, "wa_paid_sent_at");
         } else out = { sent: false, reason: "already sent" };
       } else if (body.event === "cancelled" && !o.provider_order_id) {
         if (await waClaim(o.id, "wa_rejected_sent_at")) {
           out = await waSend(to, "order_received_payment_rejected",
-            [waName(o), o.order_code]);
+            [waName(o), o.order_code],
+            { order_id: o.id, order_code: o.order_code });
           if (!out.sent) await waUnclaim(o.id, "wa_rejected_sent_at");
         } else out = { sent: false, reason: "already sent" };
       } else if (body.event === "completed") {
         if (await waClaim(o.id, "wa_completed_sent_at")) {
-          out = await waSend(to, "order_completed", [o.order_code]);
+          out = await waSend(to, "order_completed", [o.order_code],
+            { order_id: o.id, order_code: o.order_code });
           if (!out.sent) await waUnclaim(o.id, "wa_completed_sent_at");
         } else out = { sent: false, reason: "already sent" };
       }
