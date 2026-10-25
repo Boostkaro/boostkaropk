@@ -400,18 +400,20 @@
       if (!m) return null;
       if (m.status === "read") return "👀 Read" + when(m.read_at || m.updated_at);
       if (m.status === "delivered") return "✔✔ Delivered" + when(m.delivered_at || m.updated_at);
-      if (m.status === "sent") return "✔ Sent" + when(m.updated_at);
       if (m.status === "failed") return "❌ FAILED" + when(m.failed_at) +
         (m.error_message ? " — " + esc(m.error_message) : "");
       if (m.status === "send_failed") return "❌ SEND FAILED" + when(m.sent_at) +
         (m.error_message ? " — " + esc(m.error_message) : "");
-      return "📤 Accepted by WhatsApp — awaiting delivery" + when(m.sent_at);
+      // "accepted" and "sent" both display simply as Sent.
+      return "✔ Sent" + when(m.status === "sent" ? m.updated_at : m.sent_at);
     }
     function waLine(label, tpl, flagAt, showWhenEmpty) {
       var m = waMsgFor(tpl);
       if (m) return label + ": " + waStateText(m);
-      if (flagAt) return label + ": 📤 Accepted " + esc(new Date(flagAt).toLocaleString()) + " (delivery not tracked)";
-      return showWhenEmpty ? label + ": 📭 Not sent yet" : null;
+      if (flagAt) return label + ": ✔ Sent " + esc(new Date(flagAt).toLocaleString()) + " (delivery not tracked)";
+      // Raji's rule: no "not sent" wording — the line stays, its state
+      // is simply empty until the message is sent.
+      return showWhenEmpty ? label + ":" : null;
     }
     var waBits = [];
     // Payment confirmed + Completed lines always show, even when empty.
