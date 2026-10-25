@@ -1,67 +1,64 @@
 // BoostKaro direct order flow — runs on Raji's own Vercel account.
 // Called by his Supabase database:
 //   - instantly, by a trigger, the moment an order is marked "paid"
-//     ({op:"place", order_id}) -> places the order at PakistanPanels
+//     ({op:"place", order_id}) -> places the order at GeoSMM
 //   - every 15 minutes by pg_cron ({op:"sync"}) -> safety net: places any
 //     paid order still waiting, and mirrors provider statuses back.
 // Auth: header "x-trigger-key" must match the TRIGGER_KEY env var.
 // Secrets live ONLY as Vercel env vars on Raji's account:
-//   TRIGGER_KEY (shared with the database), PANEL_API_KEY (PakistanPanels),
+//   TRIGGER_KEY (shared with the database), PANEL_API_KEY (GeoSMM),
 //   SUPABASE_SERVICE_KEY (his Supabase service_role key).
+// Supplier history: PakistanPanels until 2026-10-25, GeoSMM from 2026-10-25.
 const SB_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
 const SB_ANON_PUBLIC = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppeGR2a3NzZ3FpdHFqdWNqaW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5Njk5NjYsImV4cCI6MjEwNzU0NTk2Nn0._UkyTqLweinByQpoyqXxhv-BIgciRhw59PY6sS8fb2E"; // public anon key (also shipped in app.js)
-const PANEL_URL = "https://pakistanpanels.org/api/v2";
-// PakistanPanels DISCONNECTED 2026-10-25 (Raji's order): no placements and
-// no status mirroring while PANEL_ENABLED is false. WhatsApp notifications
-// (notify_new_order / wa_event) are unaffected. The GeoSMM bridge replaces
-// this block in the next step.
-const PANEL_ENABLED = false;
+const PANEL_URL = "https://geosmm.pk/api/v2";
+// GeoSMM connected 2026-10-25 (PakistanPanels disconnected the same day).
+// WhatsApp notifications (notify_new_order / wa_event) are independent of
+// this flag.
+const PANEL_ENABLED = true;
+// PakistanPanels-era provider order IDs still attached to live orders.
+// NEVER sync these against GeoSMM — the same numbers may exist there as
+// other customers' orders. BK-0505 (1653140) and BK-0508 (1657765) are
+// closed manually in admin.
+const LEGACY_PROVIDER_IDS = { "1653140": true, "1657765": true };
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 const PROVIDER_MAP = {
- "facebook/comments/No Drop": 356,
- "facebook/pagelikes/Droppable": 555,
- "facebook/pagelikes/High Quality": 560,
- "facebook/pagelikes/No Drop": 342,
- "facebook/pagelikesfol/Droppable": 295,
- "facebook/pagelikesfol/High Quality": 297,
- "facebook/pagelikesfol/No Drop": 296,
- "facebook/profilefol/Droppable": 1508,
- "facebook/profilefol/High Quality": 1511,
- "facebook/profilefol/No Drop": 1512,
- "facebook/videoviews/Droppable": 1499,
- "facebook/videoviews/High Quality": 459,
- "facebook/videoviews/No Drop": 332,
- "instagram/comments/No Drop": 966,
- "instagram/followers/Droppable": 1485,
- "instagram/followers/High Quality": 1495,
- "instagram/followers/No Drop": 1492,
- "instagram/likes/Droppable": 1263,
- "instagram/likes/High Quality": 1227,
- "instagram/likes/No Drop": 1129,
- "instagram/views/Droppable": 142,
- "instagram/views/High Quality": 133,
- "instagram/views/No Drop": 134,
- "tiktok/comments/Droppable": 1293,
- "tiktok/comments/High Quality": 1296,
- "tiktok/comments/No Drop": 1310,
- "tiktok/followers/Droppable": 807,
- "tiktok/followers/High Quality": 1020,
- "tiktok/followers/No Drop": 1480,
- "tiktok/likes/Droppable": 15,
- "tiktok/likes/High Quality": 1189,
- "tiktok/likes/No Drop": 1517,
- "tiktok/views/Droppable": 1398,
- "tiktok/views/High Quality": 1124,
- "tiktok/views/No Drop": 1201,
- "youtube/likes/Droppable": 262,
- "youtube/likes/High Quality": 269,
- "youtube/likes/No Drop": 267,
- "youtube/subscribers/Droppable": 1395,
- "youtube/subscribers/No Drop": 1367,
- "youtube/views/Droppable": 228,
- "youtube/views/High Quality": 229,
- "youtube/views/No Drop": 448
+ "facebook/pagelikes/Droppable": 5765,
+ "facebook/pagelikes/High Quality": 5765,
+ "facebook/pagelikes/No Drop": 5765,
+ "facebook/pagelikesfol/Droppable": 5766,
+ "facebook/pagelikesfol/High Quality": 5776,
+ "facebook/pagelikesfol/No Drop": 6939,
+ "facebook/profilefol/Droppable": 5766,
+ "facebook/profilefol/High Quality": 5778,
+ "facebook/profilefol/No Drop": 6938,
+ "instagram/comments/No Drop": 6964,
+ "instagram/followers/Droppable": 7179,
+ "instagram/followers/High Quality": 5790,
+ "instagram/followers/No Drop": 5555,
+ "instagram/likes/Droppable": 5081,
+ "instagram/likes/High Quality": 5086,
+ "instagram/likes/No Drop": 5085,
+ "instagram/views/Droppable": 5792,
+ "instagram/views/High Quality": 6897,
+ "instagram/views/No Drop": 6901,
+ "tiktok/comments/Droppable": 6943,
+ "tiktok/followers/Droppable": 7063,
+ "tiktok/followers/High Quality": 7032,
+ "tiktok/followers/No Drop": 6889,
+ "tiktok/likes/Droppable": 7189,
+ "tiktok/likes/High Quality": 7191,
+ "tiktok/likes/No Drop": 7190,
+ "tiktok/views/Droppable": 5755,
+ "tiktok/views/High Quality": 6954,
+ "tiktok/views/No Drop": 6948,
+ "youtube/likes/Droppable": 6987,
+ "youtube/likes/High Quality": 6988,
+ "youtube/likes/No Drop": 6988
 };
+// Tiers with NO GeoSMM entry (handled manually, orders stay "paid"):
+// facebook/comments, facebook/videoviews (all), youtube/subscribers (all),
+// youtube/views (all).
 const MIRROR = { "Pending": "processing", "In progress": "processing",
   "Processing": "processing", "Completed": "completed", "Partial": "completed",
   "Canceled": "cancelled", "Cancelled": "cancelled" };
@@ -138,6 +135,7 @@ async function syncStatuses() {
     "&select=id,order_code,provider_order_id,provider_status&limit=6");
   let updated = 0;
   for (const o of rows) {
+    if (LEGACY_PROVIDER_IDS[String(o.provider_order_id)]) continue;
     try {
       const res = await panel({ action: "status", order: String(o.provider_order_id) });
       const ps = res && res.status;
