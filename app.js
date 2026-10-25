@@ -302,6 +302,28 @@
     syncHeroPills();
   }
 
+  // ---- Payment methods (Step 1 selector) ----
+  // The customer selects their payment app; the pay-box then shows that
+  // app's number and TID note, the TID is validated against that app's
+  // format, and the choice is recorded on the order's admin_note.
+  var PAY_METHODS = {
+    easypaisa: { label: "Easypaisa", number: "0334 8139464", tidNote: "Your Easypaisa TID is 11 digits — keep it from your receipt for Step 2." },
+    jazzcash: { label: "JazzCash", number: "0334 0942542", tidNote: "Your JazzCash TID is 12 digits — keep it from your receipt for Step 2." },
+    nayapay: { label: "NayaPay", number: "0334 8139464", tidNote: "Your NayaPay TID is the long code on your receipt — keep it for Step 2." }
+  };
+  function selectedPayMethod() {
+    var sel = $("order-paymethod");
+    var v = sel ? sel.value : "easypaisa";
+    return PAY_METHODS[v] ? v : "easypaisa";
+  }
+  function updatePayMethod() {
+    var m = PAY_METHODS[selectedPayMethod()];
+    var numEl = $("pay-number");
+    if (numEl) numEl.textContent = m.label + ": " + m.number;
+    var noteEl = $("pay-tid-note");
+    if (noteEl) noteEl.textContent = m.tidNote;
+  }
+
   // ---- Order modal ----
   function openOrder(sel) {
     orderTier = sel;
@@ -321,6 +343,9 @@
     $("order-link").value = "";
     $("order-username").value = "";
     $("order-tid").value = "";
+    var pmSel = $("order-paymethod");
+    if (pmSel) pmSel.value = "easypaisa";
+    updatePayMethod();
     $("order-coupon").value = "";
     $("coupon-msg").textContent = "";
     couponDiscount = 0;
@@ -476,21 +501,34 @@
     if (!phone) { showError("Contact number is required — we need it in case your link is wrong."); return; }
     if (!link || !/^https?:\/\//i.test(link)) { showError("Please enter a valid profile/post link starting with http."); return; }
     if (!tid) { showError("Please enter your JazzCash/Easypaisa/NayaPay transaction ID (TID)."); return; }
-    // TID format check (Group A2, 2026-10-25; NayaPay added 2026-10-25).
-    // Formats verified from real paid orders + provider statements:
-    // Easypaisa TIDs are 11 digits, JazzCash TIDs are 12 digits. NayaPay
-    // TIDs are a 24-character code (letters + numbers), or a TMICFBPK
-    // reference followed by 18 digits (owner's account samples). A
+    // TID format check (Group A2, 2026-10-25; NayaPay + payment-app
+    // selector added 2026-10-25). The TID is checked against the app the
+    // customer selected in Step 1. Formats verified from real paid
+    // orders + provider statements: Easypaisa 11 digits, JazzCash 12
+    // digits, NayaPay a 24-character code (letters + numbers) or a
+    // TMICFBPK reference followed by 18 digits (owner's samples). A
     // leading "#" is part of the TID as copied from the receipt app, so
     // it is accepted as entered — the value itself is never rewritten.
     // An 11-digit number starting "03" is a mobile number, not a TID.
+    var payMethod = selectedPayMethod();
     var tidDigits = tid.replace(/^#/, "");
-    var isNumericTid = /^\d+$/.test(tidDigits);
-    var isNayaPayTid = /^[0-9a-fA-F]{24}$/.test(tid) || /^TMICFBPK\d{18}$/.test(tid);
-    if (!isNumericTid && !isNayaPayTid) { showError("That TID doesn't look right — please copy the transaction ID exactly as shown on your JazzCash/Easypaisa/NayaPay receipt."); return; }
-    if (isNumericTid) {
-      if (tidDigits.length === 11 && tidDigits.indexOf("03") === 0) { showError("That looks like a phone number, not a TID. Please enter the transaction ID from your payment receipt (Easypaisa: 11 digits, JazzCash: 12 digits, NayaPay: the long code from your receipt)."); return; }
-      if (tidDigits.length !== 11 && tidDigits.length !== 12) { showError("That TID doesn't look right — Easypaisa TIDs are 11 digits, JazzCash TIDs are 12 digits, and NayaPay TIDs are the long code from your receipt. Please check the transaction ID on your receipt."); return; }
+    var tidIsNumeric = /^\d+$/.test(tidDigits);
+    if (payMethod === "nayapay") {
+      var tidIsNayaPay = /^[0-9a-fA-F]{24}$/.test(tid) || /^TMICFBPK\d{18}$/.test(tid);
+      if (!tidIsNayaPay) {
+        if (tidIsNumeric && (tidDigits.length === 11 || tidDigits.length === 12)) { showError("That looks like an Easypaisa/JazzCash TID. If you paid with that app, select it in Step 1 — or paste the NayaPay code from your receipt."); return; }
+        showError("That NayaPay TID doesn't look right — it is the long code on your NayaPay receipt. Please copy it exactly."); return;
+      }
+    } else if (!tidIsNumeric) {
+      showError("Your TID should be numbers only — please copy the transaction ID from your " + PAY_METHODS[payMethod].label + " receipt."); return;
+    } else if (tidDigits.length === 11 && tidDigits.indexOf("03") === 0) {
+      showError("That looks like a phone number, not a TID. Please enter the transaction ID from your payment receipt."); return;
+    } else if (payMethod === "easypaisa" && tidDigits.length !== 11) {
+      if (tidDigits.length === 12) { showError("That looks like a JazzCash TID (12 digits). If you paid with JazzCash, select JazzCash in Step 1 — Easypaisa TIDs are 11 digits."); return; }
+      showError("That TID doesn't look right — Easypaisa TIDs are 11 digits. Please check the transaction ID on your receipt."); return;
+    } else if (payMethod === "jazzcash" && tidDigits.length !== 12) {
+      if (tidDigits.length === 11) { showError("That looks like an Easypaisa TID (11 digits). If you paid with Easypaisa, select Easypaisa in Step 1 — JazzCash TIDs are 12 digits."); return; }
+      showError("That TID doesn't look right — JazzCash TIDs are 12 digits. Please check the transaction ID on your receipt."); return;
     }
 
     var btn = $("order-submit");
@@ -519,8 +557,13 @@
       status: "pending"
     };
     // Record a redeemed FIRST30 on the order's admin_note — that record is
-    // what makes the code one-time (checkFirst30Used reads it back).
-    if (couponCodeApplied === "FIRST30") payload.admin_note = "Coupon FIRST30 (-30%)";
+    // what makes the code one-time (checkFirst30Used reads it back). The
+    // payment app the customer selected rides along in the same note, so
+    // the payment can be verified in the right account.
+    var noteParts = [];
+    if (couponCodeApplied === "FIRST30") noteParts.push("Coupon FIRST30 (-30%)");
+    noteParts.push("Paid via " + PAY_METHODS[selectedPayMethod()].label);
+    payload.admin_note = noteParts.join(" · ");
 
     function done(ok, errMsg) {
       btn.disabled = false;
@@ -845,6 +888,8 @@
       else if (couponCodeApplied && v !== couponCodeApplied) { couponDiscount = 0; couponCodeApplied = ""; $("coupon-msg").textContent = ""; updateOrderTotal(); }
     });
     $("order-submit").addEventListener("click", submitOrder);
+    var pmEl = $("order-paymethod");
+    if (pmEl) { pmEl.addEventListener("change", updatePayMethod); updatePayMethod(); }
     $("modal-close").addEventListener("click", function () { $("order-modal").classList.remove("open"); });
     $("confirm-close").addEventListener("click", function () { $("confirm-modal").classList.remove("open"); });
     $("confirm-ok").addEventListener("click", function () { $("confirm-modal").classList.remove("open"); });

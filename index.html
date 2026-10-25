@@ -383,12 +383,17 @@
 
     <div class="pay-box">
       <strong>💳 Step 1 — Pay via JazzCash / Easypaisa / NayaPay</strong>
-      <p class="muted" style="margin:8px 0">Send <strong id="pay-pkr">Rs 0</strong> to the number for your app:</p>
-      <div class="pay-number">JazzCash: 0334 0942542</div>
-      <div class="pay-number">Easypaisa: 0334 8139464</div>
-      <div class="pay-number">NayaPay: 0334 8139464</div>
+      <p class="muted" style="margin:8px 0">Send <strong id="pay-pkr">Rs 0</strong> — first, select your payment app:</p>
+      <div class="field" style="margin:0 0 10px">
+        <select id="order-paymethod" aria-label="Select your payment app">
+          <option value="easypaisa" selected>Easypaisa</option>
+          <option value="jazzcash">JazzCash</option>
+          <option value="nayapay">NayaPay</option>
+        </select>
+      </div>
+      <div class="pay-number" id="pay-number">Easypaisa: 0334 8139464</div>
       <div class="pay-name">Muhammad Siraj</div>
-      <p class="muted" style="margin:8px 0 0">Send from your JazzCash / Easypaisa / NayaPay app and keep the transaction ID (TID).</p>
+      <p class="muted" style="margin:8px 0 0" id="pay-tid-note">Your Easypaisa TID is 11 digits — keep it from your receipt for Step 2.</p>
     </div>
 
     <div class="field">
