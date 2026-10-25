@@ -11,6 +11,11 @@
 const SB_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
 const SB_ANON_PUBLIC = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppeGR2a3NzZ3FpdHFqdWNqaW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5Njk5NjYsImV4cCI6MjEwNzU0NTk2Nn0._UkyTqLweinByQpoyqXxhv-BIgciRhw59PY6sS8fb2E"; // public anon key (also shipped in app.js)
 const PANEL_URL = "https://pakistanpanels.org/api/v2";
+// PakistanPanels DISCONNECTED 2026-10-25 (Raji's order): no placements and
+// no status mirroring while PANEL_ENABLED is false. WhatsApp notifications
+// (notify_new_order / wa_event) are unaffected. The GeoSMM bridge replaces
+// this block in the next step.
+const PANEL_ENABLED = false;
 const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 const PROVIDER_MAP = {
  "facebook/comments/No Drop": 356,
@@ -96,6 +101,7 @@ function tierFor(order) {
 }
 
 async function placeOrder(order) {
+  if (!PANEL_ENABLED) return { placed: false, reason: "panel disconnected" };
   if (!order || order.status !== "paid" || order.provider_order_id) {
     return { placed: false, reason: "not placeable" };
   }
@@ -127,6 +133,7 @@ async function placeOrder(order) {
 }
 
 async function syncStatuses() {
+  if (!PANEL_ENABLED) return 0;
   const rows = await sbGet("orders?status=eq.processing&provider_order_id=not.is.null" +
     "&select=id,order_code,provider_order_id,provider_status&limit=6");
   let updated = 0;
@@ -226,7 +233,7 @@ module.exports = async (req, res) => {
         res.status(200).json({ sent: false, reason: "already alerted" }); return;
       }
       const out = await waSend(WA_ADMIN_NUMBER, "new_order_alert",
-        [o.order_code, waService(o), o.quantity, "$" + Number(o.price_usd || 0).toFixed(2)]);
+        [o.order_code, waService(o), o.quantity, "Rs " + Number(o.price_pkr || 0).toLocaleString("en-US")]);
       if (!out.sent) await waUnclaim(o.id, "wa_alert_sent_at");
       res.status(200).json(out); return;
     }
