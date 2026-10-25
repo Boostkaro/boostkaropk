@@ -102,7 +102,6 @@
       return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
-  function fmtUSD(n) { return "$" + Number(n).toFixed(2); }
   function fmtPKR(n) { return "Rs " + Math.round(Number(n)).toLocaleString("en-US"); }
 
   // ---- Login (Supabase Auth — secure server-side check) ----
@@ -363,7 +362,7 @@
     if (sid) details.appendChild(kv("Service ID", sid));
     details.appendChild(kv("Link", "<a href='" + esc(o.profile_link) + "' target='_blank' rel='noopener'>" + esc(o.profile_link) + " ↗</a>"));
     details.appendChild(kv("Quantity", Number(o.quantity).toLocaleString()));
-    details.appendChild(kv("Price", fmtUSD(o.price_usd) + " · " + fmtPKR(o.price_pkr)));
+    details.appendChild(kv("Price", fmtPKR(o.price_pkr)));
     details.appendChild(kv("Customer", esc(o.customer_name || "—") + " · " + esc(o.contact_number)));
     details.appendChild(kv("TID", esc(o.transaction_id || "—")));
 
@@ -508,14 +507,14 @@
     $("affiliates-count").textContent = "(" + rows.length + ")";
     var total = 0, due = 0, claimedAmt = 0;
     rows.forEach(function (o) {
-      var earn = Number(o.price_usd || 0) * 0.10;
+      var earn = Number(o.price_pkr || 0) * 0.10;
       total += earn;
       if (o.affiliate_claimed) claimedAmt += earn; else if (o.status === "completed") due += earn;
     });
     $("affiliates-summary").innerHTML =
-      "Total 10% earned: <strong>" + fmtUSD(total) + "</strong>" +
-      " · Ready to pay (completed, unclaimed): <strong>" + fmtUSD(due) + "</strong>" +
-      " · Already claimed: <strong>" + fmtUSD(claimedAmt) + "</strong>" +
+      "Total 10% earned: <strong>" + fmtPKR(total) + "</strong>" +
+      " · Ready to pay (completed, unclaimed): <strong>" + fmtPKR(due) + "</strong>" +
+      " · Already claimed: <strong>" + fmtPKR(claimedAmt) + "</strong>" +
       "<br>Affiliates are paid only after the order completes successfully.";
     if (!rows.length) {
       list.innerHTML = '<div class="orders-empty muted">No affiliated orders yet. Tick "🤝 Affiliated order" on any order card and it will appear here.</div>';
@@ -526,7 +525,7 @@
   }
 
   function affiliateCard(o) {
-    var earn = Number(o.price_usd || 0) * 0.10;
+    var earn = Number(o.price_pkr || 0) * 0.10;
     var d = new Date(o.created_at);
     var card = document.createElement("div");
     card.className = "order-card";
@@ -566,8 +565,8 @@
     details.appendChild(kv("Placed", esc(d.toLocaleString())));
     details.appendChild(kv("Customer", esc(o.customer_name || "—") + " · " + esc(o.contact_number || "")));
     details.appendChild(kv("Service", esc(o.platform) + " · " + esc(o.service_type) + " — " + esc(o.quality)));
-    details.appendChild(kv("Order amount", fmtUSD(o.price_usd) + " · " + fmtPKR(o.price_pkr)));
-    details.appendChild(kv("Affiliate earns (10%)", "<strong>" + fmtUSD(earn) + "</strong>"));
+    details.appendChild(kv("Order amount", fmtPKR(o.price_pkr)));
+    details.appendChild(kv("Affiliate earns (10%)", "<strong>" + fmtPKR(earn) + "</strong>"));
 
     var row = document.createElement("div");
     row.className = "oc-actions";

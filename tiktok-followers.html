@@ -206,13 +206,13 @@ document.addEventListener("DOMContentLoaded", function() {
       var price = 0;
       if (priceEl) {
         var m = priceEl.textContent.match(/Rs\s*([0-9,]+)/);
-        if (m) price = Math.round(parseFloat(m[1].replace(/,/g, "")) / 292 * 100) / 100;
+        if (m) price = parseInt(m[1].replace(/,/g, ""), 10);
       }
       if (typeof gtag === "function") {
         gtag("event", "order_now_click", {
           service: document.querySelector("h1") ? document.querySelector("h1").textContent : "",
           tier: tier,
-          price_usd: price
+          price_pkr: price
         });
       }
     });

@@ -192,7 +192,6 @@
 
   // ---- Helpers ----
   function $(id) { return document.getElementById(id); }
-  function fmtUSD(n) { return "$" + Number(n).toFixed(2); }
   function fmtPKR(n) { return "Rs " + Math.round(Number(n)).toLocaleString("en-US"); }
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -353,7 +352,7 @@
       gtag("event", "checkout_start", {
         service: sel.platform.label + " " + sel.category.label,
         tier: sel.subcat.label,
-        price_usd: sel.tier.p
+        price_pkr: sel.tier.p
       });
     }
   }
@@ -376,12 +375,12 @@
   }
 
   function calcTotal() {
-    if (!orderTier) return { usd: 0, pkr: 0, qty: 0 };
+    if (!orderTier) return { pkr: 0, qty: 0 };
     var qty = parseInt($("order-qty").value, 10);
     if (isNaN(qty)) qty = 0;
     var pkr = calcTotalPKR(orderTier.tier, qty);
     pkr = pkr * (1 - couponDiscount);
-    return { usd: pkr / PKR_RATE, pkr: pkr, qty: qty };
+    return { pkr: pkr, qty: qty };
   }
 
   function updateOrderTotal() {
@@ -554,7 +553,6 @@
       service_type: orderTier.category.id,
       quality: orderTier.subcat.label + " " + fmtPKR(tier.p) + UNIT_SHORT[tier.u],
       quantity: t.qty,
-      price_usd: Math.round(t.usd * 100) / 100,
       price_pkr: Math.round(t.pkr),
       customer_name: custName || null,
       contact_number: phone,
@@ -580,7 +578,7 @@
         gtag("event", "order_submitted", {
           service: orderTier.platform.id + " " + orderTier.category.id,
           tier: orderTier.subcat.label,
-          price_usd: Math.round(t.usd * 100) / 100,
+          price_pkr: Math.round(t.pkr),
           quantity: t.qty
         });
       }
