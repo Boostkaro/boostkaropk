@@ -29,7 +29,7 @@
           { p: 4.225, u: "k", cpn: true, s: "Max 1M, Real Accounts, Old Accounts With Posts and Stories, Speed Up to 20K/Day, Drop Rate: None So Far, Refill 365 Days, Start Time 0-1 Hours, Turn Off Flag for Review Before Ordering" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 5, u: "k", cpn: true, s: "Max 10M, 100% Old Accounts, High Quality Profiles, Non Drop, Speed 15K/Day, Guarantee 365 Days, Cancel and Refill Button Active, Start Time 0-15 Minutes, Turn Off Flag for Review Before Ordering" }
+          { p: 5, u: "k", cpn: true, s: "Max 10M, 100% Old Accounts, High Quality Profiles, Non Drop, Speed 15K/Day, Guarantee 365 Days, Start Time 0-15 Minutes, Turn Off Flag for Review Before Ordering" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [
