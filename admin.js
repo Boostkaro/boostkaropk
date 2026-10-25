@@ -33,54 +33,46 @@
   };
   var STATUS_OPTIONS = ["pending", "paid", "processing", "completed", "cancelled"];
 
-  // Panel (PakistanPanels) service ID for each catalog service, keyed by
-  // platform/service_type/quality-label — mirrors provider-map.json (the
-  // bridge's map). Orders don't store a usable service id (the column is a
-  // legacy UUID), so the admin derives it from the order's own fields.
+  // Panel (GeoSMM) service ID for each catalog service, keyed by
+  // platform/service_type/quality-label — mirrors the bridge's PROVIDER_MAP
+  // in api/order-events.js. Orders don't store a usable service id (the
+  // column is a legacy UUID), so the admin derives it from the order's own
+  // fields. Tiers with no GeoSMM service (Facebook comments & video views,
+  // YouTube subscribers & views) show no ID and are handled manually.
+  // (PakistanPanels until 2026-10-25; GeoSMM from 2026-10-25.)
   var SERVICE_IDS = {
-    "facebook/comments/No Drop": 356,
-    "facebook/pagelikes/Droppable": 555,
-    "facebook/pagelikes/High Quality": 560,
-    "facebook/pagelikes/No Drop": 342,
-    "facebook/pagelikesfol/Droppable": 295,
-    "facebook/pagelikesfol/High Quality": 297,
-    "facebook/pagelikesfol/No Drop": 296,
-    "facebook/profilefol/Droppable": 1508,
-    "facebook/profilefol/High Quality": 1511,
-    "facebook/profilefol/No Drop": 1512,
-    "facebook/videoviews/Droppable": 1499,
-    "facebook/videoviews/High Quality": 459,
-    "facebook/videoviews/No Drop": 332,
-    "instagram/comments/No Drop": 966,
-    "instagram/followers/Droppable": 1485,
-    "instagram/followers/High Quality": 1497,
-    "instagram/followers/No Drop": 1492,
-    "instagram/likes/Droppable": 1263,
-    "instagram/likes/High Quality": 1227,
-    "instagram/likes/No Drop": 1129,
-    "instagram/views/Droppable": 142,
-    "instagram/views/High Quality": 133,
-    "instagram/views/No Drop": 134,
-    "tiktok/comments/Droppable": 1293,
-    "tiktok/comments/High Quality": 1296,
-    "tiktok/comments/No Drop": 1310,
-    "tiktok/followers/Droppable": 807,
-    "tiktok/followers/High Quality": 1020,
-    "tiktok/followers/No Drop": 1480,
-    "tiktok/likes/Droppable": 15,
-    "tiktok/likes/High Quality": 1189,
-    "tiktok/likes/No Drop": 1517,
-    "tiktok/views/Droppable": 1398,
-    "tiktok/views/High Quality": 1124,
-    "tiktok/views/No Drop": 1201,
-    "youtube/likes/Droppable": 262,
-    "youtube/likes/High Quality": 269,
-    "youtube/likes/No Drop": 267,
-    "youtube/subscribers/Droppable": 1395,
-    "youtube/subscribers/No Drop": 1367,
-    "youtube/views/Droppable": 228,
-    "youtube/views/High Quality": 229,
-    "youtube/views/No Drop": 448
+    "facebook/pagelikes/Droppable": 5765,
+    "facebook/pagelikes/High Quality": 5765,
+    "facebook/pagelikes/No Drop": 5765,
+    "facebook/pagelikesfol/Droppable": 5766,
+    "facebook/pagelikesfol/High Quality": 5776,
+    "facebook/pagelikesfol/No Drop": 6939,
+    "facebook/profilefol/Droppable": 5766,
+    "facebook/profilefol/High Quality": 5778,
+    "facebook/profilefol/No Drop": 6938,
+    "instagram/comments/No Drop": 6964,
+    "instagram/followers/Droppable": 7179,
+    "instagram/followers/High Quality": 5790,
+    "instagram/followers/No Drop": 5555,
+    "instagram/likes/Droppable": 5081,
+    "instagram/likes/High Quality": 5086,
+    "instagram/likes/No Drop": 5085,
+    "instagram/views/Droppable": 5792,
+    "instagram/views/High Quality": 6897,
+    "instagram/views/No Drop": 6901,
+    "tiktok/comments/Droppable": 6943,
+    "tiktok/followers/Droppable": 7063,
+    "tiktok/followers/High Quality": 7032,
+    "tiktok/followers/No Drop": 6889,
+    "tiktok/likes/Droppable": 7189,
+    "tiktok/likes/High Quality": 7191,
+    "tiktok/likes/No Drop": 7190,
+    "tiktok/views/Droppable": 5755,
+    "tiktok/views/High Quality": 6954,
+    "tiktok/views/No Drop": 6948,
+    "youtube/likes/Droppable": 6987,
+    "youtube/likes/High Quality": 6988,
+    "youtube/likes/No Drop": 6988
   };
 
   function serviceIdOf(o) {
