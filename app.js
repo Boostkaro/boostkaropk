@@ -279,6 +279,7 @@
   // ---- Converter ----
   function initConverter() {
     var usdInput = $("conv-usd"), pkrOut = $("conv-pkr");
+    if (!usdInput || !pkrOut) return;
     function update() {
       var v = parseFloat(usdInput.value);
       if (isNaN(v) || v < 0) v = 0;
@@ -385,7 +386,6 @@
 
   function updateOrderTotal() {
     var t = calcTotal();
-    $("order-total-usd").textContent = fmtUSD(t.usd);
     $("order-total-pkr").textContent = fmtPKR(t.pkr);
     $("pay-pkr").textContent = fmtPKR(t.pkr);
   }
@@ -589,7 +589,7 @@
       var trackLink = $("confirm-track-link");
       if (trackLink) trackLink.href = "/track?code=" + encodeURIComponent(code);
       $("confirm-detail").textContent = tierName(orderTier.subcat.label, tier) + " × " + t.qty.toLocaleString() +
-        " — " + fmtPKR(t.pkr) + " (≈ " + fmtUSD(t.usd) + ")";
+        " — " + fmtPKR(t.pkr);
       $("confirm-modal").classList.add("open");
     }
 
@@ -763,7 +763,6 @@
     if (isNaN(qty) || qty < 0) qty = 0;
     var pkr = calcTotalPKR(cheap, qty);
     $("hero-price-pkr").textContent = fmtPKR(pkr);
-    $("hero-price-usd").textContent = "≈ " + fmtUSD(pkr / PKR_RATE);
   }
 
   function updateHeroDesc() {
