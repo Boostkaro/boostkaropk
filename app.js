@@ -844,21 +844,6 @@
 
 
 
-  // ---- Affiliation program popup (homepage, every visit) ----
-  function initAffiliatePopup() {
-    var overlay = $("affiliate-overlay");
-    if (!overlay) return;
-    function close() { overlay.style.display = "none"; }
-    $("affiliate-close").addEventListener("click", close);
-    overlay.addEventListener("click", function (e) { if (e.target === overlay) close(); });
-    setTimeout(function () { overlay.style.display = "flex"; }, 1500);
-  }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initAffiliatePopup);
-  } else {
-    initAffiliatePopup();
-  }
-
 })();
 
 // ---- Public reviews on homepage (real reviews only, 2026-10-24) ----

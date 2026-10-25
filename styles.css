@@ -136,44 +136,6 @@ footer p{font-size:.92rem;color:#b9cdf3}
 
 /* ============ Storefront components (from live styles.css) ============ */
 
-/* Promo popup */
-.promo-overlay {
-  position: fixed; inset: 0; z-index: 1100;
-  background: rgba(0,0,0,.6); backdrop-filter: blur(3px);
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-  animation: promoFadeIn .3s ease;
-}
-@keyframes promoFadeIn { from { opacity: 0; } to { opacity: 1; } }
-.promo-popup {
-  position: relative; max-width: 420px; width: 100%;
-  background: linear-gradient(135deg, #fff 0%, #fff8f0 100%);
-  border-radius: 24px; padding: 36px 28px 28px; text-align: center;
-  box-shadow: 0 20px 60px rgba(0,0,0,.3);
-  border: 3px solid var(--brand);
-  animation: promoPop .4s cubic-bezier(.2,1.4,.4,1);
-}
-@keyframes promoPop { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.promo-close {
-  position: absolute; top: 10px; right: 14px;
-  background: none; border: none; font-size: 2rem; line-height: 1;
-  color: var(--muted); cursor: pointer; padding: 4px 8px;
-}
-.promo-close:hover { color: var(--ink); }
-.promo-badge {
-  display: inline-block; background: #ff4757; color: #fff;
-  font-size: .75rem; font-weight: 800; letter-spacing: 1px;
-  padding: 6px 16px; border-radius: 999px; margin-bottom: 12px;
-}
-.promo-popup h2 { font-size: 2.5rem; margin: 0 0 8px; color: var(--brand-dark); }
-.promo-text { font-size: 1.05rem; margin: 0 0 6px; }
-.promo-sub { font-size: .9rem; color: var(--muted); margin: 12px 0 6px; }
-.promo-code {
-  font-size: 1.8rem; font-weight: 800; letter-spacing: 4px;
-  background: #f0eaff; border: 2px dashed var(--brand);
-  border-radius: 12px; padding: 12px; margin: 0 0 16px;
-  color: var(--brand-dark); user-select: all; cursor: pointer;
-}
-.promo-fine { font-size: .8rem; color: #ff4757; font-weight: 700; margin: 12px 0 0; }
 
 
 /* Drill-down breadcrumbs */
@@ -393,10 +355,6 @@ html, body { overflow-x: hidden; }
   .modal-backdrop { padding: 16px 10px; }
   .modal { padding: 20px 16px; }
   .confirm-box .order-code { font-size: 1.45rem; letter-spacing: 1px; }
-  .promo-overlay { padding: 12px; }
-  .promo-popup { padding: 28px 18px 22px; }
-  .promo-popup h2 { font-size: 2rem; }
-  .promo-code { font-size: 1.4rem; letter-spacing: 2px; }
   .converter { padding: 8px 14px; gap: 8px; }
   .checks { padding: 18px; }
   .stat { padding: 16px; }
