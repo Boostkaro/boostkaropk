@@ -815,7 +815,7 @@
       var cheap = cheapestTier(sc);
       var opt = document.createElement("option");
       opt.value = sc.id;
-      opt.textContent = sc.label + (cheap ? " (from " + fmtPKR(cheap.p) + UNIT_SHORT[cheap.u] + ")" : "");
+      opt.textContent = sc.label + (cheap ? " (" + fmtPKR(cheap.p) + UNIT_SHORT[cheap.u] + ")" : "");
       sel.appendChild(opt);
     });
     // Preselect Instagram Followers — No Drop (hero default quality)
