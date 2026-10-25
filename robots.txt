@@ -1,5 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /admin-orders.html
+Disallow: /admin-affiliates.html
+Disallow: /admin-reviews.html
+Disallow: /admin-emails.html
 
 Sitemap: https://www.boostkaropk.com/sitemap.xml
