@@ -41,7 +41,7 @@
   // column is a legacy UUID), so the admin derives it from the order's own
   // fields. Tiers with no GeoSMM service (Facebook comments & video views,
   // YouTube subscribers & views) show no ID and are handled manually.
-  // (PakistanPanels until 2026-10-25; GeoSMM from 2026-10-25.)
+  // (GeoSMM from 2026-10-25.)
   var SERVICE_IDS = {
     "facebook/pagelikes/Droppable": 5765,
     "facebook/pagelikes/High Quality": 5765,
@@ -78,12 +78,11 @@
   };
 
   function serviceIdOf(o) {
-    // Quality arrives as "No Drop $4.22/1k" (USD era) or
-    // "No Drop Rs 1,235/1k" (PKR era) — match the tier label by prefix
-    // so both formats resolve (same fix as the bridge's tierFor).
+    // Quality arrives as "No Drop Rs 1,235/1k" — match the tier label
+    // by prefix (same approach as the bridge's tierFor).
     var raw = String(o.quality || "").trim();
     var known = ["High Quality", "No Drop", "Droppable"];
-    var label = raw.split(" $")[0].split(" Rs ")[0];
+    var label = raw.split(" Rs ")[0];
     for (var i = 0; i < known.length; i++) {
       if (raw.indexOf(known[i]) === 0) { label = known[i]; break; }
     }

@@ -8,15 +8,15 @@
 // Secrets live ONLY as Vercel env vars on Raji's account:
 //   TRIGGER_KEY (shared with the database), PANEL_API_KEY (GeoSMM),
 //   SUPABASE_SERVICE_KEY (his Supabase service_role key).
-// Supplier history: PakistanPanels until 2026-10-25, GeoSMM from 2026-10-25.
+// Supplier: GeoSMM (connected 2026-10-25).
 const SB_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
 const SB_ANON_PUBLIC = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppeGR2a3NzZ3FpdHFqdWNqaW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5Njk5NjYsImV4cCI6MjEwNzU0NTk2Nn0._UkyTqLweinByQpoyqXxhv-BIgciRhw59PY6sS8fb2E"; // public anon key (also shipped in app.js)
 const PANEL_URL = "https://geosmm.pk/api/v2";
-// GeoSMM connected 2026-10-25 (PakistanPanels disconnected the same day).
+// GeoSMM connected 2026-10-25.
 // WhatsApp notifications (notify_new_order / wa_event) are independent of
 // this flag.
 const PANEL_ENABLED = true;
-// PakistanPanels-era provider order IDs still attached to live orders.
+// Old-panel provider order IDs still attached to live orders.
 // NEVER sync these against GeoSMM — the same numbers may exist there as
 // other customers' orders. BK-0505 (1653140) and BK-0508 (1657765) are
 // closed manually in admin.
@@ -92,15 +92,14 @@ async function panel(params) {
   return r.json();
 }
 function tierFor(order) {
-  // Quality is stored as "<Label> <price>", e.g. "No Drop $4.22/1k"
-  // (USD era) or "No Drop Rs 1,235/1k" (PKR era, 2026-10-25+). The old
-  // split(" $") silently failed on PKR strings, so PKR-era orders never
-  // matched the map and stayed "paid" forever (BK-0516, 2026-10-26).
-  // Match the known tier labels by prefix instead — format-proof.
+  // Quality is stored as "<Label> <price>", e.g. "No Drop Rs 1,235/1k".
+  // Match the known tier labels by prefix — the old price-split matching
+  // silently failed on PKR strings, so those orders never matched the
+  // map and stayed "paid" forever (BK-0516, 2026-10-26).
   const raw = String(order.quality || "").trim();
   const known = ["High Quality", "No Drop", "Droppable"];
   const label = known.find((k) => raw.startsWith(k)) ||
-    raw.split(" $")[0].split(" Rs ")[0].trim();
+    raw.split(" Rs ")[0].trim();
   const key = order.platform + "/" + order.service_type + "/" + label;
   return { key, service: PROVIDER_MAP[key] };
 }

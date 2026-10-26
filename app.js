@@ -5,8 +5,6 @@
   // ---- Config (anon key is public by design; RLS policies guard the tables) ----
   var SUPABASE_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
   var SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppeGR2a3NzZ3FpdHFqdWNqaW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5Njk5NjYsImV4cCI6MjEwNzU0NTk2Nn0._UkyTqLweinByQpoyqXxhv-BIgciRhw59PY6sS8fb2E";
-  var PKR_RATE = 292; // approximate
-
   var sb = null;
   try {
     sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -273,19 +271,6 @@
   function calcTotalPKR(tier, qty) {
     if (tier.u === "k" || tier.u === "kh") return tier.p * qty / 1000;
     return tier.p * qty;
-  }
-
-  // ---- Converter ----
-  function initConverter() {
-    var usdInput = $("conv-usd"), pkrOut = $("conv-pkr");
-    if (!usdInput || !pkrOut) return;
-    function update() {
-      var v = parseFloat(usdInput.value);
-      if (isNaN(v) || v < 0) v = 0;
-      pkrOut.textContent = fmtPKR(v * PKR_RATE);
-    }
-    usdInput.addEventListener("input", update);
-    update();
   }
 
   // ---- Selection state (the hero order card is the only ordering UI) ----
@@ -877,7 +862,6 @@
 
   // ---- Init ----
   document.addEventListener("DOMContentLoaded", function () {
-    initConverter();
     initHero();
     initDeepLink();
     var burger = $("burger"), mainNav = $("nav-main");
