@@ -60,6 +60,7 @@ const PROVIDER_MAP = {
 // facebook/comments, facebook/videoviews (all), youtube/subscribers (all),
 // youtube/views (all).
 const MIRROR = { "Pending": "placed", "In progress": "processing",
+  "Inprogress": "processing", "In Progress": "processing",
   "Processing": "processing", "Completed": "completed", "Partial": "completed",
   "Canceled": "cancelled", "Cancelled": "cancelled" };
 
