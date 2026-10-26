@@ -624,6 +624,27 @@
     info.type = "text";
     info.placeholder = "Affiliate name / number…";
     info.value = o.affiliate_info || "";
+    // Affiliater picker: the AF number belongs to the PERSON (one row in
+    // the Affiliates List) and stays the same across all their orders.
+    var affSel = document.createElement("select");
+    var opt0 = document.createElement("option");
+    opt0.value = "";
+    opt0.textContent = affiliateDirectory.length ? "Select affiliater (unique AF ID)…" : "No affiliaters in the list yet";
+    affSel.appendChild(opt0);
+    affiliateDirectory.forEach(function (a) {
+      var label = fmtAffiliateNo(a.affiliate_no) + " · " + (a.name || "");
+      var opt = document.createElement("option");
+      opt.value = label;
+      opt.textContent = label;
+      if (o.affiliate_info && o.affiliate_info.indexOf(fmtAffiliateNo(a.affiliate_no)) === 0) opt.selected = true;
+      affSel.appendChild(opt);
+    });
+    affSel.addEventListener("change", function () {
+      if (!affSel.value) return;
+      info.value = affSel.value;
+      affSave();
+    });
+    row.appendChild(affSel);
     row.appendChild(info);
     var claimLabel = document.createElement("label");
     var claimChk = document.createElement("input");
@@ -668,8 +689,8 @@
     if (el) el.innerHTML = html || "";
   }
   function loadAffiliateDirectory() {
-    var list = $("affiliate-directory-list");
-    if (!list || !sb) return;
+    if (!sb) return;
+    if (!$("affiliate-directory-list") && !$("affiliates-list")) return;
     sb.from("affiliates").select("*").order("affiliate_no", { ascending: true }).limit(500)
       .then(function (res) {
         if (res.error) {
@@ -678,6 +699,7 @@
         }
         affiliateDirectory = res.data || [];
         paintAffiliateDirectory();
+        paintAffiliates(); // refresh the order cards' affiliater picker
       }, function () {
         setAfdMsg('<div class="alert error">Could not load the Affiliates List. Try refresh.</div>');
       });
