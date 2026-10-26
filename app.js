@@ -24,10 +24,10 @@
           { p: 760, u: "k", cpn: true, s: "Max 100K, Real Accounts, Most With Posts and Profiles, All Flag Types Working, Speed 50K/Day, Drop Unknown, No Refill, Fast Start (Delay Possible)" }
         ]},
         { id: "nodrop", label: "No Drop", tiers: [
-          { p: 1235, u: "k", cpn: true, s: "Max 1M, Real Accounts, Old Accounts With Posts and Stories, Speed Up to 20K/Day, Drop Possible Up to 15%, Refill 365 Days, Start Time 0-1 Hours, Turn Off Flag for Review Before Ordering" }
+          { p: 1300, u: "k", cpn: true, s: "Max 1M, Real Accounts, Old Accounts With Posts and Stories, Speed Up to 20K/Day, Drop Possible Up to 15%, Refill 365 Days, Start Time 0-1 Hours, Turn Off Flag for Review Before Ordering" }
         ]},
         { id: "highquality", label: "High Quality", tiers: [
-          { p: 2190, u: "k", cpn: true, s: "Max 10M, 100% Old Accounts, High Quality Profiles, Non Drop, Speed 15K/Day, Guarantee 365 Days, Start Time 0-15 Minutes, Turn Off Flag for Review Before Ordering" }
+          { p: 1900, u: "k", cpn: true, s: "Max 10M, 100% Old Accounts, High Quality Profiles, Non Drop, Speed 15K/Day, Guarantee 365 Days, Start Time 0-15 Minutes, Turn Off Flag for Review Before Ordering" }
         ]}
       ]},
       { id: "likes", label: "Likes", subcats: [

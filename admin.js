@@ -78,7 +78,7 @@
   };
 
   function serviceIdOf(o) {
-    // Quality arrives as "No Drop Rs 1,235/1k" — match the tier label
+    // Quality arrives as "No Drop Rs 1,300/1k" — match the tier label
     // by prefix (same approach as the bridge's tierFor).
     var raw = String(o.quality || "").trim();
     var known = ["High Quality", "No Drop", "Droppable"];

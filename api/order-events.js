@@ -92,7 +92,7 @@ async function panel(params) {
   return r.json();
 }
 function tierFor(order) {
-  // Quality is stored as "<Label> <price>", e.g. "No Drop Rs 1,235/1k".
+  // Quality is stored as "<Label> <price>", e.g. "No Drop Rs 1,300/1k".
   // Match the known tier labels by prefix — the old price-split matching
   // silently failed on PKR strings, so those orders never matched the
   // map and stayed "paid" forever (BK-0516, 2026-10-26).
