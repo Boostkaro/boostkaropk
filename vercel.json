@@ -1,1 +1,1 @@
-{"cleanUrls":true,"redirects":[{"destination":"/maintenance.html","permanent":false,"source":"/((?!api/|admin|maintenance.html|.*\\..*).*)"}]}
+{"cleanUrls":true}
