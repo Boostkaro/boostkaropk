@@ -818,16 +818,32 @@
     var name = ($("afd-name").value || "").trim();
     var whatsapp = ($("afd-whatsapp").value || "").trim();
     var bank = ($("afd-bank").value || "").trim();
+    var customRaw = ($("afd-custom-no") && $("afd-custom-no").value || "").trim();
     if (!name) { setAfdMsg('<div class="alert error">Enter the affiliate\'s name first.</div>'); return; }
-    sb.from("affiliates").insert({ name: name, whatsapp: whatsapp || null, bank_details: bank || null })
+    var payload = { name: name, whatsapp: whatsapp || null, bank_details: bank || null };
+    if (customRaw) {
+      var customNo = Number(customRaw);
+      if (!Number.isInteger(customNo) || customNo < 1) {
+        setAfdMsg('<div class="alert error">Your AF number must be a whole number (1 or more).</div>');
+        return;
+      }
+      if (affiliateDirectory.some(function (x) { return Number(x.affiliate_no) === customNo; })) {
+        setAfdMsg('<div class="alert error">' + fmtAffiliateNo(customNo) + " is already taken — pick another number.</div>");
+        return;
+      }
+      payload.affiliate_no = customNo; // admin-given ID; blank field = auto
+    }
+    sb.from("affiliates").insert(payload)
       .select("*")
       .then(function (res) {
         if (res.error) { setAfdMsg('<div class="alert error">Could not add: ' + esc(res.error.message) + "</div>"); return; }
         var row = (res.data || [])[0] || {};
         affiliateDirectory.push(row);
+        affiliateDirectory.sort(function (a, b) { return Number(a.affiliate_no) - Number(b.affiliate_no); });
         $("afd-name").value = "";
         $("afd-whatsapp").value = "";
         $("afd-bank").value = "";
+        if ($("afd-custom-no")) $("afd-custom-no").value = "";
         setAfdMsg('<div class="alert ok">Added ' + esc(name) + " as " + fmtAffiliateNo(row.affiliate_no) + ".</div>");
         paintAffiliateDirectory();
         setTimeout(function () { setAfdMsg(""); }, 3000);
