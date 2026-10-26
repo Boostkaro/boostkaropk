@@ -140,6 +140,16 @@
       "source": "/youtube-views",
       "destination": "/maintenance",
       "permanent": false
+    },
+    {
+      "source": "/blog",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/blog/",
+      "destination": "/maintenance",
+      "permanent": false
     }
   ]
 }
