@@ -92,7 +92,8 @@
 
   function tabOf(status) {
     if (status === "pending") return "review";
-    if (status === "paid" || status === "placed" || status === "processing") return "approved";
+    if (status === "placed") return "pending";
+    if (status === "paid" || status === "processing") return "approved";
     if (status === "completed") return "completed";
     if (status === "cancelled") return "rejected";
     return "review";
@@ -307,9 +308,9 @@
 
   function renderOrders() {
     var rows = filteredOrders();
-    var counts = { review: 0, approved: 0, completed: 0, rejected: 0 };
+    var counts = { review: 0, approved: 0, pending: 0, completed: 0, rejected: 0 };
     rows.forEach(function (o) { counts[tabOf(o.status)]++; });
-    ["review", "approved", "completed", "rejected"].forEach(function (t) {
+    ["review", "approved", "pending", "completed", "rejected"].forEach(function (t) {
       $("cnt-" + t).textContent = "(" + counts[t] + ")";
       var btn = document.querySelector('.admin-tab[data-tab="' + t + '"]');
       if (btn) btn.classList.toggle("on", t === activeTab);
