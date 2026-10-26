@@ -122,6 +122,7 @@ footer p{font-size:.92rem;color:#b9cdf3}
 .socials{display:flex;gap:9px;margin-top:6px}
 .socials a{width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;font-size:1rem}
 .socials a:before{content:""}
+.socials a svg{width:19px;height:19px;display:block}
 .paystrip{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:16px 0;border-top:1px solid rgba(255,255,255,.18);margin-top:18px}
 .paystrip .lab{font-weight:800;color:#fff;letter-spacing:1px;font-size:.82rem}
 .chip{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.25);border-radius:999px;padding:7px 15px;font-weight:700;font-size:.88rem;color:#fff}
