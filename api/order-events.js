@@ -92,7 +92,15 @@ async function panel(params) {
   return r.json();
 }
 function tierFor(order) {
-  const label = String(order.quality || "").split(" $")[0].trim();
+  // Quality is stored as "<Label> <price>", e.g. "No Drop $4.22/1k"
+  // (USD era) or "No Drop Rs 1,235/1k" (PKR era, 2026-10-25+). The old
+  // split(" $") silently failed on PKR strings, so PKR-era orders never
+  // matched the map and stayed "paid" forever (BK-0516, 2026-10-26).
+  // Match the known tier labels by prefix instead — format-proof.
+  const raw = String(order.quality || "").trim();
+  const known = ["High Quality", "No Drop", "Droppable"];
+  const label = known.find((k) => raw.startsWith(k)) ||
+    raw.split(" $")[0].split(" Rs ")[0].trim();
   const key = order.platform + "/" + order.service_type + "/" + label;
   return { key, service: PROVIDER_MAP[key] };
 }

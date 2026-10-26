@@ -78,7 +78,15 @@
   };
 
   function serviceIdOf(o) {
-    var label = String(o.quality || "").split(" $")[0];
+    // Quality arrives as "No Drop $4.22/1k" (USD era) or
+    // "No Drop Rs 1,235/1k" (PKR era) — match the tier label by prefix
+    // so both formats resolve (same fix as the bridge's tierFor).
+    var raw = String(o.quality || "").trim();
+    var known = ["High Quality", "No Drop", "Droppable"];
+    var label = raw.split(" $")[0].split(" Rs ")[0];
+    for (var i = 0; i < known.length; i++) {
+      if (raw.indexOf(known[i]) === 0) { label = known[i]; break; }
+    }
     return SERVICE_IDS[o.platform + "/" + o.service_type + "/" + label] || null;
   }
 
