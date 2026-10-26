@@ -1,1 +1,145 @@
-{"cleanUrls":true}
+{
+  "cleanUrls": true,
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/blog/facebook-followers-price-pakistan",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/blog/index",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/blog/instagram-followers-price-pakistan",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/blog/instagram-likes-vs-followers",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/blog/tiktok-followers-price-pakistan",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/blog/tiktok-growth-pakistan-guide",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/blog/youtube-subscribers-price-pakistan",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/facebook-comments",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/facebook-followers",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/facebook-likes",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/facebook-views",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/instagram-comments",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/instagram-followers",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/instagram-likes",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/instagram-views",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/privacy",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/review",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/smm-panel-pakistan",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/terms",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/tiktok-comments",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/tiktok-followers",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/tiktok-likes",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/tiktok-views",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/track",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/youtube-likes",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/youtube-subscribers",
+      "destination": "/maintenance",
+      "permanent": false
+    },
+    {
+      "source": "/youtube-views",
+      "destination": "/maintenance",
+      "permanent": false
+    }
+  ]
+}
