@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>BoostKaro — Update in Progress</title>
+<title>BoostKaro — Building a Professional SMM Panel</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -17,7 +17,7 @@
   .card {
     background: #ffffff;
     border-radius: 20px;
-    max-width: 620px; width: 100%;
+    max-width: 640px; width: 100%;
     padding: 44px 38px 36px;
     text-align: center;
     box-shadow: 0 24px 60px rgba(0,0,0,.35);
@@ -25,39 +25,93 @@
   }
   .logo { font-size: 34px; font-weight: 800; color: #0d47a1; letter-spacing: .5px; }
   .logo span { color: #f5a600; }
-  .gear { font-size: 58px; margin: 18px 0 6px; }
+  .rocket { font-size: 58px; margin: 18px 0 6px; }
   h1 {
-    font-size: 30px; font-weight: 800; margin: 8px 0 10px;
+    font-size: 30px; font-weight: 800; margin: 8px 0 10px; line-height: 1.25;
     background: linear-gradient(90deg, #0d47a1, #1a73e8);
     -webkit-background-clip: text; background-clip: text; color: transparent;
   }
-  .sorry { font-size: 17px; color: #444; line-height: 1.55; }
-  .note {
+  .intro { font-size: 17px; color: #444; line-height: 1.55; }
+  .updates {
     background: #fff8e1;
     border: 1.5px solid #ffc107;
     border-radius: 14px;
-    padding: 16px 18px;
+    padding: 18px 20px;
     margin: 24px 0 8px;
-    font-size: 15.5px; color: #5d4037; line-height: 1.6;
+    font-size: 16px; color: #333; line-height: 1.5;
     text-align: left;
   }
-  .note b { color: #0d47a1; }
-  .foot { margin-top: 20px; font-size: 13px; color: #888; }
+  .updates h2 { font-size: 17px; color: #0d47a1; margin-bottom: 10px; }
+  .updates ul { list-style: none; }
+  .updates li { padding: 5px 0; }
+  .count-label { margin-top: 26px; font-size: 15px; font-weight: 700; color: #0d47a1; letter-spacing: 1px; text-transform: uppercase; }
+  .countdown { display: flex; gap: 10px; justify-content: center; margin-top: 12px; }
+  .cd-box {
+    background: linear-gradient(160deg, #0d47a1, #1a73e8);
+    color: #fff; border-radius: 12px;
+    min-width: 74px; padding: 12px 6px 9px;
+    box-shadow: 0 8px 20px rgba(13,71,161,.35);
+  }
+  .cd-num { font-size: 30px; font-weight: 800; line-height: 1; }
+  .cd-lab { font-size: 11px; font-weight: 700; color: #ffc107; letter-spacing: 1px; text-transform: uppercase; margin-top: 5px; }
+  .safe { margin-top: 22px; font-size: 14.5px; color: #555; line-height: 1.55; }
+  .foot { margin-top: 14px; font-size: 13px; color: #888; }
+  @media (max-width: 480px) {
+    .cd-box { min-width: 62px; }
+    .cd-num { font-size: 24px; }
+    h1 { font-size: 25px; }
+  }
 </style>
 </head>
 <body>
   <div class="card">
     <div class="logo">Boost<span>Karo</span></div>
-    <div class="gear">🛠️</div>
-    <h1>Update in Progress</h1>
-    <p class="sorry">Sorry for the inconvenience — our website is temporarily closed while we make it better for you. We will be back very soon.</p>
-    <div class="note">
-      <b>📦 Note for our customers:</b> If your ongoing order is taking longer than usual, or your followers are dropping, it is because of this update. Please don't worry — your order is safe and will be completed as soon as the update is finished.
+    <div class="rocket">🚀</div>
+    <h1>We Are Building BoostKaro — A Professional SMM Panel</h1>
+    <p class="intro">BoostKaro is getting a big upgrade. We are building a brand-new professional SMM panel for you — better, faster and easier than ever before.</p>
+    <div class="updates">
+      <h2>✨ What's Coming</h2>
+      <ul>
+        <li>✅ Most user-friendly experience</li>
+        <li>✅ Create your own account</li>
+        <li>✅ Track your orders live</li>
+        <li>✅ Many more services</li>
+        <li>✅ And many more updates</li>
+      </ul>
     </div>
-    <div class="note">
-      <b>💬 Customer service:</b> All our customer service agents are busy with this update, so WhatsApp service may not be available as well. Replies may be delayed — thank you for understanding.
+    <div class="count-label">⏳ Launching In</div>
+    <div class="countdown" id="countdown">
+      <div class="cd-box"><div class="cd-num" id="cd-days">7</div><div class="cd-lab">Days</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-hours">00</div><div class="cd-lab">Hours</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-mins">00</div><div class="cd-lab">Minutes</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-secs">00</div><div class="cd-lab">Seconds</div></div>
     </div>
-    <div class="foot">Thank you for your patience — Team BoostKaro</div>
+    <p class="safe">📦 Existing orders are safe and will be completed. Thank you for your patience while we build something better for you.</p>
+    <div class="foot">Team BoostKaro</div>
   </div>
+<script>
+  var target = new Date('2026-11-03T01:09:00+04:00').getTime();
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function tick() {
+    var diff = target - Date.now();
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent = '0';
+      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-mins').textContent = '00';
+      document.getElementById('cd-secs').textContent = '00';
+      return;
+    }
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor(diff % 86400000 / 3600000);
+    var m = Math.floor(diff % 3600000 / 60000);
+    var s = Math.floor(diff % 60000 / 1000);
+    document.getElementById('cd-days').textContent = d;
+    document.getElementById('cd-hours').textContent = pad(h);
+    document.getElementById('cd-mins').textContent = pad(m);
+    document.getElementById('cd-secs').textContent = pad(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+</script>
 </body>
 </html>
