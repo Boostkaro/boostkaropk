@@ -13,9 +13,11 @@ const SB_URL = "https://jixdvkssgqitqjucjiob.supabase.co";
 const SB_ANON_PUBLIC = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImppeGR2a3NzZ3FpdHFqdWNqaW9iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE5Njk5NjYsImV4cCI6MjEwNzU0NTk2Nn0._UkyTqLweinByQpoyqXxhv-BIgciRhw59PY6sS8fb2E"; // public anon key (also shipped in app.js)
 const PANEL_URL = "https://geosmm.pk/api/v2";
 // GeoSMM connected 2026-10-25.
-// WhatsApp notifications (notify_new_order / wa_event) are independent of
-// this flag.
-const PANEL_ENABLED = true;
+// DISCONNECTED 2026-10-27 (Raji's order): PANEL_ENABLED=false stops all
+// GeoSMM placement AND status sync, so GeoSMM can no longer change any
+// order state on the site. WhatsApp notifications (notify_new_order /
+// wa_event) are independent of this flag and keep working.
+const PANEL_ENABLED = false;
 // Old-panel provider order IDs still attached to live orders.
 // NEVER sync these against GeoSMM — the same numbers may exist there as
 // other customers' orders. BK-0505 (1653140) and BK-0508 (1657765) are
