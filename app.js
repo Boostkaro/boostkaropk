@@ -799,9 +799,7 @@
       var cheap = cheapestTier(sc);
       var opt = document.createElement("option");
       opt.value = sc.id;
-      // BEST SELLER marker on the No Drop option itself (Raji, 2026-10-26)
-      var bsMark = (p.id === "instagram" && c.id === "followers" && sc.id === "nodrop") ? " ★ BEST SELLER" : "";
-      opt.textContent = sc.label + bsMark + (cheap ? " (" + fmtPKR(cheap.p) + UNIT_SHORT[cheap.u] + ")" : "");
+      opt.textContent = sc.label + (cheap ? " (" + fmtPKR(cheap.p) + UNIT_SHORT[cheap.u] + ")" : "");
       sel.appendChild(opt);
     });
     // Preselect Instagram Followers — No Drop (hero default quality)
