@@ -217,16 +217,38 @@ footer p{font-size:.92rem;color:#b9cdf3}
   border: 9px solid #a8101a;
 }
 .bs-ribbon::before { left: -13px; border-left-color: transparent; border-bottom-color: transparent; }
-/* BEST SELLER tag pinned on the Service box in the homepage order card
-   (shown for IG Followers — No Drop; placement per Raji's annotation, 2026-10-26) */
+/* Custom Service pop-up for the homepage order card (Raji, 2026-10-26):
+   rounded pop-up listing the quality options; the No Drop row carries a
+   rounded red BEST SELLER pill with green words and white stars. */
+#hero-service { display: none; }
 .svc-wrap { position: relative; }
-.bs-tag {
-  position: absolute; top: -11px; right: 14px; z-index: 3;
-  background: #d81b26; color: #16c75a; font-weight: 800; font-size: .68rem;
-  letter-spacing: .8px; padding: 4px 10px; border-radius: 6px;
+.svc-btn {
+  width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: #fff; border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 11px 12px; font-size: .98rem; font-weight: 600; color: var(--ink); cursor: pointer;
+}
+.svc-btn:focus { border-color: var(--blue); outline: none; box-shadow: 0 0 0 3px rgba(26,115,232,.18); }
+.svc-chev { color: var(--muted); font-size: 1.05rem; line-height: 1; }
+.svc-pop {
+  position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 30;
+  background: #fff; border: 1px solid var(--line); border-radius: 20px;
+  box-shadow: 0 18px 44px rgba(13,38,76,.22); padding: 8px;
+}
+.svc-row {
+  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
+  background: none; border: none; border-radius: 14px; padding: 13px 14px;
+  font-size: .98rem; font-weight: 600; color: var(--ink); cursor: pointer;
+}
+.svc-row:hover { background: #f2f7ff; }
+.svc-row.on { background: #eaf3fe; }
+.svc-row-lab { flex: 1; }
+.svc-check { color: var(--blue); font-weight: 800; }
+.svc-pill {
+  background: #d81b26; color: #16c75a; font-weight: 800; font-size: .62rem;
+  letter-spacing: .7px; padding: 4px 9px; border-radius: 999px;
   box-shadow: 0 3px 8px rgba(216,27,38,.3); white-space: nowrap;
 }
-.bs-tag .bs-star { color: #fff; }
+.svc-pill .bs-star { color: #fff; }
 .bs-ribbon::after { right: -13px; border-right-color: transparent; border-bottom-color: transparent; }
 .tier-card.cheapest .tier-badge { background: #dcf7ec; color: #067a54; }
 .tier-badge {

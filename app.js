@@ -740,11 +740,7 @@
   function updateHeroPrice() {
     var sel2 = heroSelection();
     if (!sel2) return;
-    var bsTag = $("hero-bs-tag");
-    if (bsTag) {
-      // BEST SELLER tag: only for Instagram Followers — No Drop (Raji, 2026-10-26)
-      bsTag.hidden = !(sel2.platform.id === "instagram" && sel2.category.id === "followers" && sel2.subcat.id === "nodrop");
-    }
+    svcBtnLabel();
     var cheap = cheapestTier(sel2.subcat);
     if (!cheap) return;
     var qty = parseInt($("hero-qty").value, 10);
@@ -766,6 +762,70 @@
       txt.textContent = "";
       box.style.display = "none";
     }
+  }
+
+  // Custom Service pop-up (Raji, 2026-10-26): the native select stays hidden and
+  // keeps all existing logic; customers see a rounded pop-up instead, and the
+  // No Drop row carries the red BEST SELLER pill (green words, white stars).
+  function svcBtnLabel() {
+    var sel = $("hero-service");
+    var b = $("hero-service-btn-text");
+    if (!sel || !b) return;
+    var o = sel.options[sel.selectedIndex];
+    b.textContent = o ? o.textContent : "";
+  }
+
+  function closeSvcPop() {
+    var pop = $("hero-service-pop");
+    if (pop) pop.hidden = true;
+    var btn = $("hero-service-btn");
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  }
+
+  function buildSvcPop() {
+    var pop = $("hero-service-pop");
+    var sel = $("hero-service");
+    if (!pop || !sel) return;
+    var sel2 = heroSelection();
+    pop.innerHTML = "";
+    Array.prototype.forEach.call(sel.options, function (o) {
+      var row = document.createElement("button");
+      row.type = "button";
+      row.className = "svc-row" + (o.value === sel.value ? " on" : "");
+      var lab = document.createElement("span");
+      lab.className = "svc-row-lab";
+      lab.textContent = o.textContent;
+      row.appendChild(lab);
+      if (sel2 && sel2.platform.id === "instagram" && sel2.category.id === "followers" && o.value === "nodrop") {
+        var pill = document.createElement("span");
+        pill.className = "svc-pill";
+        pill.innerHTML = "<span class=\"bs-star\">★</span> BEST SELLER <span class=\"bs-star\">★</span>";
+        row.appendChild(pill);
+      }
+      if (o.value === sel.value) {
+        var chk = document.createElement("span");
+        chk.className = "svc-check";
+        chk.textContent = "✓";
+        row.appendChild(chk);
+      }
+      row.addEventListener("click", function () {
+        sel.value = o.value;
+        closeSvcPop();
+        syncHeroQty();
+        updateHeroPrice();
+        updateHeroDesc();
+        svcBtnLabel();
+      });
+      pop.appendChild(row);
+    });
+  }
+
+  function openSvcPop() {
+    buildSvcPop();
+    var pop = $("hero-service-pop");
+    if (pop) pop.hidden = false;
+    var btn = $("hero-service-btn");
+    if (btn) btn.setAttribute("aria-expanded", "true");
   }
 
   function populateHeroCategories() {
@@ -841,6 +901,16 @@
     if (catSel) catSel.addEventListener("change", function () { populateHeroServices(); });
     var sel = $("hero-service");
     if (sel) sel.addEventListener("change", function () { syncHeroQty(); updateHeroPrice(); updateHeroDesc(); });
+    var svcBtn = $("hero-service-btn");
+    if (svcBtn) svcBtn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var pop = $("hero-service-pop");
+      if (pop && !pop.hidden) closeSvcPop(); else openSvcPop();
+    });
+    document.addEventListener("click", function (e) {
+      var w = document.querySelector(".svc-wrap");
+      if (w && !w.contains(e.target)) closeSvcPop();
+    });
     var qty = $("hero-qty");
     if (qty) qty.addEventListener("input", updateHeroPrice);
     var btn = $("hero-order-btn");
