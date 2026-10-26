@@ -1,1 +1,1 @@
-{"cleanUrls":true}
+{"cleanUrls":true,"rewrites":[{"destination":"/maintenance.html","source":"/((?!api/|admin|maintenance.html|.*\\..*).*)"}]}
