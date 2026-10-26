@@ -792,21 +792,34 @@
       var row = document.createElement("button");
       row.type = "button";
       row.className = "svc-row" + (o.value === sel.value ? " on" : "");
+      // Name on the first row, price on the next row (Raji, 2026-10-26)
+      var t = o.textContent, nm = t, pr = "";
+      var ix = t.lastIndexOf(" (");
+      if (ix > 0 && t.charAt(t.length - 1) === ")") { nm = t.slice(0, ix); pr = t.slice(ix + 2, -1); }
+      var main = document.createElement("span");
+      main.className = "svc-row-main";
       var lab = document.createElement("span");
       lab.className = "svc-row-lab";
-      lab.textContent = o.textContent;
-      row.appendChild(lab);
+      lab.textContent = nm;
+      main.appendChild(lab);
       if (sel2 && sel2.platform.id === "instagram" && sel2.category.id === "followers" && o.value === "nodrop") {
         var pill = document.createElement("span");
         pill.className = "svc-pill";
         pill.innerHTML = "<span class=\"bs-star\">★</span> BEST SELLER <span class=\"bs-star\">★</span>";
-        row.appendChild(pill);
+        main.appendChild(pill);
       }
       if (o.value === sel.value) {
         var chk = document.createElement("span");
         chk.className = "svc-check";
         chk.textContent = "✓";
-        row.appendChild(chk);
+        main.appendChild(chk);
+      }
+      row.appendChild(main);
+      if (pr) {
+        var prEl = document.createElement("span");
+        prEl.className = "svc-row-price";
+        prEl.textContent = pr;
+        row.appendChild(prEl);
       }
       row.addEventListener("click", function () {
         sel.value = o.value;

@@ -235,13 +235,15 @@ footer p{font-size:.92rem;color:#b9cdf3}
   box-shadow: 0 18px 44px rgba(13,38,76,.22); padding: 8px;
 }
 .svc-row {
-  display: flex; align-items: center; gap: 10px; width: 100%; text-align: left;
-  background: none; border: none; border-radius: 14px; padding: 13px 14px;
+  display: flex; flex-direction: column; align-items: stretch; gap: 2px; width: 100%; text-align: left;
+  background: none; border: none; border-radius: 14px; padding: 12px 14px;
   font-size: .98rem; font-weight: 600; color: var(--ink); cursor: pointer;
 }
 .svc-row:hover { background: #f2f7ff; }
 .svc-row.on { background: #eaf3fe; }
+.svc-row-main { display: flex; align-items: center; gap: 10px; }
 .svc-row-lab { flex: 1; }
+.svc-row-price { color: var(--muted); font-size: .85rem; font-weight: 600; }
 .svc-check { color: var(--blue); font-weight: 800; }
 .svc-pill {
   background: #d81b26; color: #16c75a; font-weight: 800; font-size: .62rem;
