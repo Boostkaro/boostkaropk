@@ -107,7 +107,7 @@
   }
   // GA4: track_lookup_result (Group B2, 2026-10-25) - result and coarse
   // stage only; never the order code, contact number or order details.
-  var TRACK_STAGES = { pending: "payment_pending", paid: "confirmed", processing: "in_progress", completed: "completed", cancelled: "cancelled", rejected: "cancelled" };
+  var TRACK_STAGES = { pending: "payment_pending", paid: "confirmed", placed: "provider_pending", processing: "in_progress", completed: "completed", cancelled: "cancelled", rejected: "cancelled" };
   function gaTrack(result, stage) {
     if (typeof gtag !== "function") return;
     var info = { result: result };
@@ -148,6 +148,7 @@
     else if (eff === "providerPending") badge = '<span class="badge b-pending">Pending</span>';
     else if (o.status === "pending") badge = '<span class="badge b-pending">Pending Payment</span>';
     else if (o.status === "paid") badge = '<span class="badge b-paid">Payment Confirmed</span>';
+    else if (o.status === "placed") badge = '<span class="badge b-pending">Pending</span>';
     else badge = '<span class="badge b-inprog">In Progress</span>';
 
     var html = '<div class="ord">';

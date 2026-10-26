@@ -59,7 +59,7 @@ const PROVIDER_MAP = {
 // Tiers with NO GeoSMM entry (handled manually, orders stay "paid"):
 // facebook/comments, facebook/videoviews (all), youtube/subscribers (all),
 // youtube/views (all).
-const MIRROR = { "Pending": "processing", "In progress": "processing",
+const MIRROR = { "Pending": "placed", "In progress": "processing",
   "Processing": "processing", "Completed": "completed", "Partial": "completed",
   "Canceled": "cancelled", "Cancelled": "cancelled" };
 
@@ -128,7 +128,7 @@ async function placeOrder(order) {
     }
     await sbPatch("orders?id=eq." + order.id,
       { provider_order_id: String(res.order), provider_status: "Pending",
-        status: "processing" });
+        status: "placed" });
     return { placed: true, provider_order_id: String(res.order), service: t.service };
   } catch (e) {
     await sbPatch("orders?id=eq." + order.id, { provider_status: "Pending" });
@@ -138,7 +138,7 @@ async function placeOrder(order) {
 
 async function syncStatuses() {
   if (!PANEL_ENABLED) return 0;
-  const rows = await sbGet("orders?status=eq.processing&provider_order_id=not.is.null" +
+  const rows = await sbGet("orders?status=in.(placed,processing)&provider_order_id=not.is.null" +
     "&select=id,order_code,provider_order_id,provider_status&limit=6");
   let updated = 0;
   for (const o of rows) {

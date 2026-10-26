@@ -23,17 +23,18 @@
   // Raji approved the payment and the order is queued — it only becomes
   // "processing" once the provider bridge has actually placed it.
   var STATUS_LABELS = {
-    pending: "Pending",
+    pending: "Confirmation",
     paid: "Paid — Queued",
+    placed: "Pending",
     processing: "In Progress",
     completed: "Completed",
     cancelled: "Cancelled"
   };
   var STATUS_BADGES = {
-    pending: "b-pending", paid: "b-paid", processing: "b-inprog",
+    pending: "b-pending", paid: "b-paid", placed: "b-placed", processing: "b-inprog",
     completed: "b-done", cancelled: "b-cancel"
   };
-  var STATUS_OPTIONS = ["pending", "paid", "processing", "completed", "cancelled"];
+  var STATUS_OPTIONS = ["pending", "paid", "placed", "processing", "completed", "cancelled"];
 
   // Panel (GeoSMM) service ID for each catalog service, keyed by
   // platform/service_type/quality-label — mirrors the bridge's PROVIDER_MAP
@@ -91,7 +92,7 @@
 
   function tabOf(status) {
     if (status === "pending") return "review";
-    if (status === "paid" || status === "processing") return "approved";
+    if (status === "paid" || status === "placed" || status === "processing") return "approved";
     if (status === "completed") return "completed";
     if (status === "cancelled") return "rejected";
     return "review";
