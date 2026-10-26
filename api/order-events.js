@@ -139,18 +139,25 @@ async function placeOrder(order) {
 async function syncStatuses() {
   if (!PANEL_ENABLED) return 0;
   const rows = await sbGet("orders?status=in.(placed,processing)&provider_order_id=not.is.null" +
-    "&select=id,order_code,provider_order_id,provider_status&limit=6");
+    "&select=id,order_code,status,provider_order_id,provider_status&limit=6");
   let updated = 0;
   for (const o of rows) {
     if (LEGACY_PROVIDER_IDS[String(o.provider_order_id)]) continue;
     try {
       const res = await panel({ action: "status", order: String(o.provider_order_id) });
       const ps = res && res.status;
-      if (ps && ps !== o.provider_status) {
-        const fields = { provider_status: ps };
-        if (MIRROR[ps]) fields.status = MIRROR[ps];
-        await sbPatch("orders?id=eq." + o.id, fields);
-        updated++;
+      if (ps) {
+        // Repair whenever the SITE status disagrees with the mirror of the
+        // provider status — even when the provider status itself did not
+        // change since the last sweep (e.g. pairs written by older code).
+        const want = MIRROR[ps];
+        const fields = {};
+        if (ps !== o.provider_status) fields.provider_status = ps;
+        if (want && want !== o.status) fields.status = want;
+        if (Object.keys(fields).length) {
+          await sbPatch("orders?id=eq." + o.id, fields);
+          updated++;
+        }
       }
     } catch (e) { if (e.rate) break; }
     await sleep(800);
