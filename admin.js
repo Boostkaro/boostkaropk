@@ -16,6 +16,7 @@
 
   var allOrders = [];
   var waByOrder = {}; // order_code -> [wa_messages rows, newest first]
+  var affiliateDirectory = []; // rows from the affiliates table (directory)
   var activeTab = "review";
 
   // Status model (2026-10-22): statuses mirror the provider. "paid" means
@@ -144,6 +145,7 @@
         }
         allOrders = res.data || [];
         $("admin-msg").innerHTML = "";
+        loadAffiliateDirectory();
         // Delivery receipts live in wa_messages (may not exist yet if
         // the one-time SQL hasn't been run — then just render as before).
         sb.from("wa_messages").select("*").order("sent_at", { ascending: false }).limit(1000)
@@ -643,6 +645,173 @@
     return card;
   }
 
+  // ---- Affiliates List (directory, under Affiliated Orders) ----
+  // One card per affiliate with a unique AF number (assigned by the
+  // database), name, WhatsApp and bank/payment details. Lives on the
+  // Affiliates page; every lookup is guarded so other admin pages that
+  // share this script are unaffected. Needs the one-time affiliates
+  // table SQL — until it is run, the panel explains that instead of
+  // breaking.
+  function fmtAffiliateNo(n) {
+    var s = String(Number(n) || 0);
+    while (s.length < 3) s = "0" + s;
+    return "AF-" + s;
+  }
+  function waLinkOf(raw) {
+    var n = String(raw || "").replace(/[^0-9]/g, "");
+    if (n.startsWith("0")) n = "92" + n.slice(1);
+    else if (n.length === 10 && n.startsWith("3")) n = "92" + n;
+    return n ? "https://wa.me/" + n : "";
+  }
+  function setAfdMsg(html) {
+    var el = $("afd-msg");
+    if (el) el.innerHTML = html || "";
+  }
+  function loadAffiliateDirectory() {
+    var list = $("affiliate-directory-list");
+    if (!list || !sb) return;
+    sb.from("affiliates").select("*").order("affiliate_no", { ascending: true }).limit(500)
+      .then(function (res) {
+        if (res.error) {
+          setAfdMsg('<div class="alert error">Affiliates List is not active yet — run the one-time <b>supabase-affiliates-directory.sql</b> in Supabase, then refresh.</div>');
+          return;
+        }
+        affiliateDirectory = res.data || [];
+        paintAffiliateDirectory();
+      }, function () {
+        setAfdMsg('<div class="alert error">Could not load the Affiliates List. Try refresh.</div>');
+      });
+  }
+  function paintAffiliateDirectory() {
+    var list = $("affiliate-directory-list");
+    if (!list) return;
+    var cnt = $("affiliate-directory-count");
+    if (cnt) cnt.textContent = "(" + affiliateDirectory.length + ")";
+    var q = ($("afd-search") && $("afd-search").value || "").trim().toLowerCase();
+    var rows = affiliateDirectory.filter(function (a) {
+      if (!q) return true;
+      var hay = [fmtAffiliateNo(a.affiliate_no), a.name, a.whatsapp, a.bank_details]
+        .join(" ").toLowerCase();
+      return hay.indexOf(q) !== -1;
+    });
+    list.innerHTML = "";
+    if (!rows.length) {
+      list.innerHTML = '<div class="orders-empty muted">' +
+        (affiliateDirectory.length ? "No affiliate matches your search." :
+          "No affiliates yet. Add the first one above — they get a unique AF number automatically.") +
+        "</div>";
+      return;
+    }
+    rows.forEach(function (a) { list.appendChild(affiliateDirectoryCard(a)); });
+  }
+  function affiliateDirectoryCard(a) {
+    var card = document.createElement("div");
+    card.className = "order-card";
+    card.style.padding = "14px 16px";
+
+    var top = document.createElement("div");
+    top.style.display = "flex";
+    top.style.justifyContent = "space-between";
+    top.style.alignItems = "center";
+    top.style.gap = "10px";
+    top.style.flexWrap = "wrap";
+    var title = document.createElement("strong");
+    title.textContent = fmtAffiliateNo(a.affiliate_no) + " · " + (a.name || "—");
+    top.appendChild(title);
+    var link = waLinkOf(a.whatsapp);
+    if (link) {
+      var wa = document.createElement("a");
+      wa.className = "badge b-done";
+      wa.href = link;
+      wa.target = "_blank";
+      wa.rel = "noopener";
+      wa.style.textDecoration = "none";
+      wa.textContent = "💬 WhatsApp";
+      top.appendChild(wa);
+    }
+    card.appendChild(top);
+
+    var nameIn = document.createElement("input");
+    nameIn.type = "text";
+    nameIn.value = a.name || "";
+    nameIn.placeholder = "Name…";
+    var waIn = document.createElement("input");
+    waIn.type = "text";
+    waIn.value = a.whatsapp || "";
+    waIn.placeholder = "WhatsApp number…";
+    [nameIn, waIn].forEach(function (inp) {
+      inp.style.cssText = "width:100%;padding:9px 11px;border:1.5px solid #e3e9f7;border-radius:9px;font-size:.92rem;margin-top:10px;background:#fff;color:var(--ink)";
+    });
+    var bankIn = document.createElement("textarea");
+    bankIn.rows = 2;
+    bankIn.value = a.bank_details || "";
+    bankIn.placeholder = "Bank / payment details…";
+    bankIn.style.cssText = "width:100%;padding:9px 11px;border:1.5px solid #e3e9f7;border-radius:9px;font-size:.92rem;margin-top:10px;background:#fff;color:var(--ink);font-family:inherit";
+    card.appendChild(nameIn);
+    card.appendChild(waIn);
+    card.appendChild(bankIn);
+
+    var actions = document.createElement("div");
+    actions.className = "oc-actions";
+    var saveBtn = document.createElement("button");
+    saveBtn.type = "button";
+    saveBtn.className = "btn";
+    saveBtn.textContent = "Save";
+    saveBtn.addEventListener("click", function () {
+      var patch = {
+        name: nameIn.value.trim(),
+        whatsapp: waIn.value.trim() || null,
+        bank_details: bankIn.value.trim() || null,
+        updated_at: new Date().toISOString()
+      };
+      if (!patch.name) { setAfdMsg('<div class="alert error">Name is required.</div>'); return; }
+      sb.from("affiliates").update(patch).eq("affiliate_no", a.affiliate_no)
+        .then(function (res) {
+          if (res.error) { setAfdMsg('<div class="alert error">Save failed: ' + esc(res.error.message) + "</div>"); return; }
+          Object.keys(patch).forEach(function (k) { a[k] = patch[k]; });
+          setAfdMsg('<div class="alert ok">' + fmtAffiliateNo(a.affiliate_no) + " saved.</div>");
+          paintAffiliateDirectory();
+          setTimeout(function () { setAfdMsg(""); }, 2000);
+        });
+    });
+    var delBtn = document.createElement("button");
+    delBtn.type = "button";
+    delBtn.className = "btn btn-reject";
+    delBtn.textContent = "Delete";
+    delBtn.addEventListener("click", function () {
+      if (!window.confirm("Delete " + fmtAffiliateNo(a.affiliate_no) + " (" + (a.name || "") + ")? The AF number will not be reused.")) return;
+      sb.from("affiliates").delete().eq("affiliate_no", a.affiliate_no)
+        .then(function (res) {
+          if (res.error) { setAfdMsg('<div class="alert error">Delete failed: ' + esc(res.error.message) + "</div>"); return; }
+          affiliateDirectory = affiliateDirectory.filter(function (x) { return x.affiliate_no !== a.affiliate_no; });
+          paintAffiliateDirectory();
+        });
+    });
+    actions.appendChild(saveBtn);
+    actions.appendChild(delBtn);
+    card.appendChild(actions);
+    return card;
+  }
+  function addAffiliateFromForm() {
+    var name = ($("afd-name").value || "").trim();
+    var whatsapp = ($("afd-whatsapp").value || "").trim();
+    var bank = ($("afd-bank").value || "").trim();
+    if (!name) { setAfdMsg('<div class="alert error">Enter the affiliate\'s name first.</div>'); return; }
+    sb.from("affiliates").insert({ name: name, whatsapp: whatsapp || null, bank_details: bank || null })
+      .select("*")
+      .then(function (res) {
+        if (res.error) { setAfdMsg('<div class="alert error">Could not add: ' + esc(res.error.message) + "</div>"); return; }
+        var row = (res.data || [])[0] || {};
+        affiliateDirectory.push(row);
+        $("afd-name").value = "";
+        $("afd-whatsapp").value = "";
+        $("afd-bank").value = "";
+        setAfdMsg('<div class="alert ok">Added ' + esc(name) + " as " + fmtAffiliateNo(row.affiliate_no) + ".</div>");
+        paintAffiliateDirectory();
+        setTimeout(function () { setAfdMsg(""); }, 3000);
+      });
+  }
+
   // ---- Init ----
   document.addEventListener("DOMContentLoaded", function () {
     $("login-btn").addEventListener("click", tryLogin);
@@ -651,6 +820,10 @@
     });
     var lb = $("logout-btn");
     if (lb) lb.addEventListener("click", logout);
+    var afdAdd = $("afd-add");
+    if (afdAdd) afdAdd.addEventListener("click", addAffiliateFromForm);
+    var afdSearch = $("afd-search");
+    if (afdSearch) afdSearch.addEventListener("input", paintAffiliateDirectory);
     $("refresh-btn").addEventListener("click", loadOrders);
     $("filter-text").addEventListener("input", renderOrders);
     $("filter-status").addEventListener("change", renderOrders);

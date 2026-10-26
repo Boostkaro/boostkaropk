@@ -116,6 +116,26 @@
         <div class="orders-list" id="affiliates-list"></div>
       </div>
     </div>
+    <div style="margin-top:18px"></div>
+    <div class="admin-card">
+      <div class="admin-head"><span>Affiliates List 👥 <span class="muted" id="affiliate-directory-count"></span></span></div>
+      <div class="admin-body">
+        <div id="afd-msg"></div>
+        <div class="admin-filters">
+          <input type="text" id="afd-name" placeholder="Affiliate name…">
+          <input type="text" id="afd-whatsapp" placeholder="WhatsApp number…">
+        </div>
+        <div class="field">
+          <label for="afd-bank">Bank / payment details</label>
+          <textarea id="afd-bank" rows="2" placeholder="e.g. Easypaisa — Account Title — 03XX-XXXXXXX" style="width:100%;padding:10px 12px;border:1.5px solid #e3e9f7;border-radius:10px;font-size:.95rem;background:#fff;color:var(--ink);font-family:inherit"></textarea>
+        </div>
+        <button class="btn" id="afd-add" type="button">➕ Add Affiliate (gets a unique AF number)</button>
+        <div class="admin-filters" style="margin-top:16px">
+          <input type="text" id="afd-search" placeholder="🔍 Find by name, WhatsApp, AF number or bank detail…">
+        </div>
+        <div class="orders-list" id="affiliate-directory-list"></div>
+      </div>
+    </div>
     <div style="display:none">
     <div class="admin-card">
       <div class="admin-head"><span>Orders 📦 <span class="muted" id="orders-count"></span></span></div>
