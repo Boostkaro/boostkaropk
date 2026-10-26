@@ -131,6 +131,7 @@ footer p{font-size:.92rem;color:#b9cdf3}
 .bottombar a:before{content:""}
 .wa-float{position:fixed;left:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:#25d366;color:#fff;font-size:1.6rem;display:flex;align-items:center;justify-content:center;text-decoration:none;box-shadow:0 8px 22px rgba(0,0,0,.28);z-index:70}
 .wa-float:hover{background:#1eb85a}
+.wa-float svg{width:60%;height:60%;display:block}
 @media(max-width:920px){.hero-grid{grid-template-columns:1fr}.hero-copy{order:1}.order-card{order:2}.grid4,.grid3,.stats{grid-template-columns:1fr 1fr}footer .cols{grid-template-columns:1fr 1fr}.checks{columns:1}nav.main{display:none}nav.main.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid var(--line);padding:12px 18px;box-shadow:0 14px 30px rgba(26,115,232,.14)}}
 @media(max-width:560px){.grid4,.grid3,.stats{grid-template-columns:1fr}.hero-copy h1{font-size:2rem}}
 
