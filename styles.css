@@ -201,6 +201,23 @@ footer p{font-size:.92rem;color:#b9cdf3}
   position: relative;
 }
 .tier-card.cheapest { border-top: 5px solid var(--accent); }
+.tier-card.premium { border-top: 5px solid var(--blue); }
+/* BEST SELLER ribbon (Raji's design, 2026-10-26): red ribbon, green words, white stars */
+.tier-grid:has(.bestseller) { padding-top: 14px; }
+.tier-card.bestseller { border: 2px solid #d81b26; }
+.bs-ribbon {
+  position: absolute; top: -17px; left: 50%; transform: translateX(-50%);
+  background: #d81b26; color: #16c75a; font-weight: 800; font-size: .8rem;
+  letter-spacing: 1px; padding: 7px 18px; border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(216,27,38,.35); white-space: nowrap; z-index: 2;
+}
+.bs-ribbon .bs-star { color: #fff; }
+.bs-ribbon::before, .bs-ribbon::after {
+  content: ""; position: absolute; top: 5px; z-index: -1;
+  border: 9px solid #a8101a;
+}
+.bs-ribbon::before { left: -13px; border-left-color: transparent; border-bottom-color: transparent; }
+.bs-ribbon::after { right: -13px; border-right-color: transparent; border-bottom-color: transparent; }
 .tier-card.cheapest .tier-badge { background: #dcf7ec; color: #067a54; }
 .tier-badge {
   position: absolute; top: 14px; right: 14px; font-size: .72rem; font-weight: 800;
