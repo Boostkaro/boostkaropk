@@ -217,6 +217,14 @@ footer p{font-size:.92rem;color:#b9cdf3}
   border: 9px solid #a8101a;
 }
 .bs-ribbon::before { left: -13px; border-left-color: transparent; border-bottom-color: transparent; }
+/* BEST SELLER tag in the homepage order card (shown for IG Followers — No Drop) */
+.svc-label-row { display: flex; align-items: center; gap: 10px; }
+.bs-tag {
+  background: #d81b26; color: #16c75a; font-weight: 800; font-size: .68rem;
+  letter-spacing: .8px; padding: 4px 10px; border-radius: 6px;
+  box-shadow: 0 3px 8px rgba(216,27,38,.3); white-space: nowrap;
+}
+.bs-tag .bs-star { color: #fff; }
 .bs-ribbon::after { right: -13px; border-right-color: transparent; border-bottom-color: transparent; }
 .tier-card.cheapest .tier-badge { background: #dcf7ec; color: #067a54; }
 .tier-badge {

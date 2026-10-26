@@ -740,6 +740,11 @@
   function updateHeroPrice() {
     var sel2 = heroSelection();
     if (!sel2) return;
+    var bsTag = $("hero-bs-tag");
+    if (bsTag) {
+      // BEST SELLER tag: only for Instagram Followers — No Drop (Raji, 2026-10-26)
+      bsTag.hidden = !(sel2.platform.id === "instagram" && sel2.category.id === "followers" && sel2.subcat.id === "nodrop");
+    }
     var cheap = cheapestTier(sel2.subcat);
     if (!cheap) return;
     var qty = parseInt($("hero-qty").value, 10);
@@ -794,7 +799,9 @@
       var cheap = cheapestTier(sc);
       var opt = document.createElement("option");
       opt.value = sc.id;
-      opt.textContent = sc.label + (cheap ? " (" + fmtPKR(cheap.p) + UNIT_SHORT[cheap.u] + ")" : "");
+      // BEST SELLER marker on the No Drop option itself (Raji, 2026-10-26)
+      var bsMark = (p.id === "instagram" && c.id === "followers" && sc.id === "nodrop") ? " ★ BEST SELLER" : "";
+      opt.textContent = sc.label + bsMark + (cheap ? " (" + fmtPKR(cheap.p) + UNIT_SHORT[cheap.u] + ")" : "");
       sel.appendChild(opt);
     });
     // Preselect Instagram Followers — No Drop (hero default quality)
