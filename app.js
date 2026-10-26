@@ -770,10 +770,7 @@
     var sel2 = heroSelection();
     var tier = sel2 ? cheapestTier(sel2.subcat) : null;
     if (tier && tier.s) {
-      var catId = (sel2.category && sel2.category.id) || "";
-      txt.textContent = tier.s + (catId.indexOf("follow") >= 0
-        ? " \u2014 \u26A0\uFE0F Important: If your account has 0 followers, please order the minimum quantity first to build a base, then order your full quantity."
-        : "");
+      txt.textContent = tier.s;
       box.style.display = "";
     } else {
       txt.textContent = "";
